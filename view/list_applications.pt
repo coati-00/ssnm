@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<html>
+
+<table tal:condition="ecomaps">
+<tr><th>name</th><th>desc</th><th>flash</th></tr>
+<tr tal:repeat="ecomap ecomaps">
+<td tal:content="ecomap/name"></td>
+<td tal:content="ecomap/description"></td>
+<td tal:content="ecomap/flashData"></td>
+</tr>
+</table>
+
+
+</html>
