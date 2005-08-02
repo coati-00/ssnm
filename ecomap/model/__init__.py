@@ -3,9 +3,7 @@ import ecomap.config as config
 
 __connection__ = config.param("dsn")
 
-class Ecomap(SQLObject):
-	name = UnicodeCol(length=50)
-	description = UnicodeCol(length=100,default='')
-	flashData = UnicodeCol(default='')
+from ecomap import Ecomap
+from ecouser import EcoUser
 	
 
