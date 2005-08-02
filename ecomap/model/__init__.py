@@ -1,5 +1,7 @@
 from sqlobject import *
-__connection__ = "postgres://keldridge@/ecomap"
+import ecomap.config as config
+
+__connection__ = config.param("dsn")
 
 class Ecomap(SQLObject):
 	name = UnicodeCol(length=50)
