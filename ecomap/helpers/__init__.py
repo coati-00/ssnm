@@ -2,10 +2,12 @@ from ecomap.model import *
 import formencode
 
 def createTables():
+    Ecouser.createTable(ifNotExists=True)
     Ecomap.createTable(ifNotExists=True)
 
 def dropTables():
     Ecomap.dropTable(ifExists=True)
+    Ecouser.dropTable(ifExists=True)
 
 class EcomapSchema(formencode.Schema):
     name    = validators.String(not_empty=True)

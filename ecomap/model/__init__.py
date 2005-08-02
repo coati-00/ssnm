@@ -3,7 +3,7 @@ import ecomap.config as config
 
 __connection__ = config.param("dsn")
 
+from ecouserTable import Ecouser
 from ecomapTable import Ecomap
-from ecouserTable import EcoUser
 	
 

@@ -10,7 +10,6 @@ class Ecomap(SQLObject):
 	description = UnicodeCol(length=100,default='')
 	created = DateTimeCol(default=DateTime.now)
 	modified = DateTimeCol(default=DateTime.now)
-	owner = ForeignKey('EcoUser',cascade=True)
+	owner = ForeignKey('Ecouser',cascade=True)
 	public = BoolCol()
 	flashData = UnicodeCol(default='')
-	

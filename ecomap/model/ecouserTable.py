@@ -5,7 +5,7 @@ __connection__ = config.param('dsn')
 # from ecomap.model import __connection__
 from mx import DateTime
 
-class EcoUser(SQLObject):
-	UNI = UnicodeCol(length=50)
+class Ecouser(SQLObject):
+	uni = UnicodeCol(length=50)
 	name = UnicodeCol(length=100)
-	ecomaps = MultipleJoin('Ecomap')	
+	ecomaps = MultipleJoin('Ecomap')
