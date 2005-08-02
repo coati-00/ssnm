@@ -1,5 +1,8 @@
 from sqlobject import *
-from ecomap.model import __connection__
+import ecomap.config as config
+__connection__ = config.param('dsn')
+
+# from ecomap.model import __connection__
 from mx import DateTime
 
 class EcoUser(SQLObject):
