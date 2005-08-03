@@ -10,7 +10,7 @@ def dropTables():
     Ecouser.dropTable(ifExists=True)
 
 class EcomapSchema(formencode.Schema):
-    name    = validators.String(not_empty=True)
+    name = validators.String(not_empty=True)
     description = validators.String()
 
 def setup_for_tests():

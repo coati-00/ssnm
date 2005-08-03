@@ -36,6 +36,33 @@ class EcomapController(EcomapControllerBase):
         return self.template("list_applications.pt",{'ecomaps' : [e for e in Ecomap.select()]})
     index.exposed = True
 
-
+    def create_ecomap_form(self):
+        defaults = {'name' : "x", 'description' : "y"}
+        parser = htmlfill.FillingParser(defaults)
+        parser.feed(self.template("create_ecomap.pt",{}))
+        output = parser.text()
+        parser.close()
+        return output
     
+    create_ecomap_form.exposed = True
+
+
+    def create_ecomap(self,name=u"",description=u""):
         
+        es = EcomapSchema()
+        try:
+            d = es.to_python({'name' : name, 'description' : description})
+            a = Ecomap(name=d['name'],description=d['description'])
+            #a = Ecomap(name,description)
+            cherrypy.session['message'] = "ecomap added"
+            return httptools.redirect("/")
+        except formencode.Invalid, e:
+            return es.to_python({'name' : name, 'description' : description}) #e.unpack_errors()
+            '''defaults = {'name' : name, 'description' : description}
+            parser = htmlfill.FillingParser(defaults,errors=e.unpack_errors())
+            parser.feed(self.template("create_ecomap.pt",{}))
+            output = parser.text()
+            parser.close()
+            return output '''
+            
+    create_ecomap.exposed = True

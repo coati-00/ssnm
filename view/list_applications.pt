@@ -1,11 +1,17 @@
 <?xml version="1.0"?>
 <html>
 
+<a href="create_ecomap_form">create</a>
+
 <table tal:condition="ecomaps">
-<tr><th>name</th><th>desc</th><th>flash</th></tr>
+<tr><th>Name</th><th>Description</th><th>Created</th><th>Modified</th><th>Owner (UNI)</th><th>Public</th><th>Flash</th></tr>
 <tr tal:repeat="ecomap ecomaps">
 <td tal:content="ecomap/name"></td>
 <td tal:content="ecomap/description"></td>
+<td tal:content="ecomap/created"></td>
+<td tal:content="ecomap/modified"></td>
+<td tal:content="ecomap/owner/uni"></td>
+<td tal:content="ecomap/public"></td>
 <td tal:content="ecomap/flashData"></td>
 </tr>
 </table>
