@@ -6,7 +6,7 @@
 <table tal:condition="ecomaps">
 <tr><th>Name</th><th>Description</th><th>Created</th><th>Modified</th><th>Owner (UNI)</th><th>Public</th><th>Flash</th></tr>
 <tr tal:repeat="ecomap ecomaps">
-<td tal:content="ecomap/name"></td>
+<td><a tal:attributes="href string:/ecomap/${ecomap/id}/" tal:content="ecomap/name"/></td>
 <td tal:content="ecomap/description"></td>
 <td tal:content="ecomap/created"></td>
 <td tal:content="ecomap/modified"></td>

@@ -13,7 +13,7 @@ from formencode import htmlfill
 
 DEBUG = True
 
-class EcomapControllerBase(CherryTAL):
+class EcoControllerBase(CherryTAL):
     _template_dir = "view"
 
     def referer(self):
@@ -31,7 +31,7 @@ class EcomapControllerBase(CherryTAL):
             # Do something else here.
             cherrypy.response.body = ['Error: ' + str(err[0])]
 
-class EcomapController(EcomapControllerBase):
+class Eco(EcoControllerBase):
     def index(self):
         return self.template("list_applications.pt",{'ecomaps' : [e for e in Ecomap.select()]})
     index.exposed = True
@@ -51,10 +51,11 @@ class EcomapController(EcomapControllerBase):
         
         es = EcomapSchema()
         try:
-            d = es.to_python({'name' : name, 'description' : description})
-            a = Ecomap(name=d['name'],description=d['description'])
+            #d = es.to_python({'name' : name, 'description' : description})
+            #a = Ecomap(name=d['name'],description=d['description'])
+            a = Ecomap(name=name,description=description,owner=1)
             #a = Ecomap(name,description)
-            cherrypy.session['message'] = "ecomap added"
+            #cherrypy.session['message'] = "ecomap added"
             return httptools.redirect("/")
         except formencode.Invalid, e:
             return es.to_python({'name' : name, 'description' : description}) #e.unpack_errors()
@@ -66,3 +67,44 @@ class EcomapController(EcomapControllerBase):
             return output '''
             
     create_ecomap.exposed = True
+
+
+class EcomapController(EcoControllerBase):
+
+    def index(self):
+        return self.template("list_applications.pt",{'ecomaps' : [e for e in Ecomap.select()]})
+    index.exposed = True
+
+
+    def default(self,ecomap_id,*args,**kwargs):
+        ecomap_id = int(ecomap_id)
+        self.ecomap = Ecomap.get(ecomap_id)
+        if len(args) == 0:
+            return self.view_ecomap(**kwargs)
+        action = args[0]
+
+        dispatch = {
+            'delete' : self.delete,
+            }
+        if dispatch.has_key(action):
+            return dispatch[action](**kwargs)
+    default.exposed = True
+
+
+    def view_ecomap(self,**kwargs):
+        return self.template("view_ecomap.pt",{'ecomap' : self.ecomap})
+    #ecomap.exposed = True
+    
+    
+    def delete(self,confirm=""):
+        #if confirm == "ok":
+            self.ecomap.destroySelf()
+            #cherrypy.session['message'] = "application deleted"
+            return httptools.redirect("/")
+        #else:
+        #    return self.template("delete_ecomap.pt",{})
+        
+        
+        
+        
+        

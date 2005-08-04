@@ -23,7 +23,8 @@ environment = "development"
 if config.MODE == "production":
     environment = "production"
 
-cherrypy.root             = controller.EcomapController()
+cherrypy.root             = controller.Eco()
+cherrypy.root.ecomap      = controller.EcomapController()
 
 cherrypy.config.update({
     'global' : {
