@@ -19,20 +19,5 @@ from ecomap.model   import *
 import ecomap.controller as controller
 import cherrypy
 
-environment = "development"
-if config.MODE == "production":
-    environment = "production"
+controller.start()
 
-cherrypy.root             = controller.Eco()
-cherrypy.root.ecomap      = controller.EcomapController()
-
-cherrypy.config.update({
-    'global' : {
-    'server.socketPort' : int(config.param('socketPort')),
-    'server.threadPool' : int(config.param('threadPool')),
-    'server.environment' : environment,
-    },
-    '/css' : {'staticFilter.on' : True, 'staticFilter.dir' : config.param('css')},
-    '/images' : {'staticFilter.on' : True, 'staticFilter.dir' : config.param('images')},
-    })
-cherrypy.server.start()

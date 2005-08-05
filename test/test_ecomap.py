@@ -10,9 +10,21 @@ def setup_module(module):
 def teardown_module(module):
     teardown_tests()
 
+class TestEcouser:
+    def setup_class(self):
+        self.user = Ecouser(uni="foo",name="regression test user")
+
+    def teardown_class(self):
+        self.user.destroySelf()
+
+    def test_basics(self):
+        assert self.user.uni == "foo"
+        assert self.user.name == "regression test user"
+
 class TestEcomap:
     def setup_class(self):
-        self.map = Ecomap(name="test",description="test",flashData="blah blah blah")
+        self.user = Ecouser(uni="foo",name="regression test user")
+        self.map = Ecomap(name="test",description="test",flashData="blah blah blah",owner=self.user)
 
     def teardown_class(self):
         self.map.destroySelf()
@@ -21,3 +33,8 @@ class TestEcomap:
         assert self.map.name == "test"
         assert self.map.description == "test"
         assert self.map.flashData == "blah blah blah"
+        assert self.map.owner.uni == self.user.uni
+        assert self.map.public == False
+
+
+        

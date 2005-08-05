@@ -1,6 +1,7 @@
 from ecomap.model import *
 from ecomap.helpers import *
 from ecomap.helpers.cherrytal import CherryTAL
+import ecomap.config as config
 
 from cherrypy.lib import httptools
 import cherrypy
@@ -12,6 +13,27 @@ from formencode import validators
 from formencode import htmlfill
 
 DEBUG = True
+
+def start(initOnly=False):
+    environment = "development"
+    if config.MODE == "production":
+        environment = "production"
+
+    cherrypy.root             = Eco()
+    cherrypy.root.ecomap      = EcomapController()
+
+    cherrypy.config.update({
+        'global' : {
+        'server.socketPort' : int(config.param('socketPort')),
+        'server.threadPool' : int(config.param('threadPool')),
+        'server.environment' : environment,
+        },
+        '/css' : {'staticFilter.on' : True, 'staticFilter.dir' : config.param('css')},
+        '/images' : {'staticFilter.on' : True, 'staticFilter.dir' : config.param('images')},
+        })
+    cherrypy.server.start(initOnly=initOnly)
+
+
 
 class EcoControllerBase(CherryTAL):
     _template_dir = "view"
