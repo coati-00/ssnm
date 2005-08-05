@@ -33,7 +33,7 @@ class EcoControllerBase(CherryTAL):
 
 class Eco(EcoControllerBase):
     def index(self):
-        return self.template("list_applications.pt",{'ecomaps' : [e for e in Ecomap.select()]})
+        return self.template("list_ecomaps.pt",{'ecomaps' : [e for e in Ecomap.select()]})
     index.exposed = True
 
     def create_ecomap_form(self):
@@ -67,12 +67,17 @@ class Eco(EcoControllerBase):
             return output '''
             
     create_ecomap.exposed = True
+    
+    def update(self,**kwargs):
+        return kwargs
+        
+    update.exposed = True
 
 
 class EcomapController(EcoControllerBase):
 
     def index(self):
-        return self.template("list_applications.pt",{'ecomaps' : [e for e in Ecomap.select()]})
+        return self.template("list_ecomaps.pt",{'ecomaps' : [e for e in Ecomap.select()]})
     index.exposed = True
 
 
@@ -85,6 +90,7 @@ class EcomapController(EcoControllerBase):
 
         dispatch = {
             'delete' : self.delete,
+			'update' : Eco.update,
             }
         if dispatch.has_key(action):
             return dispatch[action](**kwargs)
@@ -104,6 +110,7 @@ class EcomapController(EcoControllerBase):
         #else:
         #    return self.template("delete_ecomap.pt",{})
         
+    
         
         
         
