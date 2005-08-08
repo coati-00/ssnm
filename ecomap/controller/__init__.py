@@ -1,6 +1,7 @@
 from ecomap.model import *
 from ecomap.helpers import *
 from ecomap.helpers.cherrytal import CherryTAL
+from ecomap.helpers import EcomapSchema
 import ecomap.config as config
 
 from cherrypy.lib import httptools
@@ -53,6 +54,7 @@ class EcoControllerBase(CherryTAL):
             # Do something else here.
             cherrypy.response.body = ['Error: ' + str(err[0])]
 
+
 class Eco(EcoControllerBase):
     def index(self):
         return self.template("list_ecomaps.pt",{'ecomaps' : [e for e in Ecomap.select()]})
@@ -69,24 +71,20 @@ class Eco(EcoControllerBase):
     create_ecomap_form.exposed = True
 
 
-    def create_ecomap(self,name=u"",description=u""):
+    def create_ecomap(self,name="",description=""):
         
         es = EcomapSchema()
         try:
-            #d = es.to_python({'name' : name, 'description' : description})
-            #a = Ecomap(name=d['name'],description=d['description'])
-            a = Ecomap(name=name,description=description,owner=1)
-            #a = Ecomap(name,description)
-            #cherrypy.session['message'] = "ecomap added"
+            d = es.to_python({'name' : name, 'description' : description, 'owner' : 1})
+            a = Ecomap(name=d['name'],description=d['description'],owner=d['owner'])
             return httptools.redirect("/")
         except formencode.Invalid, e:
-            return es.to_python({'name' : name, 'description' : description}) #e.unpack_errors()
-            '''defaults = {'name' : name, 'description' : description}
+            defaults = {'name' : name, 'description' : description}
             parser = htmlfill.FillingParser(defaults,errors=e.unpack_errors())
             parser.feed(self.template("create_ecomap.pt",{}))
             output = parser.text()
             parser.close()
-            return output '''
+            return output
             
     create_ecomap.exposed = True
     
