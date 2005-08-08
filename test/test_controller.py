@@ -45,3 +45,11 @@ class TestController:
         self.server.setPath("/")
         self.server.execute()
         assert "test ecomap" in self.server.getResponse()
+
+    def test_create_ecomap_validation(self):
+        """ try creating an ecomap without a name and make sure the form
+        validation stops it with an error message """
+        self.server.setPath("/create_ecomap")
+        self.server.execute()
+        assert self.server.getStatus()[0] == 200
+        assert "Please enter a value" in self.server.getResponse()
