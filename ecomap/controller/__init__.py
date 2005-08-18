@@ -110,7 +110,7 @@ class EcomapController(EcoControllerBase):
 
         dispatch = {
             'delete' : self.delete,
-			'update' : Eco.update,
+            'update' : Eco.update,
             }
         if dispatch.has_key(action):
             return dispatch[action](**kwargs)

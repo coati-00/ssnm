@@ -10,7 +10,7 @@
 <tr tal:repeat="ecomap ecomaps">
 <td><input type="checkbox" name="ecomap_id" tal:attributes="value string:${ecomap/id}"/><!--<a tal:attributes="href string:/ecomap/${ecomap/id}/delete/">DEL</a>--></td>
 <td><a tal:attributes="href string:/ecomap/${ecomap/id}/" tal:content="ecomap/name"/></td>
-<td tal:content="ecomap/description"></td>
+<td><a href="http://ccnmtl.columbia.edu/draft/keldridge/ecomap.html" tal:content="ecomap/description"/></td>
 <td tal:content="ecomap/created"></td>
 <td tal:content="ecomap/modified"></td>
 <td tal:content="ecomap/owner/uni"></td>
