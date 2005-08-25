@@ -5,6 +5,7 @@ ecomap.config.MODE = "regressiontest"
 from ecomap.helpers import *
 from ecomap.helpers.dummy_server import *
 from ecomap.controller import start
+import unittest
 
 def setup_module(module):
     setup_for_tests()
@@ -12,7 +13,7 @@ def setup_module(module):
 def teardown_module(module):
     teardown_tests()
 
-class TestController:
+class TestController(unittest.TestCase):
     def setup_class(self):
         self.server = ServerCherrypy(start)
         self.server.setClientIP('127.0.0.1')
@@ -53,3 +54,9 @@ class TestController:
         self.server.execute()
         assert self.server.getStatus()[0] == 200
         assert "Please enter a value" in self.server.getResponse()
+
+def test_suite():
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(TestController))
+    return suite
+       
