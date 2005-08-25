@@ -7,5 +7,6 @@ from mx import DateTime
 
 class Ecouser(SQLObject):
 	uni = UnicodeCol(length=50)
-	name = UnicodeCol(length=100)
+	firstname = UnicodeCol(length=50)
+	lastname = UnicodeCol(length=50)
 	ecomaps = MultipleJoin('Ecomap')

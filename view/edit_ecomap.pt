@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<html>
+
+<form action="edit" method="post">
+<fieldset>
+<legend>edit <span tal:replace="ecomap/name"/></legend>
+<label>Name: <input type="text" name="name" tal:attributes="value ecomap/name" size="60" /></label><br />
+<label>Description: <input type="text" name="description" tal:attributes="value ecomap/description" size="60" /></label><br />
+<input type="submit" value="save" />
+</fieldset>
+</form>
+
+</html>

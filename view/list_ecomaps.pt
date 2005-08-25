@@ -3,7 +3,7 @@
 
 <form action="/update" method="post">
 
-<a href="create_ecomap_form">create</a> <input type="submit" name="delete" value="delete"/>
+<a href="create_ecomap_form">create</a> <input type="submit" name="action" value="delete"/> <input type="submit" name="action" value="share"/>
 
 <table tal:condition="ecomaps">
 <tr><th></th><th>Name</th><th>Description</th><th>Created</th><th>Modified</th><th>Owner (UNI)</th><th>Public</th><th>Flash</th></tr>
