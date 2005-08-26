@@ -15,6 +15,8 @@ from formencode import htmlfill
 
 DEBUG = True
 
+UNI_PARAM = "UNI"
+
 def start(initOnly=False):
     environment = "development"
     if config.MODE == "production":
@@ -58,18 +60,30 @@ class EcoControllerBase(CherryTAL):
 
 
 class Eco(EcoControllerBase):
+
     def index(self):
         # import pdb; pdb.set_trace()
         return "<h1>This is the main page</h1><p><a href='login'>Click here</a> to log in</p>"
 
     index.exposed = True
 
+    def breakredirect(self):
+        cherrypy.response.body = ["goodbye cruel world"]
+        cherrypy.response.sendResponse = True
+        return httptools.redirect("/index")
+        # return cherrypy.response.body
+
+    breakredirect.exposed = True
+
     def myList(self):
+        # import pdb; pdb.set_trace()
 
         #this is the list of ecomaps for the currently logged in user
-        try:
-            return self.template("list_ecomaps.pt",{'ecomaps' : [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecouser.q.uni == cherrypy.session['UNI']))]})
-        except:
+        uni = cherrypy.session.get(UNI_PARAM, None)
+
+        if uni:
+            return self.template("list_ecomaps.pt",{'ecomaps' : [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecouser.q.uni == uni))]})
+        else:
             #right now, this means you're not logged in
             return httptools.redirect("/")
             #return "<a href='login'>Click here</a> to log in"
@@ -93,11 +107,11 @@ class Eco(EcoControllerBase):
             if int(success) == 0:
                 return uni # UNI is error message "WIND authentication failed. please try again or report this as a bug."
 
-            cherrypy.session['UNI'] = uni
+            cherrypy.session[UNI_PARAM] = uni
             cherrypy.session['Group'] = groups
 
             user = get_or_create_user(uni)
-            print cherrypy.session['UNI']
+            print cherrypy.session[UNI_PARAM]
 
             return "success!! %s logged in.  <a href='/myList'>click here</a> to go to list of ecomaps" % uni
 
@@ -120,7 +134,7 @@ class Eco(EcoControllerBase):
         es = EcomapSchema()
 
         try:
-            ownerID = Ecouser.select(Ecouser.q.uni == cherrypy.session['UNI'])[0].id
+            ownerID = Ecouser.select(Ecouser.q.uni == cherrypy.session[UNI_PARAM])[0].id
             d = es.to_python({'name' : name, 'description' : description, 'owner' : ownerID})
             a = Ecomap(name=d['name'],description=d['description'],owner=d['owner'])
             return httptools.redirect("/myList")
@@ -145,19 +159,17 @@ class Eco(EcoControllerBase):
                 output = "error - unknown argument type"
 
             if action == 'delete':
-                while len(itemList) > 0:
-                    item = itemList.pop()
+                for item in itemList:
                     self.ecomap = Ecomap.get(item)
                     self.ecomap.destroySelf()
             elif action == 'share':
                 es = EcomapSchema()
-                while len(itemList) > 0:
-                    item = itemList.pop()
+                for item in itemList:
                     self.ecomap = Ecomap.get(item)
                     #d = es.to_python({'name' : name, 'description' : description, 'owner' : 1})
                     self.ecomap.public = not self.ecomap.public
 
-            httptools.redirect("/myList")
+            return httptools.redirect("/myList")
 
         #except:
         #   return "no arguments"
@@ -174,6 +186,7 @@ class EcomapController(EcoControllerBase):
 
 
     def default(self,ecomap_id,*args,**kwargs):
+        # import pdb; pdb.set_trace()
         ecomap_id = int(ecomap_id)
         self.ecomap = Ecomap.get(ecomap_id)
         if len(args) == 0:
