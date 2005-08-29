@@ -63,7 +63,8 @@ class Eco(EcoControllerBase):
 
     def index(self):
         # import pdb; pdb.set_trace()
-        return "<h1>This is the main page</h1><p><a href='login'>Click here</a> to log in</p>"
+        return self.template("index.pt",{})
+        #return "<h1>This is the main page</h1><p><a href='login'>Click here</a> to log in</p>"
 
     index.exposed = True
 
@@ -78,30 +79,26 @@ class Eco(EcoControllerBase):
     def myList(self):
         # import pdb; pdb.set_trace()
 
-        #this is the list of ecomaps for the currently logged in user
         uni = cherrypy.session.get(UNI_PARAM, None)
 
         if uni:
+            #this is the list of ecomaps for the currently logged in user
             return self.template("list_ecomaps.pt",{'ecomaps' : [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecouser.q.uni == uni))]})
         else:
-            #right now, this means you're not logged in
+            #No user logged in
             return httptools.redirect("/")
-            #return "<a href='login'>Click here</a> to log in"
+
     myList.exposed = True
 
     def login(self,**kwargs):
-        try:
-            ticket_id = kwargs['ticketid']
-        except:
-            ticket_id = ""
-
+        ticket_id = kwargs.get('ticketid', "")
         self.BASE_URL = cherrypy.request.base + "/login"
 
         if ticket_id == "":
             import urllib
             destination = urllib.quote(self.BASE_URL)
             url = "https://wind.columbia.edu/login?destination=%s&service=cnmtl_full_np" % destination
-            httptools.redirect(url)
+            return httptools.redirect(url)
         else:
             (success,uni,groups) = validate_wind_ticket(ticket_id)
             if int(success) == 0:
@@ -113,7 +110,7 @@ class Eco(EcoControllerBase):
             user = get_or_create_user(uni)
             print cherrypy.session[UNI_PARAM]
 
-            return "success!! %s logged in.  <a href='/myList'>click here</a> to go to list of ecomaps" % uni
+            return httptools.redirect("/myList") #"success!! %s logged in.  <a href='/myList'>click here</a> to go to list of ecomaps" % uni
 
     login.exposed = True
 
@@ -160,14 +157,13 @@ class Eco(EcoControllerBase):
 
             if action == 'delete':
                 for item in itemList:
-                    self.ecomap = Ecomap.get(item)
-                    self.ecomap.destroySelf()
+                    thisItem = Ecomap.get(item)
+                    thisItem.destroySelf()
             elif action == 'share':
                 es = EcomapSchema()
                 for item in itemList:
-                    self.ecomap = Ecomap.get(item)
-                    #d = es.to_python({'name' : name, 'description' : description, 'owner' : 1})
-                    self.ecomap.public = not self.ecomap.public
+                    thisItem = Ecomap.get(item)
+                    thisItem.public = not thisItem.public
 
             return httptools.redirect("/myList")
 
@@ -212,18 +208,19 @@ class EcomapController(EcoControllerBase):
 
     def edit(self,name="",description=""):
         es = EcomapSchema()
-    #try:
-        d = es.to_python({'name' : name, 'description' : description, 'owner' : self.ecomap.ownerID})
-        self.ecomap.name = d['name']
-        self.ecomap.description = d['description']
-        return httptools.redirect("/ecomap/" + str(self.ecomap.id) + "/")
-    #except formencode.Invalid, e:
-        defaults = {'name' : name, 'description' : description}
-        parser = htmlfill.FillingParser(defaults,errors=e.unpack_errors())
-        parser.feed(self.template("edit_ecomap.pt",{'ecomap' : self.ecomap}))
-        output = parser.text()
-        parser.close()
-        return output
+        try:
+            d = es.to_python({'name' : name, 'description' : description, 'owner' : self.ecomap.ownerID})
+            self.ecomap.name = d['name']
+            self.ecomap.description = d['description']
+            return httptools.redirect("/ecomap/" + str(self.ecomap.id) + "/")
+    
+        except formencode.Invalid, e:
+            defaults = {'name' : name, 'description' : description}
+            parser = htmlfill.FillingParser(defaults,errors=e.unpack_errors())
+            parser.feed(self.template("edit_ecomap.pt",{'ecomap' : self.ecomap}))
+            output = parser.text()
+            parser.close()
+            return output
 
     def view_ecomap(self,**kwargs):
         return self.template("view_ecomap.pt",{'ecomap' : self.ecomap})
@@ -242,7 +239,7 @@ class EcomapController(EcoControllerBase):
     #def update(self,**kwargs):
     #   return kwargs
     #update.exposed = True
-		
-		
-		
-		
+        
+        
+        
+        
