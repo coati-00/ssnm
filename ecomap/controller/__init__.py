@@ -3,6 +3,7 @@ from ecomap.helpers import *
 from ecomap.helpers.cherrytal import CherryTAL
 from ecomap.helpers import EcomapSchema
 import ecomap.config as config
+from DisablePostParsingFilter import DisablePostParsingFilter
 
 from cherrypy.lib import httptools
 from mx import DateTime
@@ -65,7 +66,9 @@ class EcoControllerBase(CherryTAL):
 
 
 class Eco(EcoControllerBase):
-
+    # enable filtering to disable post filtering on the postTester funcion
+    _cpFilterList = [ DisablePostParsingFilter() ]
+    
     def index(self):
         # import pdb; pdb.set_trace()
         return self.template("index.pt",{})
@@ -106,6 +109,19 @@ class Eco(EcoControllerBase):
         
     flashConduit.exposed = True
     
+
+    def postTester(self, **kwargs):
+        """
+        test the DisablePostParsingFilter -
+        when we just want to get at the postdata,
+        we can't let stdin be read, since we can't seek back to the beginning
+        """
+        # import pdb; pdb.set_trace()
+        postLength = int(cherrypy.request.headerMap.get('Content-Length',0))
+        postData = cherrypy.request.rfile.read(postLength) 
+        return postData
+    
+    postTester.exposed = True
 
     def myList(self):
         # import pdb; pdb.set_trace()
