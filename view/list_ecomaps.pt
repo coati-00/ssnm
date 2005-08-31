@@ -5,19 +5,33 @@
 
 <a href="create_ecomap_form">create</a> <input type="submit" name="action" value="delete"/> <input type="submit" name="action" value="share"/>
 
-<table tal:condition="ecomaps">
-<tr><th></th><th>Name</th><th>Description</th><th>Created</th><th>Modified</th><th>Owner (UNI)</th><th>Public</th><th>Flash</th></tr>
-<tr tal:repeat="ecomap ecomaps">
+<h1 tal:condition="myEcomaps">My Ecomaps</h1>
+
+<table tal:condition="myEcomaps">
+<tr><th></th><th>Name</th><th>Description</th><th>Created</th><th>Modified</th><th>Public</th><th>Flash Data</th></tr>
+<tr tal:repeat="ecomap myEcomaps">
 <td><input type="checkbox" name="ecomap_id" tal:attributes="value string:${ecomap/id}"/><!--<a tal:attributes="href string:/ecomap/${ecomap/id}/delete/">DEL</a>--></td>
 <td><a tal:attributes="href string:/ecomap/${ecomap/id}/" tal:content="ecomap/name"/></td>
-<td><a href="http://ccnmtl.columbia.edu/draft/keldridge/ecomap.html" tal:content="ecomap/description"/></td>
-<td tal:content="ecomap/created"></td>
-<td tal:content="ecomap/modified"></td>
-<td tal:content="ecomap/owner/uni"></td>
+<td><a tal:attributes="href string:/ecomap/${ecomap/id}/flash" tal:content="ecomap/description"/></td>
+<td tal:content="ecomap/createdStr"></td>
+<td tal:content="ecomap/modifiedStr"></td>
 <td tal:content="ecomap/public"></td>
 <td tal:content="ecomap/flashData"></td>
 </tr>
 </table>
+
+<h1 tal:condition="publicEcomaps">Shared Ecomaps</h1>
+
+<table tal:condition="publicEcomaps">
+<tr><th></th><th>Name</th><th>Description</th><th>Owner (UNI)</th></tr>
+<tr tal:repeat="ecomap publicEcomaps">
+<td><input type="checkbox" name="ecomap_id" tal:attributes="value string:${ecomap/id}"/><!--<a tal:attributes="href string:/ecomap/${ecomap/id}/delete/">DEL</a>--></td>
+<td><a tal:attributes="href string:/ecomap/${ecomap/id}/" tal:content="ecomap/name"/></td>
+<td><a href="http://ccnmtl.columbia.edu/draft/keldridge/ecomap.html" tal:content="ecomap/description"/></td>
+<td tal:content="ecomap/owner/uni"></td>
+</tr>
+</table>
+
 
 </form>
 

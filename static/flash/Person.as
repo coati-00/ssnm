@@ -70,10 +70,6 @@ class Person{
 
         // Attach behaviors to the container_mc MovieClip container object
 
-/*        container_mc.onRollOver = function(){
-            trace("over");
-        }
-*/        
         hit_mc.onRelease = function(){
             this._parent.stopDrag();
             this._parent.parent.setPosition(this._parent._x,this._parent._y);

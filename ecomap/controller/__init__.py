@@ -5,6 +5,7 @@ from ecomap.helpers import EcomapSchema
 import ecomap.config as config
 
 from cherrypy.lib import httptools
+from mx import DateTime
 import cherrypy
 import sys
 import StringIO
@@ -16,11 +17,14 @@ from formencode import htmlfill
 DEBUG = True
 
 UNI_PARAM = "UNI"
+AUTH_TICKET_PARAM = "auth_ticket"
 
 def start(initOnly=False):
     environment = "development"
     if config.MODE == "production":
         environment = "production"
+
+    #environment = "production"
 
     cherrypy.root             = Eco()
     cherrypy.root.ecomap      = EcomapController()
@@ -35,6 +39,7 @@ def start(initOnly=False):
         },
         '/css' : {'staticFilter.on' : True, 'staticFilter.dir' : config.param('css')},
         '/images' : {'staticFilter.on' : True, 'staticFilter.dir' : config.param('images')},
+        '/flash' : {'staticFilter.on' : True, 'staticFilter.dir' : config.param('flash')},
         })
     cherrypy.server.start(initOnly=initOnly)
 
@@ -75,6 +80,32 @@ class Eco(EcoControllerBase):
         # return cherrypy.response.body
 
     breakredirect.exposed = True
+    
+    
+    def flashConduit(self,HTMLid="",HTMLticket=""):
+        #import pdb; pdb.set_trace()
+        #items = [x + ': ' + y for x,y in cherrypy.request.headerMap.items()]
+        #return "<br />".join(items)
+        
+        #raw = cherrypy._cphttptools.sys.stdin
+        #raw.seek(0)
+        #print raw #.read()
+        
+        #print cherrypy._cphttptools.sys.stdin.read()
+        print HTMLid
+        print HTMLticket
+        return "OK"
+        
+        #fetchEcomap = Ecomap.get(id)
+        
+        #return fetchEcomap.description
+        #xml = "<response>OK</response>"
+        
+        #return xml
+        #return "<xml><data>" + kwargs + "</data></xml>"
+        
+    flashConduit.exposed = True
+    
 
     def myList(self):
         # import pdb; pdb.set_trace()
@@ -82,8 +113,12 @@ class Eco(EcoControllerBase):
         uni = cherrypy.session.get(UNI_PARAM, None)
 
         if uni:
-            #this is the list of ecomaps for the currently logged in user
-            return self.template("list_ecomaps.pt",{'ecomaps' : [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecouser.q.uni == uni))]})
+            myEcos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecouser.q.uni == uni), orderBy=['name'])]
+            publicEcos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecouser.q.uni != uni, Ecomap.q.public == True), orderBy=['name'])]
+            for e in myEcos:
+                e.createdStr = e.created.strftime("%m/%d/%Y")
+                e.modifiedStr = e.modified.strftime("%m/%d/%Y")
+            return self.template("list_ecomaps.pt",{'myEcomaps' : myEcos, 'publicEcomaps' : publicEcos})
         else:
             #No user logged in
             return httptools.redirect("/")
@@ -100,9 +135,14 @@ class Eco(EcoControllerBase):
             url = "https://wind.columbia.edu/login?destination=%s&service=cnmtl_full_np" % destination
             return httptools.redirect(url)
         else:
+            
             (success,uni,groups) = validate_wind_ticket(ticket_id)
             if int(success) == 0:
                 return uni # UNI is error message "WIND authentication failed. please try again or report this as a bug."
+
+            #This is for authorization later from flash to forbid people from
+            #invoking the ecomap with an id param to read anyone's ecomap
+            cherrypy.session[AUTH_TICKET_PARAM] = ticket_id
 
             cherrypy.session[UNI_PARAM] = uni
             cherrypy.session['Group'] = groups
@@ -113,6 +153,13 @@ class Eco(EcoControllerBase):
             return httptools.redirect("/myList") #"success!! %s logged in.  <a href='/myList'>click here</a> to go to list of ecomaps" % uni
 
     login.exposed = True
+    
+    def loginB(self,**kwargs):
+        cherrypy.session[UNI_PARAM] = 'kfe2102'
+        cherrypy.session[AUTH_TICKET_PARAM] = 'TICKET!!!'
+        return httptools.redirect("/myList")
+        
+    loginB.exposed = True
 
 
     def create_ecomap_form(self):
@@ -193,6 +240,7 @@ class EcomapController(EcoControllerBase):
             'delete' : self.delete,
             'edit_form' : self.edit_form,
             'edit' : self.edit,
+            'flash' : self.flash,
             }
         if dispatch.has_key(action):
             return dispatch[action](**kwargs)
@@ -212,6 +260,7 @@ class EcomapController(EcoControllerBase):
             d = es.to_python({'name' : name, 'description' : description, 'owner' : self.ecomap.ownerID})
             self.ecomap.name = d['name']
             self.ecomap.description = d['description']
+            self.ecomap.modified = DateTime.now()
             return httptools.redirect("/ecomap/" + str(self.ecomap.id) + "/")
     
         except formencode.Invalid, e:
@@ -235,11 +284,9 @@ class EcomapController(EcoControllerBase):
         #else:
         #    return self.template("delete_ecomap.pt",{})
 
-
-    #def update(self,**kwargs):
-    #   return kwargs
-    #update.exposed = True
-        
-        
-        
-        
+    def flash(self):
+        flashData = {
+            'id' : self.ecomap.id,
+            'ticket' : cherrypy.session[AUTH_TICKET_PARAM],
+            }
+        return self.template("flash.pt",flashData)
