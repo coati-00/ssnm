@@ -6,3 +6,5 @@ class DisablePostParsingFilter(basefilter.BaseFilter):
     def beforeRequestBody(self):
         if cherrypy.request.path.endswith("/postTester"):
             cherrypy.request.processRequestBody = False
+        if cherrypy.request.path.endswith("/flashConduit"):
+            cherrypy.request.processRequestBody = False

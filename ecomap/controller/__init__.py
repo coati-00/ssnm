@@ -14,6 +14,7 @@ import cgitb
 import formencode
 from formencode import validators
 from formencode import htmlfill
+from xml.dom.minidom import parseString
 
 DEBUG = True
 
@@ -87,17 +88,84 @@ class Eco(EcoControllerBase):
     
     def flashConduit(self,HTMLid="",HTMLticket=""):
         #import pdb; pdb.set_trace()
-        #items = [x + ': ' + y for x,y in cherrypy.request.headerMap.items()]
-        #return "<br />".join(items)
         
-        #raw = cherrypy._cphttptools.sys.stdin
-        #raw.seek(0)
-        #print raw #.read()
+        #First, check to make sure there's a session established
+        sessionUni = cherrypy.session.get(UNI_PARAM, None)
+        sessionTicket = cherrypy.session.get(AUTH_TICKET_PARAM, None)
         
-        #print cherrypy._cphttptools.sys.stdin.read()
-        print HTMLid
-        print HTMLticket
-        return "OK"
+        if not sessionUni and sessionTicket:
+            responseData = "<response>Session error</response>"
+
+        else:
+        
+            postLength = int(cherrypy.request.headerMap.get('Content-Length',0))
+            postData = cherrypy.request.rfile.read(postLength) 
+    
+            #postData is going to have a ticket and an id to parse out
+    
+            try:
+                doc = parseString(postData)
+            except:
+                raise ParseError
+                
+            root = doc.getElementsByTagName("data")[0]
+            
+            #Check this data for reasonable stuff coming in
+            if root.getElementsByTagName("ticket")[0].hasChildNodes():
+                ticketid = root.getElementsByTagName("ticket")[0].firstChild.nodeValue
+            else:
+                ticketid = ""
+            if root.getElementsByTagName("id")[0].hasChildNodes():
+                ecoid = root.getElementsByTagName("id")[0].firstChild.nodeValue
+            else:
+                ecoid = ""
+            if root.getElementsByTagName("action")[0].hasChildNodes():
+                action = root.getElementsByTagName("action")[0].firstChild.nodeValue
+            else:
+                action = ""
+            dataNode = root.getElementsByTagName("persons")[0].toxml()
+            
+            if ticketid == sessionTicket:
+                #tickets match, so the session is valid
+                if not ecoid == "":
+                    thisEcomap = Ecomap.get(ecoid)
+                    if thisEcomap.public or thisEcomap.owner.uni == sessionUni:
+                        if action == "load":
+                            print "load into flash: " + thisEcomap.flashData
+                            responseData = "<data><response>OK</response>" + thisEcomap.flashData + "</data>"
+                        elif action == "save":
+                            #if this is your ecomap, you can save it, otherwise, youre out of luck
+                            if thisEcomap.owner.uni == sessionUni:
+                                thisEcomap.flashData = dataNode
+                                #want to check if this actually saves so i can REALLY return an OK
+                                #if it doesn't save, return NOT OK
+                                responseData = "<data><response>OK</response></data>"
+                            else:
+                                responseData = "<data><response>You do not own this ecomap</response></data>"
+                            
+                        else:
+                            print "unknown data action"
+                            responseData = "<data><response>Unknown data action</response></data>"
+                        print thisEcomap.description
+                    else:
+                        responseData = "<data><response>Not your ecomap and not public</response></data>"
+                        print "not your ecomap and not public"
+                else:
+                    responseData = "<data><response>Not a valid ecomap id</response></data>"
+                    print "not a valid ecomap id"
+            else:
+                responseData = "<data><response>Not a valid session you little hacker</response></data>"
+                print "not a valid session, you little hacker"
+        
+
+        return responseData
+        
+        print ticketid
+        print ecoid
+        #print dataNode
+        #return postData
+        
+        #return "OK"
         
         #fetchEcomap = Ecomap.get(id)
         
@@ -247,19 +315,25 @@ class EcomapController(EcoControllerBase):
     def default(self,ecomap_id,*args,**kwargs):
         # import pdb; pdb.set_trace()
         ecomap_id = int(ecomap_id)
-        self.ecomap = Ecomap.get(ecomap_id)
-        if len(args) == 0:
-            return self.view_ecomap(**kwargs)
-        action = args[0]
+        try:
+            self.ecomap = Ecomap.get(ecomap_id)
 
-        dispatch = {
-            'delete' : self.delete,
-            'edit_form' : self.edit_form,
-            'edit' : self.edit,
-            'flash' : self.flash,
-            }
-        if dispatch.has_key(action):
-            return dispatch[action](**kwargs)
+            if len(args) == 0:
+                return self.view_ecomap(**kwargs)
+            action = args[0]
+    
+            dispatch = {
+                'delete' : self.delete,
+                'edit_form' : self.edit_form,
+                'edit' : self.edit,
+                'flash' : self.flash,
+                }
+            if dispatch.has_key(action):
+                return dispatch[action](**kwargs)
+        except:
+            print "SQL error - no ecomap for that id"
+            return httptools.redirect("/myList")
+
     default.exposed = True
 
     def edit_form(self):
@@ -303,6 +377,6 @@ class EcomapController(EcoControllerBase):
     def flash(self):
         flashData = {
             'id' : self.ecomap.id,
-            'ticket' : cherrypy.session[AUTH_TICKET_PARAM],
+            'ticket' : cherrypy.session.get(AUTH_TICKET_PARAM,None),
             }
         return self.template("flash.pt",flashData)

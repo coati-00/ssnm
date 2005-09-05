@@ -11,6 +11,7 @@ class Person{
     private var target_mc:MovieClip;
     private var name_txt:TextField;
     private var depth:Number;
+    private var deleted:Boolean;
     
 /*
  +----------------------------------------------------------------+
@@ -24,6 +25,7 @@ class Person{
 
     public function Person(theDepth:Number, target:MovieClip, x:Number, y:Number, theSupportLevel:Number){
 
+        deleted = false;
         depth = theDepth;
         target_mc = target;
         supportTypes = new Array();
@@ -79,7 +81,6 @@ class Person{
             trace(this._parent.parent.toXML());
             //trace(this._parent._droptarget);
             if (this._parent._droptarget == "/trash"){
-                //trace("yo");
                 this._parent.parent.destroy();
             }
         }
@@ -111,9 +112,14 @@ class Person{
     
         // kill the container and the rest goes away too
         container_mc.removeMovieClip();
+        this.deleted = true;
 
     }
     
+    public function isDeleted(){
+        return (this.deleted);
+    }
+        
     
     public function setSupportLevel(theSupportLevel:Number){
         supportLevel = theSupportLevel;
