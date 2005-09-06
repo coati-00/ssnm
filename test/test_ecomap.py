@@ -1,7 +1,6 @@
 import sys
 sys.path.append(".")
 import ecomap.config
-import unittest
 
 ecomap.config.MODE = "regressiontest"
 from ecomap.helpers import *
@@ -12,21 +11,22 @@ def setup_module(module):
 def teardown_module(module):
     teardown_tests()
 
-class TestEcouser(unittest.TestCase):
+class TestEcouser:
         
     def setup_class(self):
-        self.user = Ecouser(uni="foo",name="regression test user")
+        self.user = Ecouser(uni="foo",firstname="regression user",lastname="user")
 
     def teardown_class(self):
         self.user.destroySelf()
 
     def test_basics(self):
         assert self.user.uni == "foo"
-        assert self.user.name == "regression test user"
+        assert self.user.firstname == "regression user"
+        assert self.user.lastname == "user"
 
-class TestEcomap(unittest.TestCase):
+class TestEcomap:
     def setup_class(self):
-        self.user = Ecouser(uni="foo",name="regression test user")
+        self.user = Ecouser(uni="foo",firstname="regression test user",lastname="test")
         self.map = Ecomap(name="test",description="test",flashData="blah blah blah",owner=self.user)
 
     def teardown_class(self):
@@ -40,10 +40,4 @@ class TestEcomap(unittest.TestCase):
         assert self.map.public == False
 
 
-def test_suite():
-    suite = unittest.TestSuite()
-    loader = unittest.TestLoader()
-    suite.addTest(loader.loadTestsFromTestCase(TestEcouser))
-    suite.addTest(loader.loadTestsFromTestCase(TestEcomap))
-    return suite
-       
+

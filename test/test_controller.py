@@ -5,7 +5,6 @@ ecomap.config.MODE = "regressiontest"
 from ecomap.helpers import *
 from ecomap.helpers.dummy_server import *
 from ecomap.controller import start
-import unittest
 
 def setup_module(module):
     setup_for_tests()
@@ -13,7 +12,7 @@ def setup_module(module):
 def teardown_module(module):
     teardown_tests()
 
-class TestController(unittest.TestCase):
+class TestController:
     def setup_class(self):
         self.server = ServerCherrypy(start)
         self.server.setClientIP('127.0.0.1')
@@ -21,7 +20,7 @@ class TestController(unittest.TestCase):
         self.server.setHeader('User-Agent','Lynx')
         self.server.setHeader('Host', 'ecomap.ccnmtl.columbia.edu')
         # because create_ecomap hardcodes in a user:
-        self.user = Ecouser(uni="foo",name="regression test user")
+        self.user = Ecouser(uni="foo",firstname="regression test user",lastname="test")
 
     def test_root(self):
         self.server.setPath("/")
@@ -41,9 +40,9 @@ class TestController(unittest.TestCase):
         self.server.setPath("/create_ecomap?name=test%20ecomap&description=test%20description")
         self.server.execute()
         assert self.server.getStatus()[0] == 302
-        assert self.server.getHeader('Location') == 'http://ecomap.ccnmtl.columbia.edu/'
+        assert self.server.getHeader('Location') == 'http://ecomap.ccnmtl.columbia.edu/myList'
         # now fetch the index again and make sure it appears in the list
-        self.server.setPath("/")
+        self.server.setPath("/myList")
         self.server.execute()
         assert "test ecomap" in self.server.getResponse()
 
@@ -55,8 +54,4 @@ class TestController(unittest.TestCase):
         assert self.server.getStatus()[0] == 200
         assert "Please enter a value" in self.server.getResponse()
 
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestController))
-    return suite
        

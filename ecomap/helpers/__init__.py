@@ -60,7 +60,7 @@ def get_or_create_user(username,firstname="",lastname=""):
 	side effect of putting the user into any class that wind says they
 	should be a part of if they aren't already in it. """
 	res = Ecouser.select(Ecouser.q.uni == username)
-	print "get_or_create"
+
 	if res.count() > 0:
 		# found the user. 
 		u = res[0]

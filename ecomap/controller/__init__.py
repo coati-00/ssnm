@@ -193,8 +193,11 @@ class Eco(EcoControllerBase):
 
     def myList(self):
         # import pdb; pdb.set_trace()
-
+        print cherrypy._sessionMap
         uni = cherrypy.session.get(UNI_PARAM, None)
+
+        if uni == None and config.MODE == "regressiontest":
+            uni = "foo"
 
         if uni:
             myEcos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecouser.q.uni == uni), orderBy=['name'])]
@@ -261,8 +264,14 @@ class Eco(EcoControllerBase):
 
         es = EcomapSchema()
 
+        uni = cherrypy.session.get(UNI_PARAM,None)
+        if uni == None:
+            if config.MODE == "regressiontest":
+                uni = "foo"
+            else:
+                return httptools.redirect("/")    
         try:
-            ownerID = Ecouser.select(Ecouser.q.uni == cherrypy.session[UNI_PARAM])[0].id
+            ownerID = Ecouser.select(Ecouser.q.uni == uni)[0].id
             d = es.to_python({'name' : name, 'description' : description, 'owner' : ownerID})
             a = Ecomap(name=d['name'],description=d['description'],owner=d['owner'])
             return httptools.redirect("/myList")
