@@ -8,15 +8,14 @@
 <h1 tal:condition="myEcomaps">My Ecomaps</h1>
 
 <table tal:condition="myEcomaps">
-<tr><th></th><th>Name</th><th>Description</th><th>Created</th><th>Modified</th><th>Public</th><th>Flash Data</th></tr>
+<tr><th></th><th>Name</th><th>Description</th><th>Created</th><th>Modified</th><th>Public</th></tr>
 <tr tal:repeat="ecomap myEcomaps">
 <td><input type="checkbox" name="ecomap_id" tal:attributes="value string:${ecomap/id}"/><!--<a tal:attributes="href string:/ecomap/${ecomap/id}/delete/">DEL</a>--></td>
 <td><a tal:attributes="href string:/ecomap/${ecomap/id}/" tal:content="ecomap/name"/></td>
-<td><a tal:attributes="href string:/ecomap/${ecomap/id}/flash" tal:content="ecomap/description"/></td>
+<td tal:content="ecomap/description"></td>
 <td tal:content="ecomap/createdStr"></td>
 <td tal:content="ecomap/modifiedStr"></td>
 <td tal:content="ecomap/public"></td>
-<td tal:content="ecomap/flashData"></td>
 </tr>
 </table>
 
@@ -27,7 +26,7 @@
 <tr tal:repeat="ecomap publicEcomaps">
 <td><input type="checkbox" name="ecomap_id" tal:attributes="value string:${ecomap/id}"/><!--<a tal:attributes="href string:/ecomap/${ecomap/id}/delete/">DEL</a>--></td>
 <td><a tal:attributes="href string:/ecomap/${ecomap/id}/" tal:content="ecomap/name"/></td>
-<td><a tal:attributes="href string:/ecomap/${ecomap/id}/flash" tal:content="ecomap/description"/></td>
+<td tal:content="ecomap/description"></td>
 <td tal:content="ecomap/owner/uni"></td>
 </tr>
 </table>

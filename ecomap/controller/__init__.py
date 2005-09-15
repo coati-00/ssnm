@@ -132,17 +132,26 @@ class Eco(EcoControllerBase):
                     if thisEcomap.public or thisEcomap.owner.uni == sessionUni:
                         if action == "load":
                             print "load into flash: " + thisEcomap.flashData
-                            responseData = "<data><response>OK</response>" + thisEcomap.flashData + "</data>"
+                            responseData = "<data><response>OK</response><name>" + thisEcomap.name + "</name><description>" + thisEcomap.description + "</description>" + thisEcomap.flashData + "</data>"
                         elif action == "save":
                             #if this is your ecomap, you can save it, otherwise, youre out of luck
                             if thisEcomap.owner.uni == sessionUni:
+                                if root.getElementsByTagName("name")[0].hasChildNodes():
+                                    ecoName = root.getElementsByTagName("name")[0].firstChild.nodeValue
+                                else:
+                                    ecoName = ""
+                                if root.getElementsByTagName("description")[0].hasChildNodes():
+                                    ecoDescription = root.getElementsByTagName("description")[0].firstChild.nodeValue
+                                else:
+                                    ecoDescription = ""
                                 thisEcomap.flashData = dataNode
+                                thisEcomap.name = ecoName
+                                thisEcomap.description = ecoDescription
                                 #want to check if this actually saves so i can REALLY return an OK
                                 #if it doesn't save, return NOT OK
                                 responseData = "<data><response>OK</response></data>"
                             else:
                                 responseData = "<data><response>You do not own this ecomap</response></data>"
-                            
                         else:
                             print "unknown data action"
                             responseData = "<data><response>Unknown data action</response></data>"
@@ -371,7 +380,12 @@ class EcomapController(EcoControllerBase):
             return output
 
     def view_ecomap(self,**kwargs):
-        return self.template("view_ecomap.pt",{'ecomap' : self.ecomap})
+        data = {
+            'ecomap' : self.ecomap,
+            'id' : self.ecomap.id,
+            'ticket' : cherrypy.session.get(AUTH_TICKET_PARAM,None),
+            }
+        return self.template("view_ecomap.pt",data)
     #ecomap.exposed = True
 
 

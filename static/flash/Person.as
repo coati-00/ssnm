@@ -3,7 +3,8 @@ class Person{
     private var name:String;
     private var supportLevel:Number;
     private var supportTypes:Array;
-    private var supportTypesIcons:Array;
+    private var supTypes:Array;
+    private var numSupports:Number;
     private var xPos:Number;
     private var yPos:Number;
     private var container_mc:MovieClip;
@@ -12,6 +13,15 @@ class Person{
     private var name_txt:TextField;
     private var depth:Number;
     private var deleted:Boolean;
+    
+    private var supportLevel_hit_mc:MovieClip;
+    private var supportLevel_mc:MovieClip;
+
+    private var constWidth:Number = 60;
+    private var constHeight:Number = 50;
+    private var constColors = new Array(0xFF3333,0x33CC33,0x6699CC);
+
+
     
 /*
  +----------------------------------------------------------------+
@@ -29,13 +39,17 @@ class Person{
         depth = theDepth;
         target_mc = target;
         supportTypes = new Array();
+        supTypes = new Array();
+        numSupports = 0;
         container_mc = target_mc.createEmptyMovieClip("container_mc"+theDepth,theDepth);
-        container_mc.createTextField("name_txt",1,2,2,36,14);
+        container_mc.createTextField("name_txt",1,12,2,constWidth-14,32);
 
         var myStyle:TextFormat = new TextFormat("Tahoma",10);
         container_mc.name_txt.setNewTextFormat(myStyle);
         container_mc.name_txt.selectable = true;
         container_mc.name_txt.type = "input";
+        container_mc.name_txt.multiline = true;
+        container_mc.name_txt.wordWrap = true;
 
         // Reference to Person parent object from container_mc MovieClip object
         container_mc.parent = this;
@@ -46,31 +60,70 @@ class Person{
         container_mc.lineStyle(1,0x336699);
         container_mc.moveTo(0,0);
         container_mc.beginFill(0x6699CC);
-        container_mc.lineTo(40,0);
-        container_mc.lineTo(40,40);
-        container_mc.lineTo(0,40);
+        container_mc.lineTo(constWidth,0);
+        container_mc.lineTo(constWidth,constHeight);
+        container_mc.lineTo(0,constHeight);
         container_mc.lineTo(0,0);
         container_mc.endFill();
        
+        // Draw support level chooser toolbar
+        supportLevel_mc = container_mc.createEmptyMovieClip("supportLevel_mc",11);
+
+        addLevelSelector(supportLevel_mc,2);
+        addLevelSelector(supportLevel_mc,1);
+        addLevelSelector(supportLevel_mc,0);
+        
+        supportLevel_mc._alpha = 0;
+        
         
         // make a hit area that doesnt intersect with the name or supports
-        
         hit_mc = container_mc.createEmptyMovieClip("hit_mc",10);
-        hit_mc.moveTo(0,16);
+        hit_mc.moveTo(10,13);
         hit_mc.beginFill(0x999999);
-        hit_mc.lineTo(40,16);
-        hit_mc.lineTo(40,35);
-        hit_mc.lineTo(0,35);
-        hit_mc.lineTo(0,16);
+        hit_mc.lineTo(constWidth,12);
+        hit_mc.lineTo(constWidth,constHeight-5);
+        hit_mc.lineTo(10,constHeight-5);
+        hit_mc.lineTo(10,12);
         hit_mc.endFill();
 
         hit_mc._alpha = 0;
+
+
+        supportLevel_hit_mc = container_mc.createEmptyMovieClip("supportLevel_hit_mc",12);
+        supportLevel_hit_mc.moveTo(0,0);
+        supportLevel_hit_mc.beginFill(0x999999);
+        supportLevel_hit_mc.lineTo(10,0);
+        supportLevel_hit_mc.lineTo(10,constHeight);
+        supportLevel_hit_mc.lineTo(0,constHeight);
+        supportLevel_hit_mc.lineTo(0,0);
+        supportLevel_hit_mc.endFill();
         
+        supportLevel_hit_mc._alpha = 0;
 
         setSupportLevel(theSupportLevel);
         setPosition(x,y);
 
         // Attach behaviors to the container_mc MovieClip container object
+
+
+        supportLevel_hit_mc.onRollOver = function(){
+            this._parent.supportLevel_mc._alpha = 100;
+        }
+        supportLevel_hit_mc.onRollOut = function(){
+            this._parent.supportLevel_mc._alpha = 0;
+        }
+        supportLevel_hit_mc.onPress = function(){
+
+            trace(this._ymouse);
+            if (this._ymouse <= 12){
+                this._parent.parent.setSupportLevel(2);
+            }else if (this._ymouse >= 15 && this._ymouse <= 27){
+                this._parent.parent.setSupportLevel(1);
+            }else if (this._ymouse >= 30 && this._ymouse <= 42){
+                this._parent.parent.setSupportLevel(0);
+            }
+        }
+
 
         hit_mc.onRelease = function(){
             this._parent.stopDrag();
@@ -80,7 +133,8 @@ class Person{
             // Draw a connecting line
             trace(this._parent.parent.toXML());
             //trace(this._parent._droptarget);
-            if (this._parent._droptarget == "/trash"){
+            if (this._parent._droptarget.indexOf("trash") != -1){
+            //if (this._parent._droptarget == "/trash"){
                 this._parent.parent.destroy();
             }
         }
@@ -108,6 +162,15 @@ class Person{
         
     }
     
+    public function startDragging(){
+        this.container_mc.startDrag(false);
+    }
+
+    public function stopDragging(){
+        this.container_mc.hit_mc.onRelease();
+    }
+
+    
     public function destroy(){
     
         // kill the container and the rest goes away too
@@ -121,22 +184,62 @@ class Person{
     }
         
     
+    private function addLevelSelector(theMovieClip:MovieClip, theSupportLevel:Number){
+        
+        var xPos:Number = 1;
+        var yPos:Number = 15 * (2 - theSupportLevel)+1;
+        var h:Number = 10;
+        var w:Number = 10;
+
+        theMovieClip.lineStyle(); //(1,constColors[theSupportLevel]);
+        theMovieClip.moveTo(xPos+w,yPos);
+        theMovieClip.beginFill(constColors[theSupportLevel]);
+        theMovieClip.lineTo(xPos,yPos);
+        theMovieClip.lineTo(xPos,yPos+h);
+        theMovieClip.lineTo(xPos+w,yPos+h);
+        theMovieClip.lineTo(xPos+w,yPos);
+        theMovieClip.endFill();
+        
+        if (theSupportLevel == 0){
+            theMovieClip.moveTo(xPos+(w/2),yPos+1);
+            theMovieClip.beginFill(0x000000);
+            theMovieClip.lineTo(xPos+w-1,yPos+(h/2));
+            theMovieClip.lineTo(xPos+(w/2),yPos+h-1);
+            theMovieClip.lineTo(xPos+1,yPos+(h/2));
+            theMovieClip.lineTo(xPos+(w/2),yPos+1);
+            theMovieClip.endFill();
+        }else if (theSupportLevel == 1){
+            theMovieClip.moveTo(xPos+2,yPos+2);
+            theMovieClip.beginFill(0x000000);
+            theMovieClip.lineTo(xPos+w-2,yPos+2);
+            theMovieClip.lineTo(xPos+w-2,yPos+h-2);
+            theMovieClip.lineTo(xPos+2,yPos+h-2);
+            theMovieClip.lineTo(xPos+2,yPos+2);
+            theMovieClip.endFill();
+        }else if (theSupportLevel == 2){
+            theMovieClip.beginFill(0x000000);
+            theMovieClip.drawArc(xPos+w-2,yPos+(h/2),(w/2)-2,360,0,(h/2)-2);
+            theMovieClip.endFill();
+        }    
+    }
+    
     public function setSupportLevel(theSupportLevel:Number){
         supportLevel = theSupportLevel;
         // visually update the container_mc to reflect the Support Level
-
-        var colors = new Array(0xFF3333,0x33CC33,0x6699CC);
 
         container_mc.clear();
 
         container_mc.lineStyle(1,0x333333);
         container_mc.moveTo(0,0);
-        container_mc.beginFill(colors[supportLevel]);
-        container_mc.lineTo(40,0);
-        container_mc.lineTo(40,40);
-        container_mc.lineTo(0,40);
+        container_mc.beginFill(constColors[supportLevel]);
+        container_mc.lineTo(constWidth,0);
+        container_mc.lineTo(constWidth,constHeight);
+        container_mc.lineTo(0,constHeight);
         container_mc.lineTo(0,0);
         container_mc.endFill();
+        container_mc._alpha = 80;
+        
+        addLevelSelector(container_mc,supportLevel);
     }
 
     public function getSupportLevel(){
@@ -152,76 +255,57 @@ class Person{
         return name;
     }
 
-    public function addSupportType(theSupportType:String,icon:MovieClip){
-
-        // FIX THIS.  MAKE IT A LOT BETTER!!!  (this for demo)
+    public function addSupportType(theSupportType:String){
+        // Add support to the array of supportTypes
+        // Arrange the supportTypes objects on the Person object
 
         // if the support type hasn't already been added:
         if (!supportTypes[theSupportType]){
 
-            trace("add it");
+            trace("add: " + theSupportType);
+            var support:SupportType = new SupportType(numSupports+100,container_mc,theSupportType,0,0,false);
 
+            support.setPosition(numSupports*14+3,constHeight-7);
+
+            supTypes[theSupportType] = support;
             supportTypes[theSupportType] = true;
             
-            if (theSupportType == "Financial"){
-      
-                // This will be a constructor soon..
-                
-                var stype1 = container_mc.createEmptyMovieClip("stype1",101);
-        
-                stype1.lineStyle(1,0x333333);
-                stype1.moveTo(0,0);
-                stype1.beginFill(0xFFFF00);
-                stype1.lineTo(10,0);
-                stype1.lineTo(10,10);
-                stype1.lineTo(0,10);
-                stype1.lineTo(0,0);
-                stype1.endFill();
-        
-                stype1._x = 3;
-                stype1._y = 35;
-                
-                supportTypesIcons[theSupportType] = stype1;
+            numSupports++;
 
-            } else {
+        }
 
-                // This will be a constructor soon..
-                
-                var stype2 = container_mc.createEmptyMovieClip("stype2",102);
-        
-                stype2.lineStyle(1,0x333333);
-                stype2.moveTo(0,0);
-                stype2.beginFill(0x9C799B);
-                stype2.lineTo(10,0);
-                stype2.lineTo(10,10);
-                stype2.lineTo(0,10);
-                stype2.lineTo(0,0);
-                stype2.endFill();
-        
-                stype2._x = 17;
-                stype2._y = 35;
-                
-                supportTypesIcons[theSupportType] = stype2;
-            }
-            
-            
-            
-            
-            // attach supportType Icon to container_mc
-            // be smart about it.  physically arrange them prettily
-
+        for (var support in supTypes){
+            trace(supTypes[support].getInfo());
         }
 
     }
     
     public function getSupportTypes(){
+        // return named array of support types
         return supportTypes;
     }
 
     public function removeSupportType(theSupportType:String){
-        delete supportTypes[theSupportType];
 
-        // remove supportType Icon to container_mc
+        trace("remove: " + theSupportType);
+        delete supportTypes[theSupportType];
+        delete supTypes[theSupportType];
+        numSupports--;
+
+        // reorganize the remaining supports and swap the depths
+        var i:Number = 0;
+        for (var support in supTypes){
+            theSupportType = supTypes[support].getName();
+
+            supTypes[support].setDepth(100+i);
+            supTypes[support].setPosition(i*14+3,constHeight-7);
+            i++;
+        }
+
+        for (var support in supTypes){
+            trace(supTypes[support].getInfo());
+        }
+
     }
 
     public function setPosition(x:Number, y:Number){
