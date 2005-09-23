@@ -65,15 +65,17 @@ class EcoControllerBase(CherryTAL):
             # Do something else here.
             cherrypy.response.body = ['Error: ' + str(err[0])]
 
+from ecomap.controller.WindLoginFilter import WindLoginFilter
 
 class Eco(EcoControllerBase):
     # enable filtering to disable post filtering on the postTester funcion
-    _cpFilterList = [ DisablePostParsingFilter() ]
+    _cpFilterList = [ DisablePostParsingFilter(),
+                      WindLoginFilter(after_login="/myList",allowed_paths=["/","/flashConduit"],
+                                      uni_key=UNI_PARAM,ticket_key=AUTH_TICKET_PARAM)]
     
     def index(self):
         # import pdb; pdb.set_trace()
         return self.template("index.pt",{})
-        #return "<h1>This is the main page</h1><p><a href='login'>Click here</a> to log in</p>"
 
     index.exposed = True
 
@@ -221,35 +223,6 @@ class Eco(EcoControllerBase):
 
     myList.exposed = True
 
-    def login(self,**kwargs):
-        ticket_id = kwargs.get('ticketid', "")
-        self.BASE_URL = cherrypy.request.base + "/login"
-
-        if ticket_id == "":
-            import urllib
-            destination = urllib.quote(self.BASE_URL)
-            url = "https://wind.columbia.edu/login?destination=%s&service=cnmtl_full_np" % destination
-            return httptools.redirect(url)
-        else:
-            
-            (success,uni,groups) = validate_wind_ticket(ticket_id)
-            if int(success) == 0:
-                return uni # UNI is error message "WIND authentication failed. please try again or report this as a bug."
-
-            #This is for authorization later from flash to forbid people from
-            #invoking the ecomap with an id param to read anyone's ecomap
-            cherrypy.session[AUTH_TICKET_PARAM] = ticket_id
-
-            cherrypy.session[UNI_PARAM] = uni
-            cherrypy.session['Group'] = groups
-
-            user = get_or_create_user(uni)
-            print cherrypy.session[UNI_PARAM]
-
-            return httptools.redirect("/myList") #"success!! %s logged in.  <a href='/myList'>click here</a> to go to list of ecomaps" % uni
-
-    login.exposed = True
-    
     def loginB(self,**kwargs):
         cherrypy.session[UNI_PARAM] = 'kfe2102'
         cherrypy.session[AUTH_TICKET_PARAM] = 'TICKET!!!'
@@ -324,7 +297,8 @@ class Eco(EcoControllerBase):
 
 
 class EcomapController(EcoControllerBase):
-
+    _cpFilterList = [WindLoginFilter(after_login="/myList",allowed_paths=["/","/flashConduit"],
+                                      uni_key=UNI_PARAM,ticket_key=AUTH_TICKET_PARAM)]
     def index(self):
         return self.template("list_ecomaps.pt",{'ecomaps' : [e for e in Ecomap.select()]})
     index.exposed = True
