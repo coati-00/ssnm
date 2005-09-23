@@ -1,0 +1,13 @@
+body{
+    font-family:tahoma,arial;
+}
+
+h1{
+    font-size:1.3em;
+    margin-bottom:.25em;
+    margin-top:1.5em;
+}
+
+td,th{
+    font-size:.85em;
+}

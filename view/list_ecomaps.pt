@@ -1,11 +1,18 @@
 <?xml version="1.0"?>
 <html>
+<link rel="stylesheet" href="/css/ecomap.css" type="text/css" />
+<div id="header"><img src="/images/logo.png" /></div>
 
+<div id="logout"><a href="/logout">Log Out</a></div>
+
+<p/>
 <form action="/update" method="post">
 
-<a href="create_ecomap_form">create</a> <input type="submit" name="action" value="delete"/> <input type="submit" name="action" value="share"/>
+<a href="create_ecomap_form">create</a> <input type="submit" name="action" value="delete" onclick="return confirm('Are you sure you want to delete the selected items??');"/> <input type="submit" name="action" value="share"/>
 
-<h1 tal:condition="myEcomaps">My Ecomaps</h1>
+<h1>My Social Support Network Maps</h1>
+
+<p tal:condition="not:myEcomaps">You have no Social Support Network Maps.  <a href="create_ecomap_form">Click here</a> to create one.</p>
 
 <table tal:condition="myEcomaps">
 <tr><th></th><th>Name</th><th>Description</th><th>Created</th><th>Modified</th><th>Public</th></tr>
@@ -15,19 +22,19 @@
 <td tal:content="ecomap/description"></td>
 <td tal:content="ecomap/createdStr"></td>
 <td tal:content="ecomap/modifiedStr"></td>
-<td tal:content="ecomap/public"></td>
+<td ><img tal:attributes="src string:/images/${ecomap/public}.png"/></td>
 </tr>
 </table>
 
-<h1 tal:condition="publicEcomaps">Shared Ecomaps</h1>
+<h1 tal:condition="publicEcomaps">Public Social Support Network Maps</h1>
 
 <table tal:condition="publicEcomaps">
-<tr><th></th><th>Name</th><th>Description</th><th>Owner (UNI)</th></tr>
+<tr><th></th><th>Name</th><th>Description</th><th>Owner</th></tr>
 <tr tal:repeat="ecomap publicEcomaps">
-<td><input type="checkbox" name="ecomap_id" tal:attributes="value string:${ecomap/id}"/><!--<a tal:attributes="href string:/ecomap/${ecomap/id}/delete/">DEL</a>--></td>
+<td></td>
 <td><a tal:attributes="href string:/ecomap/${ecomap/id}/" tal:content="ecomap/name"/></td>
 <td tal:content="ecomap/description"></td>
-<td tal:content="ecomap/owner/uni"></td>
+<td tal:content="string:${ecomap/owner/firstname} ${ecomap/owner/lastname}"></td>
 </tr>
 </table>
 

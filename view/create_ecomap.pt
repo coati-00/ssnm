@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <html>
 
+<div id="header"><img src="images/logo.png" /></div>
+
 <form action="/create_ecomap" method="post">
 <fieldset>
 <legend>Create Ecomap</legend>

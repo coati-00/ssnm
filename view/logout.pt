@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<html>
+<head>
+<link rel="stylesheet" href="/css/ecomap.css" type="text/css" />
+</head>
+<body>
+
+<div id="header"><img src="/images/logo.png" /></div>
+<p/>
+
+<p>You have been logged out of the system</p>
+<p><a href="/login">Click here</a> to log back in</p>
+
+</body>
+
+</html>

@@ -79,15 +79,6 @@ class Eco(EcoControllerBase):
 
     index.exposed = True
 
-    def breakredirect(self):
-        cherrypy.response.body = ["goodbye cruel world"]
-        cherrypy.response.sendResponse = True
-        return httptools.redirect("/index")
-        # return cherrypy.response.body
-
-    breakredirect.exposed = True
-    
-    
     def flashConduit(self,HTMLid="",HTMLticket=""):
         #import pdb; pdb.set_trace()
         
@@ -134,7 +125,11 @@ class Eco(EcoControllerBase):
                     if thisEcomap.public or thisEcomap.owner.uni == sessionUni:
                         if action == "load":
                             print "load into flash: " + thisEcomap.flashData
-                            responseData = "<data><response>OK</response><name>" + thisEcomap.name + "</name><description>" + thisEcomap.description + "</description>" + thisEcomap.flashData + "</data>"
+                            if thisEcomap.owner.uni == sessionUni:
+                                responseData = "<data><response>OK</response><isreadonly>false</isreadonly><name>" + thisEcomap.name + "</name><description>" + thisEcomap.description + "</description>" + thisEcomap.flashData + "</data>"
+                            else:
+                                #send it in as read only
+                                responseData = "<data><response>OK</response><isreadonly>true</isreadonly><name>" + thisEcomap.name + "</name><description>" + thisEcomap.description + "</description>" + thisEcomap.flashData + "</data>"
                         elif action == "save":
                             #if this is your ecomap, you can save it, otherwise, youre out of luck
                             if thisEcomap.owner.uni == sessionUni:
@@ -149,6 +144,7 @@ class Eco(EcoControllerBase):
                                 thisEcomap.flashData = dataNode
                                 thisEcomap.name = ecoName
                                 thisEcomap.description = ecoDescription
+                                thisEcomap.modified = DateTime.now()
                                 #want to check if this actually saves so i can REALLY return an OK
                                 #if it doesn't save, return NOT OK
                                 responseData = "<data><response>OK</response></data>"
@@ -173,35 +169,9 @@ class Eco(EcoControllerBase):
         
         print ticketid
         print ecoid
-        #print dataNode
-        #return postData
-        
-        #return "OK"
-        
-        #fetchEcomap = Ecomap.get(id)
-        
-        #return fetchEcomap.description
-        #xml = "<response>OK</response>"
-        
-        #return xml
-        #return "<xml><data>" + kwargs + "</data></xml>"
-        
+       
     flashConduit.exposed = True
     
-
-    def postTester(self, **kwargs):
-        """
-        test the DisablePostParsingFilter -
-        when we just want to get at the postdata,
-        we can't let stdin be read, since we can't seek back to the beginning
-        """
-        # import pdb; pdb.set_trace()
-        postLength = int(cherrypy.request.headerMap.get('Content-Length',0))
-        postData = cherrypy.request.rfile.read(postLength) 
-        return postData
-    
-    postTester.exposed = True
-
     def myList(self):
         # import pdb; pdb.set_trace()
         print cherrypy._sessionMap
@@ -219,7 +189,7 @@ class Eco(EcoControllerBase):
             return self.template("list_ecomaps.pt",{'myEcomaps' : myEcos, 'publicEcomaps' : publicEcos})
         else:
             #No user logged in
-            return httptools.redirect("/")
+            return httptools.redirect("/logout")
 
     myList.exposed = True
 
@@ -232,7 +202,9 @@ class Eco(EcoControllerBase):
 
 
     def create_ecomap_form(self):
-        defaults = {'name' : "x", 'description' : "y"}
+        uni = cherrypy.session.get(UNI_PARAM, None)
+        
+        defaults = {'name' : "", 'description' : ""}
         parser = htmlfill.FillingParser(defaults)
         parser.feed(self.template("create_ecomap.pt",{}))
         output = parser.text()
@@ -251,7 +223,7 @@ class Eco(EcoControllerBase):
             if config.MODE == "regressiontest":
                 uni = "foo"
             else:
-                return httptools.redirect("/")    
+                return httptools.redirect("/logout")    
         try:
             ownerID = Ecouser.select(Ecouser.q.uni == uni)[0].id
             d = es.to_python({'name' : name, 'description' : description, 'owner' : ownerID})

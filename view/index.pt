@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <html>
 
+<div id="header"><img src="images/logo.png" /></div>
+
 <h1>This is the main page</h1>
 
 <p><a href='login'>Click here</a> to log in</p>
