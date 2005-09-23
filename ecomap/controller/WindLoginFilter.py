@@ -68,7 +68,7 @@ class WindLoginFilter(basefilter.BaseFilter):
             cherrypy.session[self.groups_key] = []
             cherrypy.session[self.ticket_key] = ""
 
-            cherrypy.response.body = ["You are now logged out."]
+            #cherrypy.response.body = ["You are now logged out."]
             return
 
         if cherrypy.session.get(self.auth_key,False):

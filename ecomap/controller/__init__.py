@@ -193,13 +193,9 @@ class Eco(EcoControllerBase):
 
     myList.exposed = True
 
-    def loginB(self,**kwargs):
-        cherrypy.session[UNI_PARAM] = 'kfe2102'
-        cherrypy.session[AUTH_TICKET_PARAM] = 'TICKET!!!'
-        return httptools.redirect("/myList")
-        
-    loginB.exposed = True
-
+    def logout(self,**kwargs):
+        return self.template("logout.pt",{})
+    logout.exposed = True    
 
     def create_ecomap_form(self):
         uni = cherrypy.session.get(UNI_PARAM, None)
