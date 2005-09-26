@@ -1,26 +1,12 @@
 <?xml version="1.0"?>
-<html metal:define-macro="candyman">
-<head><title metal:define-slot="page_title">candyman</title>
-<link rel="stylesheet" href="/css/candyman.css" type="text/css" />
+<html metal:define-macro="ecomap">
+<head><title metal:define-slot="page_title">SSNM</title>
+<link rel="stylesheet" href="/css/ecomap.css" type="text/css" />
 <metal:block define-slot="js_slot"></metal:block>
 <metal:block define-slot="css_slot"></metal:block>
 </head>
 <body metal:define-slot="body">
 
-
-<div id="navigation" metal:define-slot="navigation">
-<h1>CandyMan</h1>
-<div id="breadcrumbs" metal:define-slot="breadcrumbs"></div>
-<div id="commands" metal:define-slot="commands"></div>
-</div>
-
-<div id="message" metal:define-slot="message" tal:condition="message">
-<tal:block replace="message"/>
-</div>
-
-<div id="content" metal:define-slot="content">
-put your stuff here
-</div>
 
 
 </body>

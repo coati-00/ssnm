@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<html>
-<link rel="stylesheet" href="/css/ecomap.css" type="text/css" />
+<html metal:use-macro="sitemacros/macros/ecomap">
+<body metal:fill-slot="body">
 <div id="header"><img src="/images/logo.png" /></div>
 
 <div id="logout"><a href="/logout">Log Out</a></div>
@@ -41,4 +41,5 @@
 
 </form>
 
+</body>
 </html>

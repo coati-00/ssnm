@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<html>
-
+<html metal:use-macro="sitemacros/macros/ecomap">
+<body metal:fill-slot="body">
 <div id="header"><img src="images/logo.png" /></div>
 
 <form action="/create_ecomap" method="post">
@@ -12,5 +12,5 @@
 <input type="submit" value="create ecomap"/>
 </fieldset>
 </form>
-
+</body>
 </html>

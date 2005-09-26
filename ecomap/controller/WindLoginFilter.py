@@ -41,6 +41,14 @@ class WindLoginFilter(basefilter.BaseFilter):
         self.wind_url_base = wind_url_base
     
     def beforeMain(self):
+        if "/css/" in cherrypy.request.path:
+            return
+        if "/images/" in cherrypy.request.path:
+            return
+        if "/flash/" in cherrypy.request.path:
+            return
+        if "/favicon.ico" in cherrypy.request.path:
+            return
         import ecomap.config as config
         if config.MODE == "regressiontest":
             cherrypy.session[self.uni_key] = "foo"

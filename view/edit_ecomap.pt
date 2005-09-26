@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
-<html>
+<html metal:use-macro="sitemacros/macros/ecomap">
 
+<body metal:fill-slot="body">
 <form action="edit" method="post">
 <fieldset>
 <legend>edit <span tal:replace="ecomap/name"/></legend>
@@ -9,5 +10,5 @@
 <input type="submit" value="save" />
 </fieldset>
 </form>
-
+</body>
 </html>
