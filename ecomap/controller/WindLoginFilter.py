@@ -41,6 +41,11 @@ class WindLoginFilter(basefilter.BaseFilter):
         self.wind_url_base = wind_url_base
     
     def beforeMain(self):
+        import ecomap.config as config
+        if config.MODE == "regressiontest":
+            cherrypy.session[self.uni_key] = "foo"
+            cherrypy.session[self.auth_key] = True
+            return
         if cherrypy.request.path in self.allowed_paths:
             # skip the allowed ones
             return
