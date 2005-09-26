@@ -1,8 +1,10 @@
 <?xml version="1.0"?>
 <html>
 <head>
+<title>Log out</title>
 <link rel="stylesheet" href="/css/ecomap.css" type="text/css" />
 </head>
+
 <body>
 
 <div id="header"><img src="/images/logo.png" /></div>

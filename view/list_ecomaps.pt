@@ -3,7 +3,7 @@
 <body metal:fill-slot="body">
 <div id="header"><img src="/images/logo.png" /></div>
 
-<div id="logout"><a href="/logout">Log Out</a></div>
+<div id="logout">You are logged in as <span tal:content="loginName"/> <a href="/logout">Log Out</a></div>
 
 <p/>
 <form action="/update" method="post">

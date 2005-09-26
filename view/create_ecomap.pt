@@ -2,15 +2,17 @@
 <html metal:use-macro="sitemacros/macros/ecomap">
 <body metal:fill-slot="body">
 <div id="header"><img src="images/logo.png" /></div>
+<br/>
 
 <form action="/create_ecomap" method="post">
 <fieldset>
-<legend>Create Ecomap</legend>
+<legend>Create Social Support Network Map</legend>
 <label>Name: <input type="text" name="name" size="60" /></label><form:iferror name="name"> <span class="errormessage"><form:error name="name"/></span></form:iferror><br />
 <label>Description: <input type="text" name="description" size="60" /></label><form:iferror name="description"> <span class="errormessage"><form:error name="description"/></span></form:iferror><br />
 
-<input type="submit" value="create ecomap"/>
+<input type="submit" value="Create"/>
 </fieldset>
 </form>
 </body>
+
 </html>

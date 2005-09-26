@@ -173,9 +173,10 @@ class Eco(EcoControllerBase):
     flashConduit.exposed = True
     
     def myList(self):
-        # import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
         print cherrypy._sessionMap
         uni = cherrypy.session.get(UNI_PARAM, None)
+        loginName = cherrypy.session.get('fullname', 'unknown')
 
         if uni == None and config.MODE == "regressiontest":
             uni = "foo"
@@ -186,7 +187,7 @@ class Eco(EcoControllerBase):
             for e in myEcos:
                 e.createdStr = e.created.strftime("%m/%d/%Y")
                 e.modifiedStr = e.modified.strftime("%m/%d/%Y")
-            return self.template("list_ecomaps.pt",{'myEcomaps' : myEcos, 'publicEcomaps' : publicEcos})
+            return self.template("list_ecomaps.pt",{'loginName' : loginName, 'myEcomaps' : myEcos, 'publicEcomaps' : publicEcos})
         else:
             #No user logged in
             return httptools.redirect("/logout")

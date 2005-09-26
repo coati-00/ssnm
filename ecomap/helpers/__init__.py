@@ -55,6 +55,9 @@ def validate_wind_ticket(ticketid):
 #This function needs to be linked to the data model
 #LDAP lookup section can be used as is ** :)
 def get_or_create_user(username,firstname="",lastname=""):
+
+	import pdb; pdb.set_trace()
+
 	""" if the user is already in the system, it returns the user object.
 	otherwise, it creates a new one and returns that. the function has the
 	side effect of putting the user into any class that wind says they
@@ -64,6 +67,7 @@ def get_or_create_user(username,firstname="",lastname=""):
 	if res.count() > 0:
 		# found the user. 
 		u = res[0]
+		cherrypy.session['fullname'] = u.firstname + " " + u.lastname
 		return u
 	
 	else:
@@ -98,6 +102,8 @@ def get_or_create_user(username,firstname="",lastname=""):
 				
 		if lastname == "":
 			lastname = username
+
+		cherrypy.session['fullname'] = firstname + " " + lastname
 
 		eus = EcouserSchema()
 		d = eus.to_python({'uni' : username, 'firstname' : firstname, 'lastname' : lastname})
