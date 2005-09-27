@@ -327,6 +327,7 @@ class EcomapController(EcoControllerBase):
             'ecomap' : self.ecomap,
             'id' : self.ecomap.id,
             'ticket' : cherrypy.session.get(AUTH_TICKET_PARAM,None),
+            'myName' : cherrypy.session.get('fullname',""),
             }
         return self.template("view_ecomap.pt",data)
     #ecomap.exposed = True

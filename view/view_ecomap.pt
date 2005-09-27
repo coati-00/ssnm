@@ -14,13 +14,13 @@
 <param name="scale" value="noscale" />
 <param name="salign" value="lt" />
 <param name="bgcolor" value="#ffffff" />
-<param name="flashVars" tal:attributes="value string:HTMLticket=${ticket}&amp;HTMLid=${id}" />
+<param name="flashVars" tal:attributes="value string:HTMLticket=${ticket}&amp;HTMLid=${id}&amp;myName=${myName}" />
 <embed src="/flash/ecomap.swf" loop="false" menu="false" quality="high"
 scale="noscale" salign="lt" bgcolor="#ffffff" width="100%" height="100%"
 name="iat" align="middle" allowScriptAccess="sameDomain"
 type="application/x-shockwave-flash"
 pluginspage="http://www.macromedia.com/go/getflashplayer"
-tal:attributes="flashvars string:HTMLticket=${ticket}&amp;HTMLid=${id}" />
+tal:attributes="flashvars string:HTMLticket=${ticket}&amp;HTMLid=${id}&amp;myName=${myName}" />
 </object>
 
 </div>
