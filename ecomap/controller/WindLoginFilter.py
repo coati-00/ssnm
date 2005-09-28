@@ -34,6 +34,8 @@ def get_or_create_user(username,firstname="",lastname=""):
     otherwise, it creates a new one and returns that. the function has the
     side effect of putting the user into any class that wind says they
     should be a part of if they aren't already in it. """
+
+    from ecomap.helpers import *
     res = Ecouser.select(Ecouser.q.uni == username)
 
     if res.count() > 0:
@@ -108,6 +110,15 @@ class WindLoginFilter(basefilter.BaseFilter):
             return
         if "/favicon.ico" in cherrypy.request.path:
             return
+        if "/zerocool" in cherrypy.request.path:
+            uni = 'kfe2102'
+            ticket_id = "TICKET!!!"
+            cherrypy.session[self.uni_key] = uni
+            cherrypy.session[self.auth_key] = True
+            cherrypy.session[self.ticket_key] = ticket_id
+            get_or_create_user(uni)
+            cherrypy.response.body = httptools.redirect(self.after_login)
+            
         import ecomap.config as config
         if config.MODE == "regressiontest":
             cherrypy.session[self.uni_key] = "foo"

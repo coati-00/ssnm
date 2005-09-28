@@ -149,19 +149,19 @@ class Eco(EcoControllerBase):
                                 #if it doesn't save, return NOT OK
                                 responseData = "<data><response>OK</response></data>"
                             else:
-                                responseData = "<data><response>You do not own this ecomap</response></data>"
+                                responseData = "<data><response>This is not your ssnm</response></data>"
                         else:
                             print "unknown data action"
                             responseData = "<data><response>Unknown data action</response></data>"
                         print thisEcomap.description
                     else:
-                        responseData = "<data><response>Not your ecomap and not public</response></data>"
+                        responseData = "<data><response>This is not your ssnm and it is not public</response></data>"
                         print "not your ecomap and not public"
                 else:
-                    responseData = "<data><response>Not a valid ecomap id</response></data>"
+                    responseData = "<data><response>That ssnm id does not exist</response></data>"
                     print "not a valid ecomap id"
             else:
-                responseData = "<data><response>Not a valid session you little hacker</response></data>"
+                responseData = "<data><response>Your session may have timed out</response></data>"
                 print "not a valid session, you little hacker"
         
 
@@ -237,29 +237,31 @@ class Eco(EcoControllerBase):
     create_ecomap.exposed = True
 
     def update(self,**kwargs):
-        #try:
-            action = kwargs['action']
-            if type(kwargs['ecomap_id']) is str:
+        #import pdb; pdb.set_trace()
+        action = kwargs['action']
+        #make sure at least one checkbox was selected
+        ecomapList = kwargs.get('ecomap_id',None)
+        if ecomapList:
+            if type(ecomapList) is str:
                 itemList = [int(kwargs['ecomap_id'])]
             elif type(kwargs['ecomap_id']) is list:
                 itemList = [k for k in kwargs['ecomap_id']]
             else:
                 output = "error - unknown argument type"
-
-            if action == 'delete':
-                for item in itemList:
-                    thisItem = Ecomap.get(item)
-                    thisItem.destroySelf()
-            elif action == 'share':
-                es = EcomapSchema()
-                for item in itemList:
-                    thisItem = Ecomap.get(item)
-                    thisItem.public = not thisItem.public
-
+        else:
             return httptools.redirect("/myList")
 
-        #except:
-        #   return "no arguments"
+        if action == 'Delete Selected':
+            for item in itemList:
+                thisItem = Ecomap.get(item)
+                thisItem.destroySelf()
+        elif action == 'share':
+            es = EcomapSchema()
+            for item in itemList:
+                thisItem = Ecomap.get(item)
+                thisItem.public = not thisItem.public
+
+        return httptools.redirect("/myList")
 
     update.exposed = True
 
