@@ -38,7 +38,7 @@ def start(initOnly=False):
         'server.environment' : environment,
         'sessionFilter.on' : True,
         'sessionFilter.storageType' : "file",
-        'sessionFilter.storagePath' : "",
+        'sessionFilter.storagePath' : config.param('storagePath'),
         },
         '/css' : {'staticFilter.on' : True, 'staticFilter.dir' : config.param('css')},
         '/images' : {'staticFilter.on' : True, 'staticFilter.dir' : config.param('images')},
