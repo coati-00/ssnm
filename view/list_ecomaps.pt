@@ -15,7 +15,7 @@
 <p tal:condition="not:myEcomaps">You have no Social Support Network Maps.  <a href="create_ecomap_form">Click here</a> to create one.</p>
 
 <table tal:condition="myEcomaps">
-<tr><th></th><th>Name</th><th>Description</th><th>Created</th><th>Modified</th><!--<th>Public</th>--></tr>
+<tr><th></th><th>Subject Name</th><th>Map Description</th><th>Created</th><th>Modified</th><!--<th>Public</th>--></tr>
 <tr tal:repeat="ecomap myEcomaps">
 <td><input type="checkbox" name="ecomap_id" tal:attributes="value string:${ecomap/id}"/><!--<a tal:attributes="href string:/ecomap/${ecomap/id}/delete/">DEL</a>--></td>
 <td><a tal:attributes="href string:/ecomap/${ecomap/id}/" tal:content="ecomap/name"/></td>

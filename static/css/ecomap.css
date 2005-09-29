@@ -10,6 +10,8 @@ h1{
 
 td,th{
     font-size:.85em;
+    padding-left:5px;
+    padding-right:5px;
 }
 
 #logout{
