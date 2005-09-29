@@ -31,6 +31,7 @@ def start(initOnly=False):
     cherrypy.root             = Eco()
     cherrypy.root.ecomap      = EcomapController()
 
+
     cherrypy.config.update({
         'global' : {
         'server.socketPort' : int(config.param('socketPort')),
@@ -326,11 +327,19 @@ class EcomapController(EcoControllerBase):
             return output
 
     def view_ecomap(self,**kwargs):
+
+        import pdb; pdb.set_trace()
+
+        server = "http://xnoybis.ccnmtl.columbia.edu:15097/"
+        if config.MODE == "production":
+            server = "http://ssnm.ccnmtl.columbia.edu/"
+
         data = {
             'ecomap' : self.ecomap,
             'id' : self.ecomap.id,
             'ticket' : cherrypy.session.get(AUTH_TICKET_PARAM,None),
             'myName' : cherrypy.session.get('fullname',""),
+            'server' : server,
             }
         return self.template("view_ecomap.pt",data)
     #ecomap.exposed = True
