@@ -3,7 +3,7 @@ import cherrypy
 from cherrypy.lib import httptools
 import urllib
 from ecomap.model import *
-from ecomap.helpers import get_or_create_user
+from ecomap.helpers import get_or_create_user, get_user
 
 def validate_wind_ticket(ticketid):
     """
@@ -28,11 +28,6 @@ def validate_wind_ticket(ticketid):
         return (0,"WIND did not return a valid response",[])
         
 
-def get_user(username):
-    res = Ecouser.select(Ecouser.q.uni == username)
-    if res.count() > 0:
-        return res[0]
-    return None
 
 class WindLoginFilter(basefilter.BaseFilter):
     def __init__(self,after_login="/", login_url = "/login", logout_url = "/logout", allowed_paths=[],
@@ -83,6 +78,7 @@ class WindLoginFilter(basefilter.BaseFilter):
             if uni != "":
                 u = get_user(uni)
                 if u == None:
+                    cherrypy.session['message'] = "nonexistant user %s" % uni
                     return
                 if u.password == password:
                     # they're good
@@ -92,6 +88,9 @@ class WindLoginFilter(basefilter.BaseFilter):
                     cherrypy.session['fullname'] = u.firstname + " " + u.lastname
                     cherrypy.response.body = httptools.redirect(self.after_login)
                     return
+                else:
+                    cherrypy.session['message'] = "login failed"
+                
             # give them the login form
             return
 

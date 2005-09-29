@@ -21,4 +21,7 @@ td,th{
     right:30px;
 }
 
-
+p.message { 
+            background-color: #ff0;
+            border: #ccc solid 1px;
+ }

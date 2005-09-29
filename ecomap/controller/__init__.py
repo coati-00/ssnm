@@ -168,15 +168,11 @@ class Eco(EcoControllerBase):
         
 
         return responseData
-        
-        print ticketid
-        print ecoid
        
     flashConduit.exposed = True
     
     def myList(self):
         #import pdb; pdb.set_trace()
-        print cherrypy._sessionMap
         uni = cherrypy.session.get(UNI_PARAM, None)
         loginName = cherrypy.session.get('fullname', 'unknown')
 
@@ -227,6 +223,7 @@ class Eco(EcoControllerBase):
             ownerID = Ecouser.select(Ecouser.q.uni == uni)[0].id
             d = es.to_python({'name' : name, 'description' : description, 'owner' : ownerID})
             a = Ecomap(name=d['name'],description=d['description'],owner=d['owner'])
+            cherrypy.session['message'] = "Social Support Network Map created."
             return httptools.redirect("/myList")
         except formencode.Invalid, e:
             defaults = {'name' : name, 'description' : description}
@@ -257,11 +254,13 @@ class Eco(EcoControllerBase):
             for item in itemList:
                 thisItem = Ecomap.get(item)
                 thisItem.destroySelf()
+            cherrypy.session['message'] = "deleted"
         elif action == 'share':
             es = EcomapSchema()
             for item in itemList:
                 thisItem = Ecomap.get(item)
                 thisItem.public = not thisItem.public
+            cherrypy.session['message'] = "shared"
 
         return httptools.redirect("/myList")
 
@@ -278,10 +277,13 @@ class Eco(EcoControllerBase):
     def add_guest_account(self,uni="",firstname="",lastname="",password="",pass2=""):
         # TODO: this should be done with formencode
         if password != pass2:
-            return "passwords don't match"
+            cherrypy.session['message'] = "passwords don't match"
+            return httptools.redirect("/add_guest_account_form")
         if uni == "":
-            return "username is required"
+            cherrypy.session['message'] = "username is required"
+            return httptools.redirect("/add_guest_account_form")
         u = Ecouser(uni=uni, password=password, firstname=firstname, lastname=lastname)
+        cherrypy.session['message'] = "user created. please login"
         return httptools.redirect("/guest_login")
     add_guest_account.exposed = True
 
@@ -314,7 +316,7 @@ class EcomapController(EcoControllerBase):
             if dispatch.has_key(action):
                 return dispatch[action](**kwargs)
         except:
-            print "SQL error - no ecomap for that id"
+            cherrypy.session['message'] = "invalid id"
             return httptools.redirect("/myList")
 
     default.exposed = True
@@ -334,6 +336,7 @@ class EcomapController(EcoControllerBase):
             self.ecomap.name = d['name']
             self.ecomap.description = d['description']
             self.ecomap.modified = DateTime.now()
+            cherrypy.session['message'] = "changes saved"
             return httptools.redirect("/ecomap/" + str(self.ecomap.id) + "/")
     
         except formencode.Invalid, e:
@@ -364,12 +367,9 @@ class EcomapController(EcoControllerBase):
 
 
     def delete(self,confirm=""):
-        #if confirm == "ok":
-            self.ecomap.destroySelf()
-            #cherrypy.session['message'] = "application deleted"
-            return httptools.redirect("/myList")
-        #else:
-        #    return self.template("delete_ecomap.pt",{})
+        self.ecomap.destroySelf()
+        cherrypy.session['message'] = "deleted"
+        return httptools.redirect("/myList")
 
     def flash(self):
         flashData = {

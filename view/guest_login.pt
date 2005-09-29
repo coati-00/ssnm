@@ -3,7 +3,7 @@
   <body metal:fill-slot="body">
 
     <div id="header"><img src="images/logo.png" /></div>
-
+    <p metal:use-macro="sitemacros/macros/message"/>
     <form action="/guest_login" method="post">
       <fieldset>
 	<legend>login</legend>

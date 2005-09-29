@@ -1,13 +1,21 @@
 <?xml version="1.0"?>
-<html metal:define-macro="ecomap">
-<head><title metal:define-slot="page_title">SSNM</title>
-<link rel="stylesheet" href="/css/ecomap.css" type="text/css" />
-<metal:block define-slot="js_slot"></metal:block>
-<metal:block define-slot="css_slot"></metal:block>
-</head>
-<body metal:define-slot="body">
+<metal:block>
+  <html metal:define-macro="ecomap">
+    <head>
+      <title metal:define-slot="page_title">SSNM</title>
+      <link rel="stylesheet" href="/css/ecomap.css" type="text/css" />
+      <metal:block define-slot="js_slot"></metal:block>
+      <metal:block define-slot="css_slot"></metal:block>
+    </head>
+    <body metal:define-slot="body">
 
 
 
-</body>
-</html>
+    </body>
+  </html>
+
+  <metal:block define-macro="message">
+    <p tal:condition="message" tal:content="message" class="message"/>
+  </metal:block>
+
+</metal:block>
