@@ -41,7 +41,7 @@ def get_or_create_user(username,firstname="",lastname=""):
     if res.count() > 0:
         # found the user. 
         u = res[0]
-        cherrypy.session['fullname'] = u.firstname + " " + u.lastname
+        
         return u
     
     else:
@@ -84,7 +84,12 @@ def get_or_create_user(username,firstname="",lastname=""):
         u = Ecouser(uni=d['uni'],firstname=d['firstname'],lastname=d['lastname'])
 
         return u
-        
+
+def get_user(username):
+    res = Ecouser.select(Ecouser.q.uni == username)
+    if res.count() > 0:
+        return res[0]
+    return None
 
 class WindLoginFilter(basefilter.BaseFilter):
     def __init__(self,after_login="/", login_url = "/login", logout_url = "/logout", allowed_paths=[],
@@ -116,7 +121,8 @@ class WindLoginFilter(basefilter.BaseFilter):
             cherrypy.session[self.uni_key] = uni
             cherrypy.session[self.auth_key] = True
             cherrypy.session[self.ticket_key] = ticket_id
-            get_or_create_user(uni)
+            u = get_or_create_user(uni)
+            cherrypy.session['fullname'] = u.firstname + " " + u.lastname
             cherrypy.response.body = httptools.redirect(self.after_login)
             
         import ecomap.config as config
@@ -127,6 +133,32 @@ class WindLoginFilter(basefilter.BaseFilter):
         if cherrypy.request.path in self.allowed_paths:
             # skip the allowed ones
             return
+        # non-WIND login
+        if cherrypy.request.path.endswith("/guest_login"):
+            uni = cherrypy.request.paramMap.get("uni","")
+            password = cherrypy.request.paramMap.get("password")
+            if uni != "":
+                u = get_user(uni)
+                if u == None:
+                    return
+                if u.password == password:
+                    # they're good
+                    cherrypy.session[self.auth_key] = True
+                    cherrypy.session[self.ticket_key] = "guest ticket"
+                    cherrypy.session[self.uni_key] = uni
+                    cherrypy.session['fullname'] = u.firstname + " " + u.lastname
+                    cherrypy.response.body = httptools.redirect(self.after_login)
+                    return
+            # give them the login form
+            return
+
+        if cherrypy.request.path.endswith("/add_guest_account"):
+            return
+        if cherrypy.request.path.endswith("/add_guest_account_form"):
+            return
+            
+        
+        # WIND login
         if cherrypy.request.path.endswith(self.login_url):
             destination = urllib.quote(cherrypy.request.browserUrl)
             ticket_id = cherrypy.request.paramMap.get("ticketid","")
@@ -143,7 +175,8 @@ class WindLoginFilter(basefilter.BaseFilter):
                 cherrypy.session[self.ticket_key] = ticket_id
                 cherrypy.session[self.uni_key] = uni
                 cherrypy.session[self.groups_key] = groups
-                get_or_create_user(uni)
+                u = get_or_create_user(uni)
+                cherrypy.session['fullname'] = u.firstname + " " + u.lastname
                 cherrypy.response.body = httptools.redirect(self.after_login)
 
         if cherrypy.request.path.endswith(self.logout_url):

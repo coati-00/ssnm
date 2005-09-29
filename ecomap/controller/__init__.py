@@ -267,6 +267,24 @@ class Eco(EcoControllerBase):
 
     update.exposed = True
 
+    def guest_login(self,uni="",password=""):
+        return self.template("guest_login.pt",{})
+    guest_login.exposed = True
+
+    def add_guest_account_form(self):
+        return self.template("add_guest_account.pt",{})
+    add_guest_account_form.exposed = True
+
+    def add_guest_account(self,uni="",firstname="",lastname="",password="",pass2=""):
+        # TODO: this should be done with formencode
+        if password != pass2:
+            return "passwords don't match"
+        if uni == "":
+            return "username is required"
+        u = Ecouser(uni=uni, password=password, firstname=firstname, lastname=lastname)
+        return httptools.redirect("/guest_login")
+    add_guest_account.exposed = True
+
 
 
 class EcomapController(EcoControllerBase):
