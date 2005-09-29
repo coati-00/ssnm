@@ -328,7 +328,7 @@ class EcomapController(EcoControllerBase):
 
     def view_ecomap(self,**kwargs):
 
-        import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
 
         server = "http://xnoybis.ccnmtl.columbia.edu:15097/"
         if config.MODE == "production":
