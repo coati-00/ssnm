@@ -24,6 +24,21 @@ class TestEcouser:
         assert self.user.firstname == "regression user"
         assert self.user.lastname == "user"
 
+    def test_ldap_lookup(self):
+        (firstname,lastname) = ldap_lookup('anp8')
+        assert firstname == 'Anders N.'
+        assert lastname == 'Pearson'
+
+    def test_get_or_create_user(self):
+        u = get_or_create_user("foo")
+        assert u.firstname == self.user.firstname
+        assert u.lastname == self.user.lastname
+
+        # this one shouldn't be in the database yet
+        u2 = get_or_create_user('anp8')
+        assert u2.firstname == 'Anders N.'
+        assert u2.lastname == 'Pearson'
+
 class TestEcomap:
     def setup_class(self):
         self.user = Ecouser(uni="foo",firstname="regression test user",lastname="test")
