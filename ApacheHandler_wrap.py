@@ -98,7 +98,7 @@ class RequestHandler(CherryHTTPRequestHandler):
             for header in resp.msg.headers:
                 k,v = header.split(':',1)
                 k,v = k.strip(),v.strip()
-                                self._w_send_header(k,v)
+                self._w_send_header(k,v)
                 if header.lower().startswith('content-type'):
                     self.ContentType = v
     def _w_end_header(self):
