@@ -37,7 +37,7 @@ def ldap_lookup(username):
         baseDN = BASE_DN
         searchScope = ldap.SCOPE_SUBTREE
         retrieveAttributes = None
-        searchFilter = "uni=*%s" % username
+        searchFilter = "uni=%s" % username
         ldap_result_id = l.search(baseDN, searchScope, searchFilter,
                                   retrieveAttributes)
         result_set = []

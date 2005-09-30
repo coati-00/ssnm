@@ -29,6 +29,18 @@ class TestEcouser:
         assert firstname == 'Anders N.'
         assert lastname == 'Pearson'
 
+        (firstname,lastname) = ldap_lookup('mbo2004')
+        assert firstname == 'Melvyn Boon King'
+        assert lastname == 'Ooi'
+        print firstname, lastname
+
+        (firstname,lastname) = ldap_lookup('bo2004')
+        assert firstname == 'Brian R.'
+        assert lastname == "O'Hagan Jr."
+        print firstname, lastname
+
+
+
     def test_get_or_create_user(self):
         u = get_or_create_user("foo")
         assert u.firstname == self.user.firstname
