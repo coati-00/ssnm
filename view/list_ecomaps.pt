@@ -42,6 +42,20 @@
 </table>
 -->
 
+<h4 style="cursor:hand" onClick="document.getElementById('allmaps').style.display = (document.getElementById('allmaps').style.display == 'none') ? 'all' : 'none';" tal:condition="allEcomaps">All Social Support Network Maps</h4>
+
+<div id="allmaps" style="display:none;">
+<table tal:condition="allEcomaps">
+<tr><th></th><th>Name</th><th>Description</th><th>Owner</th></tr>
+<tr tal:repeat="ecomap allEcomaps">
+<td></td>
+<td><a tal:attributes="href string:/ecomap/${ecomap/id}/" tal:content="ecomap/name"/></td>
+<td tal:content="ecomap/description"></td>
+<td tal:content="string:${ecomap/owner/firstname} ${ecomap/owner/lastname}"></td>
+</tr>
+</table>
+</div>
+
 </form>
 
 </body>

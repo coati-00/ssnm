@@ -22,6 +22,5 @@ td,th{
 }
 
 p.message { 
-            background-color: #ff0;
-            border: #ccc solid 1px;
- }
+    color:#0A8318;
+}

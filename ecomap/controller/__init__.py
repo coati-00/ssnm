@@ -124,7 +124,8 @@ class Eco(EcoControllerBase):
                 #tickets match, so the session is valid
                 if not ecoid == "":
                     thisEcomap = Ecomap.get(ecoid)
-                    if thisEcomap.public or thisEcomap.owner.uni == sessionUni:
+                    # if this is public or it's yours or Susan, Debbie or I am logged in, allow the data to Flash
+                    if thisEcomap.public or thisEcomap.owner.uni == sessionUni or sessionUni == 'kfe2102' or sessionUni == 'dm2150' or sessionUni == 'ssw12':
                         if action == "load":
                             print "load into flash: " + thisEcomap.flashData
                             if thisEcomap.owner.uni == sessionUni:
@@ -182,10 +183,14 @@ class Eco(EcoControllerBase):
         if uni:
             myEcos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecouser.q.uni == uni), orderBy=['name'])]
             publicEcos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecouser.q.uni != uni, Ecomap.q.public == True), orderBy=['name'])]
+            if uni == 'kfe2102' or uni == 'dm2150' or uni == 'ssw12':
+                allEcos = [e for e in Ecomap.select(Ecomap.q.ownerID == Ecouser.q.id, orderBy=['name'])]
+            else:
+                allEcos = None
             for e in myEcos:
                 e.createdStr = e.created.strftime("%m/%d/%Y")
                 e.modifiedStr = e.modified.strftime("%m/%d/%Y")
-            return self.template("list_ecomaps.pt",{'loginName' : loginName, 'myEcomaps' : myEcos, 'publicEcomaps' : publicEcos})
+            return self.template("list_ecomaps.pt",{'loginName' : loginName, 'myEcomaps' : myEcos, 'publicEcomaps' : publicEcos, 'allEcomaps' : allEcos})
         else:
             #No user logged in
             return httptools.redirect("/logout")
@@ -223,7 +228,7 @@ class Eco(EcoControllerBase):
             ownerID = Ecouser.select(Ecouser.q.uni == uni)[0].id
             d = es.to_python({'name' : name, 'description' : description, 'owner' : ownerID})
             a = Ecomap(name=d['name'],description=d['description'],owner=d['owner'])
-            cherrypy.session['message'] = "Social Support Network Map created."
+            cherrypy.session['message'] = "New Social Support Network Map '" + description + "' has been created."
             return httptools.redirect("/myList")
         except formencode.Invalid, e:
             defaults = {'name' : name, 'description' : description}
@@ -253,8 +258,9 @@ class Eco(EcoControllerBase):
         if action == 'Delete Selected':
             for item in itemList:
                 thisItem = Ecomap.get(item)
+                theDescription = thisItem.description
                 thisItem.destroySelf()
-            cherrypy.session['message'] = "deleted"
+            cherrypy.session['message'] = "'" + theDescription + "' has been deleted"
         elif action == 'share':
             es = EcomapSchema()
             for item in itemList:
@@ -277,13 +283,13 @@ class Eco(EcoControllerBase):
     def add_guest_account(self,uni="",firstname="",lastname="",password="",pass2=""):
         # TODO: this should be done with formencode
         if password != pass2:
-            cherrypy.session['message'] = "passwords don't match"
+            cherrypy.session['message'] = "Those passwords don't match"
             return httptools.redirect("/add_guest_account_form")
         if uni == "":
-            cherrypy.session['message'] = "username is required"
+            cherrypy.session['message'] = "A user name is required"
             return httptools.redirect("/add_guest_account_form")
         u = Ecouser(uni=uni, password=password, firstname=firstname, lastname=lastname)
-        cherrypy.session['message'] = "user created. please login"
+        cherrypy.session['message'] = "New user has been created.  Please log in"
         return httptools.redirect("/guest_login")
     add_guest_account.exposed = True
 
