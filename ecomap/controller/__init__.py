@@ -20,6 +20,7 @@ DEBUG = True
 
 UNI_PARAM = "UNI"
 AUTH_TICKET_PARAM = "auth_ticket"
+ADMIN_USERS = ("kfe2102","dm2150","ssw12")
 
 def start(initOnly=False):
     environment = "development"
@@ -125,7 +126,7 @@ class Eco(EcoControllerBase):
                 if not ecoid == "":
                     thisEcomap = Ecomap.get(ecoid)
                     # if this is public or it's yours or Susan, Debbie or I am logged in, allow the data to Flash
-                    if thisEcomap.public or thisEcomap.owner.uni == sessionUni or sessionUni == 'kfe2102' or sessionUni == 'dm2150' or sessionUni == 'ssw12':
+                    if thisEcomap.public or thisEcomap.owner.uni == sessionUni or sessionUni in ADMIN_USERS:
                         if action == "load":
                             print "load into flash: " + thisEcomap.flashData
                             if thisEcomap.owner.uni == sessionUni:
@@ -183,7 +184,7 @@ class Eco(EcoControllerBase):
         if uni:
             myEcos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecouser.q.uni == uni), orderBy=['name'])]
             publicEcos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecouser.q.uni != uni, Ecomap.q.public == True), orderBy=['name'])]
-            if uni == 'kfe2102' or uni == 'dm2150' or uni == 'ssw12':
+            if uni in ADMIN_USERS:
                 allEcos = [e for e in Ecomap.select(Ecomap.q.ownerID == Ecouser.q.id, orderBy=['name'])]
             else:
                 allEcos = None
