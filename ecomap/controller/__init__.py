@@ -374,8 +374,9 @@ class EcomapController(EcoControllerBase):
 
 
     def delete(self,confirm=""):
-        self.ecomap.destroySelf()
-        cherrypy.session['message'] = "deleted"
+        if cherrypy.session.get(UNI_PARAM,None) in ADMIN_USERS:
+            self.ecomap.destroySelf()
+            cherrypy.session['message'] = "deleted"
         return httptools.redirect("/myList")
 
     def flash(self):
