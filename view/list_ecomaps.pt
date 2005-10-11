@@ -42,9 +42,9 @@
 </table>
 -->
 
-<h4 style="cursor:hand" onClick="document.getElementById('allmaps').style.display = (document.getElementById('allmaps').style.display == 'none') ? 'all' : 'none';" tal:condition="allEcomaps">All Social Support Network Maps</h4>
+<h4 style="cursor:pointer" tal:condition="allEcomaps" onClick="document.getElementById('allmaps').style.display = (document.getElementById('allmaps').style.display == 'none') ? 'block' : 'none'">All Social Support Network Maps</h4>
 
-<div id="allmaps" style="display:none;">
+<div id="allmaps" style="display:none">
 <table tal:condition="allEcomaps">
 <tr><th></th><th>Name</th><th>Description</th><th>Owner</th><th>Created</th><th>Modified</th></tr>
 <tr tal:repeat="ecomap allEcomaps">
