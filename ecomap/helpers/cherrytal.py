@@ -1,6 +1,9 @@
 from simpletal import simpleTAL, simpleTALES
 import cStringIO
-import os, cherrypy
+import os, cherrypy, os.path
+
+def site_root():
+    return os.path.abspath(os.path.normpath(os.path.join(os.path.dirname(__file__),"../../")))
 
 class CherryTAL:
     """ a class that can be inherited from to easily use
@@ -14,7 +17,7 @@ class CherryTAL:
 
     def template(self, filename, data):
         context = simpleTALES.Context(allowPythonPath=self._allow_python_path)
-        
+
         context.addGlobal('message',cherrypy.session.get("message",""))
         cherrypy.session['message'] = ""
         for k in self._globals.keys():
@@ -25,13 +28,13 @@ class CherryTAL:
 
 
         # if there's a macros.pt file, we load that
-        macrosfile = open(self._template_dir + os.sep + self._macros_file, 
+        macrosfile = open(os.path.join(site_root(),self._template_dir + os.sep + self._macros_file),
                 'r')
         macros = simpleTAL.compileXMLTemplate(macrosfile)
         macrosfile.close()
         context.addGlobal("sitemacros",macros)
 
-        templatefile = open(self._template_dir + os.sep + filename, 'r')
+        templatefile = open(os.path.join(site_root(),self._template_dir + os.sep + filename), 'r')
         template = simpleTAL.compileXMLTemplate(templatefile)
         templatefile.close()
         fakeout = cStringIO.StringIO()

@@ -3,10 +3,10 @@
  looks in the specified mode section for a config option
  if it doesn't find it there, it looks in the 'default' mode"""
 
-import ConfigParser
+import ConfigParser,os.path
 
 c = ConfigParser.ConfigParser()
-c.read("ecomap/config/ecomap.conf")
+c.read(os.path.abspath(os.path.normpath(os.path.join(os.path.dirname(__file__),"../config/ecomap.conf"))))
 
 MODE = "development"
 

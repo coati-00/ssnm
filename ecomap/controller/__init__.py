@@ -1,6 +1,6 @@
 from ecomap.model import *
 from ecomap.helpers import *
-from ecomap.helpers.cherrytal import CherryTAL
+from ecomap.helpers.cherrytal import CherryTAL, site_root
 from ecomap.helpers import EcomapSchema
 import ecomap.config as config
 from DisablePostParsingFilter import DisablePostParsingFilter
@@ -8,7 +8,7 @@ from DisablePostParsingFilter import DisablePostParsingFilter
 from cherrypy.lib import httptools
 from mx import DateTime
 import cherrypy
-import sys
+import sys, os.path
 import StringIO
 import cgitb
 import formencode
@@ -22,7 +22,7 @@ UNI_PARAM = "UNI"
 AUTH_TICKET_PARAM = "auth_ticket"
 ADMIN_USERS = ("kfe2102","dm2150","ssw12")
 
-def start(initOnly=False):
+def init_config():
     environment = "development"
     if config.MODE == "production":
         environment = "production"
@@ -31,7 +31,6 @@ def start(initOnly=False):
 
     cherrypy.root             = Eco()
     cherrypy.root.ecomap      = EcomapController()
-
 
     cherrypy.config.update({
         'global' : {
@@ -42,13 +41,19 @@ def start(initOnly=False):
         'sessionFilter.storageType' : config.param('sessionStorageType'),
         'sessionFilter.storagePath' : config.param('storagePath'),
         },
-        '/css' : {'staticFilter.on' : True, 'staticFilter.dir' : config.param('css')},
-        '/images' : {'staticFilter.on' : True, 'staticFilter.dir' : config.param('images')},
-        '/flash' : {'staticFilter.on' : True, 'staticFilter.dir' : config.param('flash')},
+        '/css' : {'staticFilter.on' : True, 'staticFilter.dir' : os.path.join(site_root(),config.param('css'))},
+        '/images' : {'staticFilter.on' : True, 'staticFilter.dir' : os.path.join(site_root(),config.param('images'))},
+        '/flash' : {'staticFilter.on' : True, 'staticFilter.dir' : os.path.join(site_root(),config.param('flash'))},
         })
+
+
+def start(initOnly=False):
+    init_config()
     cherrypy.server.start(initOnly=initOnly)
 
-
+def mp_setup(initOnly=False):
+    config.MODE = "production"
+    init_config()
 
 class EcoControllerBase(CherryTAL):
     _template_dir = "view"
@@ -61,7 +66,7 @@ class EcoControllerBase(CherryTAL):
         if DEBUG:
             sio = StringIO.StringIO()
             hook = cgitb.Hook(file=sio)
-            hook.handle(info=err)            
+            hook.handle(info=err)
             cherrypy.response.headerMap['Content-Type'] = 'text/html'
             cherrypy.response.body = [sio.getvalue()]
         else:
@@ -75,7 +80,7 @@ class Eco(EcoControllerBase):
     _cpFilterList = [ DisablePostParsingFilter(),
                       WindLoginFilter(after_login="/myList",allowed_paths=["/","/flashConduit"],
                                       uni_key=UNI_PARAM,ticket_key=AUTH_TICKET_PARAM)]
-    
+
     def index(self):
         # import pdb; pdb.set_trace()
         return self.template("index.pt",{})
@@ -84,28 +89,28 @@ class Eco(EcoControllerBase):
 
     def flashConduit(self,HTMLid="",HTMLticket=""):
         #import pdb; pdb.set_trace()
-        
+
         #First, check to make sure there's a session established
         sessionUni = cherrypy.session.get(UNI_PARAM, None)
         sessionTicket = cherrypy.session.get(AUTH_TICKET_PARAM, None)
-        
+
         if not sessionUni and sessionTicket:
             responseData = "<response>Session error</response>"
 
         else:
-        
+
             postLength = int(cherrypy.request.headerMap.get('Content-Length',0))
-            postData = cherrypy.request.rfile.read(postLength) 
-    
+            postData = cherrypy.request.rfile.read(postLength)
+
             #postData is going to have a ticket and an id to parse out
-    
+
             try:
                 doc = parseString(postData)
             except:
                 raise ParseError
-                
+
             root = doc.getElementsByTagName("data")[0]
-            
+
             #Check this data for reasonable stuff coming in
             if root.getElementsByTagName("ticket")[0].hasChildNodes():
                 ticketid = root.getElementsByTagName("ticket")[0].firstChild.nodeValue
@@ -120,7 +125,7 @@ class Eco(EcoControllerBase):
             else:
                 action = ""
             dataNode = root.getElementsByTagName("persons")[0].toxml()
-            
+
             if ticketid == sessionTicket:
                 #tickets match, so the session is valid
                 if not ecoid == "":
@@ -167,12 +172,12 @@ class Eco(EcoControllerBase):
             else:
                 responseData = "<data><response>Your session may have timed out</response></data>"
                 print "not a valid session, you little hacker"
-        
+
 
         return responseData
-       
+
     flashConduit.exposed = True
-    
+
     def myList(self):
         #import pdb; pdb.set_trace()
         uni = cherrypy.session.get(UNI_PARAM, None)
@@ -200,11 +205,11 @@ class Eco(EcoControllerBase):
 
     def logout(self,**kwargs):
         return self.template("logout.pt",{})
-    logout.exposed = True    
+    logout.exposed = True
 
     def create_ecomap_form(self):
         uni = cherrypy.session.get(UNI_PARAM, None)
-        
+
         defaults = {'name' : "", 'description' : ""}
         parser = htmlfill.FillingParser(defaults)
         parser.feed(self.template("create_ecomap.pt",{}))
@@ -224,7 +229,7 @@ class Eco(EcoControllerBase):
             if config.MODE == "regressiontest":
                 uni = "foo"
             else:
-                return httptools.redirect("/logout")    
+                return httptools.redirect("/logout")
         try:
             ownerID = Ecouser.select(Ecouser.q.uni == uni)[0].id
             d = es.to_python({'name' : name, 'description' : description, 'owner' : ownerID})
@@ -313,7 +318,7 @@ class EcomapController(EcoControllerBase):
             if len(args) == 0:
                 return self.view_ecomap(**kwargs)
             action = args[0]
-    
+
             dispatch = {
                 'delete' : self.delete,
                 'edit_form' : self.edit_form,
@@ -345,7 +350,7 @@ class EcomapController(EcoControllerBase):
             self.ecomap.modified = DateTime.now()
             cherrypy.session['message'] = "changes saved"
             return httptools.redirect("/ecomap/" + str(self.ecomap.id) + "/")
-    
+
         except formencode.Invalid, e:
             defaults = {'name' : name, 'description' : description}
             parser = htmlfill.FillingParser(defaults,errors=e.unpack_errors())
