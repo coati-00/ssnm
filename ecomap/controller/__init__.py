@@ -213,8 +213,8 @@ class Eco(EcoControllerBase):
         defaults = {'name' : "", 'description' : ""}
         parser = htmlfill.FillingParser(defaults)
         parser.feed(self.template("create_ecomap.pt",{}))
-        output = parser.text()
         parser.close()
+        output = parser.text()
         return output
 
     create_ecomap_form.exposed = True
