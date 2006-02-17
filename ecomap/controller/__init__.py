@@ -31,6 +31,7 @@ def init_config():
 
     cherrypy.root             = Eco()
     cherrypy.root.ecomap      = EcomapController()
+    cherrypy.root.course      = CourseController()
 
     cherrypy.config.update({
         'global' : {
@@ -78,7 +79,7 @@ from ecomap.controller.WindLoginFilter import WindLoginFilter
 class Eco(EcoControllerBase):
     # enable filtering to disable post filtering on the postTester funcion
     _cpFilterList = [ DisablePostParsingFilter(),
-                      WindLoginFilter(after_login="/myList",allowed_paths=["/","/flashConduit"],
+                      WindLoginFilter(after_login="/course",allowed_paths=["/","/flashConduit"],
                                       uni_key=UNI_PARAM,ticket_key=AUTH_TICKET_PARAM)]
 
     def index(self):
@@ -178,51 +179,28 @@ class Eco(EcoControllerBase):
 
     flashConduit.exposed = True
 
-    def myList(self):
-        #import pdb; pdb.set_trace()
-        uni = cherrypy.session.get(UNI_PARAM, None)
-        loginName = cherrypy.session.get('fullname', 'unknown')
-
-        if uni == None and config.MODE == "regressiontest":
-            uni = "foo"
-
-        if uni:
-            myEcos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecouser.q.uni == uni), orderBy=['name'])]
-            publicEcos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecouser.q.uni != uni, Ecomap.q.public == True), orderBy=['name'])]
-            if uni in ADMIN_USERS:
-                allEcos = [e for e in Ecomap.select(Ecomap.q.ownerID == Ecouser.q.id, orderBy=['name'])]
-            else:
-                allEcos = None
-            for e in myEcos:
-                e.createdStr = e.created.strftime("%m/%d/%Y")
-                e.modifiedStr = e.modified.strftime("%m/%d/%Y")
-            return self.template("list_ecomaps.pt",{'loginName' : loginName, 'myEcomaps' : myEcos, 'publicEcomaps' : publicEcos, 'allEcomaps' : allEcos})
-        else:
-            #No user logged in
-            return httptools.redirect("/logout")
-
-    myList.exposed = True
 
     def logout(self,**kwargs):
         return self.template("logout.pt",{})
     logout.exposed = True
 
-    def create_ecomap_form(self):
+
+    def create_course_form(self):
         uni = cherrypy.session.get(UNI_PARAM, None)
 
-        defaults = {'name' : "", 'description' : ""}
+        defaults = {'description' : "", 'instructor' : ""}
         parser = htmlfill.FillingParser(defaults)
-        parser.feed(self.template("create_ecomap.pt",{}))
+        parser.feed(self.template("create_course.pt",{'allInstructors' : [i for i in Ecouser.select()]}))
         parser.close()
         output = parser.text()
         return output
 
-    create_ecomap_form.exposed = True
+    create_course_form.exposed = True
 
 
-    def create_ecomap(self,name="",description=""):
+    def create_course(self,description="",instructor=""):
 
-        es = EcomapSchema()
+        es = CourseSchema()
 
         uni = cherrypy.session.get(UNI_PARAM,None)
         if uni == None:
@@ -231,52 +209,20 @@ class Eco(EcoControllerBase):
             else:
                 return httptools.redirect("/logout")
         try:
-            ownerID = Ecouser.select(Ecouser.q.uni == uni)[0].id
-            d = es.to_python({'name' : name, 'description' : description, 'owner' : ownerID})
-            a = Ecomap(name=d['name'],description=d['description'],owner=d['owner'])
-            cherrypy.session['message'] = "New Social Support Network Map '" + description + "' has been created."
-            return httptools.redirect("/myList")
+            d = es.to_python({'description' : description, 'instructor' : instructor})
+            u = Course(description=d['description'],instructor=d['instructor'])
+            cherrypy.session['message'] = "New course '" + description + "' has been created."
+            return httptools.redirect("/course")
         except formencode.Invalid, e:
-            defaults = {'name' : name, 'description' : description}
+            defaults = {'description' : description, 'instructor' : instructor}
             parser = htmlfill.FillingParser(defaults,errors=e.unpack_errors())
-            parser.feed(self.template("create_ecomap.pt",{}))
+            parser.feed(self.template("create_course.pt",{'allInstructors' : [i for i in Ecouser.select()]}))
             output = parser.text()
             parser.close()
             return output
 
-    create_ecomap.exposed = True
+    create_course.exposed = True
 
-    def update(self,**kwargs):
-        #import pdb; pdb.set_trace()
-        action = kwargs['action']
-        #make sure at least one checkbox was selected
-        ecomapList = kwargs.get('ecomap_id',None)
-        if ecomapList:
-            if type(ecomapList) is str:
-                itemList = [int(kwargs['ecomap_id'])]
-            elif type(kwargs['ecomap_id']) is list:
-                itemList = [k for k in kwargs['ecomap_id']]
-            else:
-                output = "error - unknown argument type"
-        else:
-            return httptools.redirect("/myList")
-
-        if action == 'Delete Selected':
-            for item in itemList:
-                thisItem = Ecomap.get(item)
-                theDescription = thisItem.description
-                thisItem.destroySelf()
-            cherrypy.session['message'] = "'" + theDescription + "' has been deleted"
-        elif action == 'share':
-            es = EcomapSchema()
-            for item in itemList:
-                thisItem = Ecomap.get(item)
-                thisItem.public = not thisItem.public
-            cherrypy.session['message'] = "shared"
-
-        return httptools.redirect("/myList")
-
-    update.exposed = True
 
     def guest_login(self,uni="",password=""):
         return self.template("guest_login.pt",{})
@@ -305,12 +251,15 @@ class EcomapController(EcoControllerBase):
     _cpFilterList = [WindLoginFilter(after_login="/myList",allowed_paths=["/","/flashConduit"],
                                       uni_key=UNI_PARAM,ticket_key=AUTH_TICKET_PARAM)]
     def index(self):
+        # this should really be a secured list of your ecomaps
+        # it is a duplicate of the functionality of myList
+        # it may be more appropriate to redirect to myList
         return self.template("list_ecomaps.pt",{'ecomaps' : [e for e in Ecomap.select()]})
     index.exposed = True
 
 
     def default(self,ecomap_id,*args,**kwargs):
-        # import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
         ecomap_id = int(ecomap_id)
         try:
             self.ecomap = Ecomap.get(ecomap_id)
@@ -329,7 +278,7 @@ class EcomapController(EcoControllerBase):
                 return dispatch[action](**kwargs)
         except:
             cherrypy.session['message'] = "invalid id"
-            return httptools.redirect("/myList")
+            return httptools.redirect("/course")
 
     default.exposed = True
 
@@ -382,7 +331,7 @@ class EcomapController(EcoControllerBase):
         if cherrypy.session.get(UNI_PARAM,None) in ADMIN_USERS:
             self.ecomap.destroySelf()
             cherrypy.session['message'] = "deleted"
-        return httptools.redirect("/myList")
+        return httptools.redirect("/course")
 
     def flash(self):
         flashData = {
@@ -390,3 +339,162 @@ class EcomapController(EcoControllerBase):
             'ticket' : cherrypy.session.get(AUTH_TICKET_PARAM,None),
             }
         return self.template("flash.pt",flashData)
+
+
+class CourseController(EcoControllerBase):
+
+    def index(self):
+        # COURSE LIST
+        uni = cherrypy.session.get(UNI_PARAM, None)
+        loginName = cherrypy.session.get('fullname', 'unknown')
+
+        if uni == None and config.MODE == "regressiontest":
+            uni = "foo"
+
+        if uni:
+            allCourses = [e for e in Course.select(Course.q.instructorID == Ecouser.q.id, orderBy=['description'])]
+            return self.template("list_courses.pt",{'loginName' : loginName, 'allCourses' : allCourses,})
+        else:
+            #No user logged in
+            return httptools.redirect("/logout")
+
+    index.exposed = True
+
+
+    def default(self,course_id,*args,**kwargs):
+        #import pdb; pdb.set_trace()
+        course_id = int(course_id)
+        try:
+            self.course = Course.get(course_id)
+
+            if len(args) == 0:
+                return self.view_course(**kwargs)
+            action = args[0]
+
+            dispatch = {
+                'delete' : self.delete,
+                'update' : self.update,
+                'create_ecomap_form' : self.create_ecomap_form,
+                'create_ecomap' : self.create_ecomap,
+                }
+            if dispatch.has_key(action):
+                return dispatch[action](**kwargs)
+        except:
+            cherrypy.session['message'] = "invalid id"
+            return httptools.redirect("/course")
+
+    default.exposed = True
+
+    def delete(self,confirm=""):
+        if cherrypy.session.get(UNI_PARAM,None) in ADMIN_USERS:
+            self.course.destroySelf()
+            cherrypy.session['message'] = "deleted"
+        return httptools.redirect("/course")
+        
+
+    def view_course(self,**kwargs):
+
+        # This shows the list of ecomaps
+
+        #import pdb; pdb.set_trace()
+
+        uni = cherrypy.session.get(UNI_PARAM, None)
+        loginName = cherrypy.session.get('fullname', 'unknown')
+        postTo = "/course/%s/update" % self.course.id
+
+        if uni == None and config.MODE == "regressiontest":
+            uni = "foo"
+
+        if uni:
+            # My ecomaps are the ecomaps I created in this course specifically
+            myEcos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecouser.q.uni == uni, Ecomap.q.courseID == self.course.id), orderBy=['name'])]
+            publicEcos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecouser.q.uni != uni, Ecomap.q.courseID == self.course.id, Ecomap.q.public == True), orderBy=['name'])]
+            if uni in ADMIN_USERS:
+                allEcos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecomap.q.courseID == self.course.id), orderBy=['name'])]
+            else:
+                allEcos = None
+            for e in myEcos:
+                e.createdStr = e.created.strftime("%m/%d/%Y")
+                e.modifiedStr = e.modified.strftime("%m/%d/%Y")
+            return self.template("list_ecomaps.pt",{'loginName' : loginName, 'myEcomaps' : myEcos, 'publicEcomaps' : publicEcos, 'allEcomaps' : allEcos, 'postTo' : postTo})
+        else:
+            #No user logged in
+            return httptools.redirect("/logout")
+
+
+    def create_ecomap_form(self):
+        uni = cherrypy.session.get(UNI_PARAM, None)
+
+        defaults = {'name' : "", 'description' : "", 'course' : self.course.id}
+        parser = htmlfill.FillingParser(defaults)
+        postTo = "/course/%s/create_ecomap" % self.course.id
+        parser.feed(self.template("create_ecomap.pt",{'postTo' : postTo}))
+        parser.close()
+        output = parser.text()
+        return output
+
+    create_ecomap_form.exposed = True
+
+
+    def create_ecomap(self,name="",description="",course=""):
+        import pdb; pdb.set_trace()
+
+        es = EcomapSchema()
+
+        uni = cherrypy.session.get(UNI_PARAM,None)
+        if uni == None:
+            if config.MODE == "regressiontest":
+                uni = "foo"
+            else:
+                return httptools.redirect("/logout")
+        try:
+            ownerID = Ecouser.select(Ecouser.q.uni == uni)[0].id
+            d = es.to_python({'name' : name, 'description' : description, 'owner' : ownerID, 'course' : course})
+            a = Ecomap(name=d['name'],description=d['description'],owner=d['owner'],course=d['course'])
+            cherrypy.session['message'] = "New Social Support Network Map '" + description + "' has been created."
+            redirectTo = "/course/%s/" % self.course.id
+            return httptools.redirect(redirectTo)
+        except formencode.Invalid, e:
+            postTo = "/course/%s/create_ecomap" % self.course.id
+            defaults = {'name' : name, 'description' : description, 'course' : course}
+            parser = htmlfill.FillingParser(defaults,errors=e.unpack_errors())
+            parser.feed(self.template("create_ecomap.pt",{'postTo' : postTo}))
+            output = parser.text()
+            parser.close()
+            return output
+
+    create_ecomap.exposed = True
+    
+    def update(self,**kwargs):
+        #import pdb; pdb.set_trace()
+        action = kwargs['action']
+        #make sure at least one checkbox was selected
+        ecomapList = kwargs.get('ecomap_id',None)
+        redirectTo = "/course/%s/" % self.course.id
+        
+        if ecomapList:
+            if type(ecomapList) is str:
+                itemList = [int(kwargs['ecomap_id'])]
+            elif type(kwargs['ecomap_id']) is list:
+                itemList = [k for k in kwargs['ecomap_id']]
+            else:
+                output = "error - unknown argument type"
+        else:
+            return httptools.redirect(redirectTo)
+
+        if action == 'Delete Selected':
+            for item in itemList:
+                thisItem = Ecomap.get(item)
+                theDescription = thisItem.description
+                thisItem.destroySelf()
+            cherrypy.session['message'] = "'" + theDescription + "' has been deleted"
+        elif action == 'share':
+            es = EcomapSchema()
+            for item in itemList:
+                thisItem = Ecomap.get(item)
+                thisItem.public = not thisItem.public
+            cherrypy.session['message'] = "shared"
+
+        return httptools.redirect(redirectTo)
+
+    update.exposed = True

@@ -11,3 +11,7 @@ class Ecouser(SQLObject):
     firstname = UnicodeCol(length=50)
     lastname = UnicodeCol(length=50)
     ecomaps = MultipleJoin('Ecomap')
+    instructorOf = MultipleJoin('Course')
+    courses = RelatedJoin('Course', joinColumn='student', otherColumn='course',intermediateTable='student_courses')
+
+    

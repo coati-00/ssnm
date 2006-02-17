@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<html metal:use-macro="sitemacros/macros/ecomap">
+<body metal:fill-slot="body">
+<div id="header"><img src="/images/logo.png" /></div>
+
+<div id="logout">You are logged in as <span tal:content="loginName"/> <a href="/logout">Log Out</a></div>
+<metal:block use-macro="sitemacros/macros/message" />
+<p/>
+<form action="/update" method="post">
+
+<a href="/create_course_form">Create New Course</a>
+
+<h1>All Courses</h1>
+
+<p tal:condition="not:allCourses">There are no courses yet.  <a href="/create_course_form">Click here</a> to create one.</p>
+
+<table tal:condition="allCourses">
+<tr><th></th><th>Description</th><th>Instructor</th></tr>
+<tr tal:repeat="course allCourses">
+<td></td>
+<td><a tal:attributes="href string:/course/${course/id}/" tal:content="course/description" /></td>
+<td tal:content="string:${course/instructor/firstname} ${course/instructor/lastname}"></td>
+</tr>
+</table>
+
+</form>
+
+</body>
+</html>

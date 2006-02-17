@@ -6,7 +6,7 @@
 <div id="logout">You are logged in as <span tal:content="loginName"/> <a href="/logout">Log Out</a></div>
 <metal:block use-macro="sitemacros/macros/message" />
 <p/>
-<form action="/update" method="post">
+<form tal:attributes="action postTo" method="post">
 
 <a href="create_ecomap_form">Create New Map</a>
 

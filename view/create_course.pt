@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<html metal:use-macro="sitemacros/macros/ecomap">
+<body metal:fill-slot="body">
+<div id="header"><img src="images/logo.png" /></div>
+<br/>
+
+<form action="/create_course" method="post">
+<fieldset>
+<legend>Create Course</legend>
+<label>Description: <input type="text" name="description" size="60" /></label><form:iferror name="description"> <span class="errormessage"><form:error name="description"/></span></form:iferror><br />
+<label>Instructor ID: 
+
+<select name="instructor">
+<option tal:repeat="i allInstructors" tal:attributes="value i/id" tal:content="string:${i/firstname} ${i/lastname}" />
+</select>
+</label>
+
+<!-- <input type="text" name="instructor" size="10" /><form:iferror name="instructor"> <span class="errormessage"><form:error name="instructor"/></span></form:iferror><br /> -->
+
+<input type="submit" value="Create"/>
+</fieldset>
+</form>
+</body>
+
+</html>

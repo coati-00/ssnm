@@ -4,21 +4,28 @@ from formencode import validators
 
 def createTables():
     Ecouser.createTable(ifNotExists=True)
+    Course.createTable(ifNotExists=True)
     Ecomap.createTable(ifNotExists=True)
 
 def dropTables():
     Ecomap.dropTable(ifExists=True)
+    Course.dropTable(ifExists=True)
     Ecouser.dropTable(ifExists=True)
 
 class EcomapSchema(formencode.Schema):
-    name        = validators.String(not_empty=True)
-    description = validators.String()
+    name         = validators.String(not_empty=True)
+    description  = validators.String()
     owner        = validators.Int()
+    course       = validators.Int()
 
 class EcouserSchema(formencode.Schema):
-    uni            = validators.String(not_empty=True)
+    uni          = validators.String(not_empty=True)
     firstname    = validators.String()
-    lastname    = validators.String()
+    lastname     = validators.String()
+
+class CourseSchema(formencode.Schema):
+    description  = validators.String(not_empty=True)
+    instructor   = validators.Int()
 
 def setup_for_tests():
     dropTables()

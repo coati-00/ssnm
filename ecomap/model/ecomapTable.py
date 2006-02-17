@@ -11,5 +11,6 @@ class Ecomap(SQLObject):
     created = DateTimeCol(default=DateTime.now)
     modified = DateTimeCol(default=DateTime.now)
     owner = ForeignKey('Ecouser',cascade=True)
+    course = ForeignKey('Course',cascade=True)
     public = BoolCol(default=False)
     flashData = UnicodeCol(default='')
