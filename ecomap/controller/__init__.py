@@ -198,9 +198,14 @@ class Eco(EcoControllerBase):
     create_course_form.exposed = True
 
 
-    def create_course(self,description="",instructor=""):
+    def create_course(self,description="",instructor="",students=""):
+        #import pdb; pdb.set_trace()
 
         es = CourseSchema()
+
+        # MUST sanitize this comma delimited list
+        uniList = students.split(",")
+        uniList.sort()
 
         uni = cherrypy.session.get(UNI_PARAM,None)
         if uni == None:
@@ -210,7 +215,23 @@ class Eco(EcoControllerBase):
                 return httptools.redirect("/logout")
         try:
             d = es.to_python({'description' : description, 'instructor' : instructor})
-            u = Course(description=d['description'],instructor=d['instructor'])
+            thisCourse = Course(description=d['description'],instructor=d['instructor'])
+
+            # scan through user list to get users.  make sure they exist, then add to course
+            lastUNI = None
+            for thisUNI in uniList:
+                # uniList is sorted, so all dupes would be consecutive.  only add once
+                if thisUNI != lastUNI:
+                    # don't add the student if he is the instructor of the course
+                    if thisUNI != thisCourse.instructor.uni:
+                        thisUser = Ecouser.select(Ecouser.q.uni == thisUNI)
+                        # make sure this is a valid, existing user
+                        if thisUser.count() == 1:
+                            thisCourse.addEcouser(thisUser[0].id)
+                            lastUNI = thisUNI
+
+            print thisCourse.students
+
             cherrypy.session['message'] = "New course '" + description + "' has been created."
             return httptools.redirect("/course")
         except formencode.Invalid, e:
@@ -344,6 +365,7 @@ class EcomapController(EcoControllerBase):
 class CourseController(EcoControllerBase):
 
     def index(self):
+        #import pdb; pdb.set_trace()
         # COURSE LIST
         uni = cherrypy.session.get(UNI_PARAM, None)
         loginName = cherrypy.session.get('fullname', 'unknown')
@@ -352,8 +374,20 @@ class CourseController(EcoControllerBase):
             uni = "foo"
 
         if uni:
-            allCourses = [e for e in Course.select(Course.q.instructorID == Ecouser.q.id, orderBy=['description'])]
-            return self.template("list_courses.pt",{'loginName' : loginName, 'allCourses' : allCourses,})
+
+            # retreive the courses in which this user is a student
+            thisUser = Ecouser.select(Ecouser.q.uni == uni)
+            if thisUser.count() == 1:
+                myCourses = thisUser[0].courses
+
+            # retreive the course in which this user is an instructor
+            instructorOf = Course.select(AND(Course.q.instructorID == Ecouser.q.id, Ecouser.q.uni == uni))
+                
+            if uni in ADMIN_USERS:
+                allCourses = [e for e in Course.select(Course.q.instructorID == Ecouser.q.id, orderBy=['description'])]
+            else:
+                allCourses = None
+            return self.template("list_courses.pt",{'loginName' : loginName, 'allCourses' : allCourses, 'myCourses' : myCourses, 'instructorOf' : instructorOf,})
         else:
             #No user logged in
             return httptools.redirect("/logout")
@@ -379,14 +413,22 @@ class CourseController(EcoControllerBase):
                 }
             if dispatch.has_key(action):
                 return dispatch[action](**kwargs)
-        except:
+        except Exception, e:
+            print e
             cherrypy.session['message'] = "invalid id"
             return httptools.redirect("/course")
 
     default.exposed = True
 
     def delete(self,confirm=""):
+        #import pdb; pdb.set_trace()
         if cherrypy.session.get(UNI_PARAM,None) in ADMIN_USERS:
+
+            # first remove the students from the course, then delete it
+            students = self.course.students
+            for student in students:
+                self.course.removeEcouser(student.id)
+            
             self.course.destroySelf()
             cherrypy.session['message'] = "deleted"
         return httptools.redirect("/course")
@@ -437,7 +479,7 @@ class CourseController(EcoControllerBase):
 
 
     def create_ecomap(self,name="",description="",course=""):
-        import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
 
         es = EcomapSchema()
 

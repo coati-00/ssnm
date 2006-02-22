@@ -10,10 +10,29 @@
 
 <a href="/create_course_form">Create New Course</a>
 
-<h1>All Courses</h1>
+<h1>My Courses</h1>
 
-<p tal:condition="not:allCourses">There are no courses yet.  <a href="/create_course_form">Click here</a> to create one.</p>
+<p tal:condition="not:myCourses">You do not have any courses.</p>
 
+<table tal:condition="myCourses || instructorOf">
+<tr><th></th><th>Description</th><th>Instructor</th></tr>
+<tr tal:repeat="course instructorOf">
+<td></td>
+<td><a tal:attributes="href string:/course/${course/id}/" tal:content="course/description" /></td>
+<td tal:content="string:${course/instructor/firstname} ${course/instructor/lastname}"></td>
+</tr>
+<tr><td colspan="3"><hr/></td></tr>
+<tr tal:repeat="course myCourses">
+<td></td>
+<td><a tal:attributes="href string:/course/${course/id}/" tal:content="course/description" /></td>
+<td tal:content="string:${course/instructor/firstname} ${course/instructor/lastname}"></td>
+</tr>
+</table>
+
+<h4 style="cursor:pointer" tal:condition="allCourses" onClick="document.getElementById('allcourses').style.display = (document.getElementById('allcourses').style.display == 'none') ? 'block' : 'none'">All Courses</h4>
+
+
+<div tal:condition="allCourses" id="allcourses" style="display:none">
 <table tal:condition="allCourses">
 <tr><th></th><th>Description</th><th>Instructor</th></tr>
 <tr tal:repeat="course allCourses">
@@ -22,6 +41,7 @@
 <td tal:content="string:${course/instructor/firstname} ${course/instructor/lastname}"></td>
 </tr>
 </table>
+</div>
 
 </form>
 
