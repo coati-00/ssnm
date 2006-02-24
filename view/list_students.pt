@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<html metal:use-macro="sitemacros/macros/ecomap">
+<body metal:fill-slot="body">
+<div id="header"><img src="/images/logo.png" /></div>
+
+<div id="logout">You are logged in as <span tal:content="loginName"/> <a href="/logout">Log Out</a></div>
+<metal:block use-macro="sitemacros/macros/message" />
+<p/>
+<form tal:attributes="action postTo" method="post">
+
+<!--a href="/create_course_form">Add Student</a-->
+<p>Add student by UNI:<input type="text" name="student_uni" width="10" /><input type="submit" name="action" value="Add Student" /></p>
+<a href="/course">my courses</a> > <span tal:content="courseDescription" />
+
+<h1>Students</h1>
+
+<!--p tal:condition="not:(myCourses or instructorOf)">You do not have any courses.</p-->
+
+<table tal:condition="students">
+<tr><th></th><th>First Name</th><th>Last Name</th><th>UNI</th></tr>
+<tr tal:repeat="student students">
+<td><input type="checkbox" name="student_id" tal:attributes="value string:${student/id}"/></td>
+<td tal:content="student/firstname" />
+<td tal:content="student/lastname" />
+<td tal:content="student/uni" />
+</tr>
+</table>
+
+<input tal:condition="students" type="submit" name="action" value="Delete Selected" onclick="return confirm('Are you sure you want to delete the selected items??');"/>
+
+
+</form>
+
+</body>
+</html>

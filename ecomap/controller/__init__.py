@@ -427,6 +427,8 @@ class CourseController(EcoControllerBase):
             'delete' : self.delete,
             'update' : self.update,
             'create_new' : self.create_new,
+            'students' : self.view_students,
+            'update_students' : self.update_students,
             }
         if dispatch.has_key(action):
             return dispatch[action](**kwargs)
@@ -482,6 +484,58 @@ class CourseController(EcoControllerBase):
         else:
             #No user logged in
             return httptools.redirect("/logout")
+
+
+    def view_students(self):
+        #import pdb; pdb.set_trace()
+        postTo = "/course/%s/update_students" % self.course.id
+        courseDescription = self.course.description
+        return self.template("list_students.pt",{'students' : self.course.students, 'postTo' : postTo, 'courseDescription' : courseDescription,})
+
+    def update_students(self,**kwargs):
+        #import pdb; pdb.set_trace()
+        action = kwargs['action']
+        if action == 'Delete Selected':
+            #check that some were selected
+            studentList = kwargs.get('student_id',None)
+            if studentList:
+                if type(studentList) is str:
+                    itemList = [int(kwargs['student_id'])]
+                elif type(kwargs['student_id']) is list:
+                    itemList = [k for k in kwargs['student_id']]
+                else:
+                    output = "error - unknown argument type"
+
+                thisName = ""
+                for item in itemList:
+                    thisItem = Ecouser.get(item)
+                    thisName += thisItem.firstname + " " + thisItem.lastname + ", "
+                    self.course.removeEcouser(thisItem.id)
+                cherrypy.session['message'] = "'" + thisName + "' has been deleted"
+                return httptools.redirect("/course/%s/students" % self.course.id)
+
+            else:
+                return httptools.redirect("/course/%s/" % self.course.id)
+        elif action == 'Add Student':
+            studentUNI = kwargs.get('student_uni',None)
+            if studentUNI:
+                if studentUNI != self.course.instructor.uni:
+                    thisUser = Ecouser.select(Ecouser.q.uni == studentUNI)
+                    # make sure this is a valid, existing user
+                    if thisUser.count() == 1:
+                        self.course.addEcouser(thisUser[0].id)
+                        cherrypy.session['message'] = "'" + thisUser[0].firstname + " " + thisUser[0].lastname + "' has been added"
+                        return httptools.redirect("/course/%s/students" % self.course.id)
+                    else:
+                        print "not a valid user"
+                        # not a valid user (we will be able to add these later and check with WIND
+                else:
+                    print "can't add instructor"
+                    # can't add the instructor as a student
+
+        # im only dealing with delete selected right now
+        else:
+            return httptools.redirect("/course/%s/" % self.course.id)
 
 
     def create_new(self):

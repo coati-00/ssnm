@@ -15,11 +15,12 @@
 <!--p tal:condition="not:(myCourses or instructorOf)">You do not have any courses.</p-->
 
 <table tal:condition="instructorOf">
-<tr><th></th><th>Description</th><th>Instructor</th></tr>
+<tr><th></th><th>Description</th><th>Instructor</th><th></th></tr>
 <tr tal:repeat="course instructorOf">
 <td></td>
 <td><a tal:attributes="href string:/course/${course/id}/" tal:content="course/description" /></td>
 <td tal:content="string:${course/instructor/firstname} ${course/instructor/lastname}"></td>
+<td><a tal:attributes="href string:/course/${course/id}/">View SSNMs</a> <a tal:attributes="href string:/course/${course/id}/students">View Students</a></td>
 </tr>
 </table>
 <table tal:condition="myCourses">
