@@ -16,7 +16,7 @@ config.MODE = options.mode
 from ecomap.helpers import *
 from ecomap.model   import *
 
-import ecomap.controller as controller
+import ecomap.controllers as controller
 import cherrypy
 
 controller.start()

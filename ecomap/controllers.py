@@ -57,7 +57,7 @@ def mp_setup(initOnly=False):
     init_config()
 
 class EcoControllerBase(CherryTAL):
-    _template_dir = "view"
+    _template_dir = "ecomap/templates"
 
     def referer(self):
         return cherrypy.request.headerMap.get('Referer','/')
@@ -74,7 +74,7 @@ class EcoControllerBase(CherryTAL):
             # Do something else here.
             cherrypy.response.body = ['Error: ' + str(err[0])]
 
-from ecomap.controller.WindLoginFilter import WindLoginFilter
+from WindLoginFilter import WindLoginFilter
 
 class Eco(EcoControllerBase):
     # enable filtering to disable post filtering on the postTester funcion
@@ -381,7 +381,7 @@ class CourseController(EcoControllerBase):
             uni = "foo"
 
         if uni:
-
+            myCourses = []
             # retreive the courses in which this user is a student
             thisUser = Ecouser.select(Ecouser.q.uni == uni)
             if thisUser.count() == 1:
