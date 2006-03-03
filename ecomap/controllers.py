@@ -91,7 +91,7 @@ class Eco(EcoControllerBase):
 
     #legacy redirect for flash
     def myList(self):
-        return httptools.redirect("/course")
+        raise cherrypy.HTTPRedirect("/course")
     myList.exposed = True
 
     def flashConduit(self,HTMLid="",HTMLticket=""):
@@ -218,7 +218,7 @@ class Eco(EcoControllerBase):
             if config.MODE == "regressiontest":
                 uni = "foo"
             else:
-                return httptools.redirect("/logout")
+                raise cherrypy.HTTPRedirect("/logout")
         try:
             d = es.to_python({'description' : description, 'instructor' : instructor})
             thisCourse = Course(description=d['description'],instructor=d['instructor'])
@@ -239,7 +239,7 @@ class Eco(EcoControllerBase):
             print thisCourse.students
 
             cherrypy.session['message'] = "New course '" + description + "' has been created."
-            return httptools.redirect("/course")
+            raise cherrypy.HTTPRedirect("/course")
         except formencode.Invalid, e:
             defaults = {'description' : description, 'instructor' : instructor}
             parser = htmlfill.FillingParser(defaults,errors=e.unpack_errors())
@@ -263,13 +263,13 @@ class Eco(EcoControllerBase):
         # TODO: this should be done with formencode
         if password != pass2:
             cherrypy.session['message'] = "Those passwords don't match"
-            return httptools.redirect("/add_guest_account_form")
+            raise cherrypy.HTTPRedirect("/add_guest_account_form")
         if uni == "":
             cherrypy.session['message'] = "A user name is required"
-            return httptools.redirect("/add_guest_account_form")
+            raise cherrypy.HTTPRedirect("/add_guest_account_form")
         u = Ecouser(uni=uni, password=password, firstname=firstname, lastname=lastname)
         cherrypy.session['message'] = "New user has been created.  Please log in"
-        return httptools.redirect("/guest_login")
+        raise cherrypy.HTTPRedirect("/guest_login")
     add_guest_account.exposed = True
 
 class RESTContent:
@@ -326,7 +326,7 @@ class EcomapController(EcoControllerBase,RESTContent):
             ecomap.description = d['description']
             ecomap.modified = DateTime.now()
             cherrypy.session['message'] = "changes saved"
-            return httptools.redirect("/ecomap/" + str(ecomap.id) + "/")
+            raise cherrypy.HTTPRedirect("/ecomap/" + str(ecomap.id) + "/")
 
         except formencode.Invalid, e:
             defaults = {'name' : name, 'description' : description}
@@ -354,7 +354,7 @@ class EcomapController(EcoControllerBase,RESTContent):
         if cherrypy.session.get(UNI_PARAM,None) in ADMIN_USERS:
             ecomap.destroySelf()
             cherrypy.session['message'] = "deleted"
-        return httptools.redirect("/course")
+        raise cherrypy.HTTPRedirect("/course")
 
     @cherrypy.expose()
     def flash(self,ecomap):
@@ -393,7 +393,7 @@ class CourseController(EcoControllerBase,RESTContent):
 
             if len(myCourses) == 1 and not instructorOf:
                 # This is a student with only one course.  Redirect to that course
-                return httptools.redirect("/course/%s/" % myCourses[0].id)
+                raise cherrypy.HTTPRedirect("/course/%s/" % myCourses[0].id)
                 
             if uni in ADMIN_USERS:
                 allCourses = [e for e in Course.select(Course.q.instructorID == Ecouser.q.id, orderBy=['description'])]
@@ -402,7 +402,7 @@ class CourseController(EcoControllerBase,RESTContent):
             return self.template("list_courses.pt",{'loginName' : loginName, 'allCourses' : allCourses, 'myCourses' : myCourses, 'instructorOf' : instructorOf,})
         else:
             #No user logged in
-            return httptools.redirect("/logout")
+            raise cherrypy.HTTPRedirect("/logout")
 
     @cherrypy.expose()
     def delete(self,course,confirm=""):
@@ -416,7 +416,7 @@ class CourseController(EcoControllerBase,RESTContent):
             
             course.destroySelf()
             cherrypy.session['message'] = "deleted"
-        return httptools.redirect("/course")
+        raise cherrypy.HTTPRedirect("/course")
         
     @cherrypy.expose()
     def show(self,course,**kwargs):
@@ -453,7 +453,7 @@ class CourseController(EcoControllerBase,RESTContent):
             return self.template("list_ecomaps.pt",{'students' : students, 'loginName' : loginName, 'myEcomaps' : myEcos, 'publicEcomaps' : publicEcos, 'allEcomaps' : allEcos, 'postTo' : postTo, 'courseDescription' : courseDescription,})
         else:
             #No user logged in
-            return httptools.redirect("/logout")
+            raise cherrypy.HTTPRedirect("/logout")
 
     @cherrypy.expose()
     def students(self,course):
@@ -483,10 +483,10 @@ class CourseController(EcoControllerBase,RESTContent):
                     thisName += thisItem.firstname + " " + thisItem.lastname + ", "
                     course.removeEcouser(thisItem.id)
                 cherrypy.session['message'] = "'" + thisName + "' has been deleted"
-                return httptools.redirect("/course/%s/students" % course.id)
+                raise cherrypy.HTTPRedirect("/course/%s/students" % course.id)
 
             else:
-                return httptools.redirect("/course/%s/" % course.id)
+                raise cherrypy.HTTPRedirect("/course/%s/" % course.id)
         elif action == 'Add Student':
             studentUNI = kwargs.get('student_uni',None)
             if studentUNI:
@@ -496,7 +496,7 @@ class CourseController(EcoControllerBase,RESTContent):
                     if thisUser.count() == 1:
                         course.addEcouser(thisUser[0].id)
                         cherrypy.session['message'] = "'" + thisUser[0].firstname + " " + thisUser[0].lastname + "' has been added"
-                        return httptools.redirect("/course/%s/students" % course.id)
+                        raise cherrypy.HTTPRedirect("/course/%s/students" % course.id)
                     else:
                         print "not a valid user"
                         # not a valid user (we will be able to add these later and check with WIND
@@ -506,7 +506,7 @@ class CourseController(EcoControllerBase,RESTContent):
 
         # im only dealing with delete selected right now
         else:
-            return httptools.redirect("/course/%s/" % course.id)
+            raise cherrypy.HTTPRedirect("/course/%s/" % course.id)
 
     @cherrypy.expose()
     def create_new(self):
@@ -517,7 +517,7 @@ class CourseController(EcoControllerBase,RESTContent):
             if config.MODE == "regressiontest":
                 uni = "foo"
             else:
-                return httptools.redirect("/logout")
+                raise cherrypy.HTTPRedirect("/logout")
 
         d = {
             'name' : 'Enter Subject Name Here',
@@ -527,7 +527,7 @@ class CourseController(EcoControllerBase,RESTContent):
             }
 
         thisEcomap = Ecomap(name=d['name'],description=d['description'],owner=d['owner'],course=d['course'])
-        return httptools.redirect("/ecomap/%s/" % thisEcomap.id)
+        raise cherrypy.HTTPRedirect("/ecomap/%s/" % thisEcomap.id)
 
     @cherrypy.expose()
     def update(self,course,**kwargs):
@@ -545,7 +545,7 @@ class CourseController(EcoControllerBase,RESTContent):
             else:
                 output = "error - unknown argument type"
         else:
-            return httptools.redirect(redirectTo)
+            raise cherrypy.HTTPRedirect(redirectTo)
 
         if action == 'Delete Selected':
             for item in itemList:
@@ -560,6 +560,6 @@ class CourseController(EcoControllerBase,RESTContent):
                 thisItem.public = not thisItem.public
             cherrypy.session['message'] = "shared"
 
-        return httptools.redirect(redirectTo)
+        raise cherrypy.HTTPRedirect(redirectTo)
 
 

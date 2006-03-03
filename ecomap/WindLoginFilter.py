@@ -1,6 +1,5 @@
 from cherrypy.lib.filter import basefilter
 import cherrypy
-from cherrypy.lib import httptools
 import urllib
 from ecomap.model import *
 from ecomap.helpers import get_or_create_user, get_user
@@ -61,7 +60,7 @@ class WindLoginFilter(basefilter.BaseFilter):
             cherrypy.session[self.ticket_key] = ticket_id
             u = get_or_create_user(uni)
             cherrypy.session['fullname'] = u.firstname + " " + u.lastname
-            cherrypy.response.body = httptools.redirect(self.after_login)
+            raise cherrypy.HTTPRedirect(self.after_login)
             
         import ecomap.config as config
         if config.MODE == "regressiontest":
@@ -86,8 +85,7 @@ class WindLoginFilter(basefilter.BaseFilter):
                     cherrypy.session[self.ticket_key] = "guest ticket"
                     cherrypy.session[self.uni_key] = uni
                     cherrypy.session['fullname'] = u.firstname + " " + u.lastname
-                    cherrypy.response.body = httptools.redirect(self.after_login)
-                    return
+                    raise cherrypy.HTTPRedirect(self.after_login)
                 else:
                     cherrypy.session['message'] = "login failed"
                 
@@ -105,8 +103,7 @@ class WindLoginFilter(basefilter.BaseFilter):
             destination = urllib.quote(cherrypy.request.browserUrl)
             ticket_id = cherrypy.request.paramMap.get("ticketid","")
             if ticket_id == "":
-                cherrypy.response.body = httptools.redirect("%s?destination=%s&service=cnmtl_full_np" % (self.wind_url_base,destination))
-                return
+                raise cherrypy.HTTPRedirect("%s?destination=%s&service=cnmtl_full_np" % (self.wind_url_base,destination))
             else:
                 (success,uni,groups) = validate_wind_ticket(ticket_id)
                 if int(success) == 0:
@@ -119,7 +116,7 @@ class WindLoginFilter(basefilter.BaseFilter):
                 cherrypy.session[self.groups_key] = groups
                 u = get_or_create_user(uni)
                 cherrypy.session['fullname'] = u.firstname + " " + u.lastname
-                cherrypy.response.body = httptools.redirect(self.after_login)
+                raise cherrypy.HTTPRedirect(self.after_login)
 
         if cherrypy.request.path.endswith(self.logout_url):
             cherrypy.session[self.auth_key] = False
@@ -133,5 +130,5 @@ class WindLoginFilter(basefilter.BaseFilter):
         if cherrypy.session.get(self.auth_key,False):
             return
         else:
-            cherrypy.response.body = httptools.redirect(self.login_url)
+            raise cherrypy.HTTPRedirect(self.login_url)
 
