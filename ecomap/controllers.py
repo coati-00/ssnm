@@ -273,8 +273,7 @@ class Eco(EcoControllerBase):
     add_guest_account.exposed = True
 
 
-
-class EcomapController(EcoControllerBase):
+class EcomapController(EcoControllerBase,RESTContent):
     _cpFilterList = [WindLoginFilter(after_login="/myList",allowed_paths=["/","/flashConduit"],
                                       uni_key=UNI_PARAM,ticket_key=AUTH_TICKET_PARAM)]
     def index(self):

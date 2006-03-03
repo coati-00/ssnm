@@ -54,7 +54,8 @@ class TestEcouser:
 class TestEcomap:
     def setup_class(self):
         self.user = Ecouser(uni="foo",firstname="regression test user",lastname="test")
-        self.map = Ecomap(name="test",description="test",flashData="blah blah blah",owner=self.user)
+        self.course = Course(instructor=self.user,description="foo")
+        self.map = Ecomap(name="test",description="test",flashData="blah blah blah",owner=self.user,course=self.course)
 
     def teardown_class(self):
         self.map.destroySelf()
