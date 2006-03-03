@@ -272,104 +272,104 @@ class Eco(EcoControllerBase):
         return httptools.redirect("/guest_login")
     add_guest_account.exposed = True
 
+class RESTContent:
+    @cherrypy.expose()
+    def default(self, *vpath, **params):
+        if len(vpath) == 1:
+            identifier = vpath[0]
+            action = self.show
+        elif len(vpath) == 2:
+            identifier, verb = vpath
+            verb = verb.replace('.', '_')
+            action = getattr(self, verb, None)
+            if not action:
+                raise cherrypy.NotFound
+            if not action.exposed:
+                raise cherrypy.NotFound
+        else:
+            raise cherrypy.NotFound
+        items = self.query(identifier)
+        if items.count() == 0:
+            raise cherrypy.NotFound
+        else:
+            return action(items[0], **params)
+
 
 class EcomapController(EcoControllerBase,RESTContent):
     _cpFilterList = [WindLoginFilter(after_login="/myList",allowed_paths=["/","/flashConduit"],
                                       uni_key=UNI_PARAM,ticket_key=AUTH_TICKET_PARAM)]
+    @cherrypy.expose()
     def index(self):
         # this should really be a secured list of your ecomaps
         # it is a duplicate of the functionality of myList
         # it may be more appropriate to redirect to myList
         return self.template("list_ecomaps.pt",{'ecomaps' : [e for e in Ecomap.select()]})
-    index.exposed = True
 
+    def query(self,id):
+        return Ecomap.get(int(id))
 
-    def default(self,ecomap_id,*args,**kwargs):
-        #import pdb; pdb.set_trace()
-        ecomap_id = int(ecomap_id)
-        try:
-            self.ecomap = Ecomap.get(ecomap_id)
-        except Exception, e:
-            print e
-            cherrypy.session['message'] = "invalid id"
-            return httptools.redirect("/course")
-
-        if len(args) == 0:
-            return self.view_ecomap(**kwargs)
-        action = args[0]
-
-        dispatch = {
-            'delete' : self.delete,
-            'edit_form' : self.edit_form,
-            'edit' : self.edit,
-            'flash' : self.flash,
-            }
-        if dispatch.has_key(action):
-            return dispatch[action](**kwargs)
-
-    default.exposed = True
-
-    def edit_form(self):
-        defaults = {'name' : self.ecomap.name, 'description' : self.ecomap.description}
+    @cherrypy.expose()
+    def edit_form(self,ecomap):
+        defaults = {'name' : ecomap.name, 'description' : ecomap.description}
         parser = htmlfill.FillingParser(defaults)
-        parser.feed(self.template("edit_ecomap.pt",{'ecomap' : self.ecomap}))
+        parser.feed(self.template("edit_ecomap.pt",{'ecomap' : ecomap}))
         output = parser.text()
         parser.close()
         return output
 
-    def edit(self,name="",description=""):
+    @cherrypy.expose()
+    def edit(self,ecomap,name="",description=""):
         es = EcomapSchema()
         try:
-            d = es.to_python({'name' : name, 'description' : description, 'owner' : self.ecomap.ownerID})
-            self.ecomap.name = d['name']
-            self.ecomap.description = d['description']
-            self.ecomap.modified = DateTime.now()
+            d = es.to_python({'name' : name, 'description' : description, 'owner' : ecomap.ownerID})
+            ecomap.name = d['name']
+            ecomap.description = d['description']
+            ecomap.modified = DateTime.now()
             cherrypy.session['message'] = "changes saved"
-            return httptools.redirect("/ecomap/" + str(self.ecomap.id) + "/")
+            return httptools.redirect("/ecomap/" + str(ecomap.id) + "/")
 
         except formencode.Invalid, e:
             defaults = {'name' : name, 'description' : description}
             parser = htmlfill.FillingParser(defaults,errors=e.unpack_errors())
-            parser.feed(self.template("edit_ecomap.pt",{'ecomap' : self.ecomap}))
+            parser.feed(self.template("edit_ecomap.pt",{'ecomap' : ecomap}))
             output = parser.text()
             parser.close()
             return output
 
-    def view_ecomap(self,**kwargs):
-
-        #import pdb; pdb.set_trace()
-
-        server = "http://xnoybis.ccnmtl.columbia.edu:15097/"
-        if config.MODE == "production":
-            server = "http://ssnm.ccnmtl.columbia.edu/"
+    @cherrypy.expose()
+    def show(self,ecomap,**kwargs):
+        server = '/'.join(cherrypy.request.browserUrl.split('/')[:3])
 
         data = {
-            'ecomap' : self.ecomap,
-            'id' : self.ecomap.id,
+            'ecomap' : ecomap,
+            'id' : ecomap.id,
             'ticket' : cherrypy.session.get(AUTH_TICKET_PARAM,None),
             'myName' : cherrypy.session.get('fullname',""),
             'server' : server,
             }
         return self.template("view_ecomap.pt",data)
-    #ecomap.exposed = True
 
-
-    def delete(self,confirm=""):
+    @cherrypy.expose()
+    def delete(self,ecomap,confirm=""):
         if cherrypy.session.get(UNI_PARAM,None) in ADMIN_USERS:
-            self.ecomap.destroySelf()
+            ecomap.destroySelf()
             cherrypy.session['message'] = "deleted"
         return httptools.redirect("/course")
 
-    def flash(self):
+    @cherrypy.expose()
+    def flash(self,ecomap):
         flashData = {
-            'id' : self.ecomap.id,
+            'id' : ecomap.id,
             'ticket' : cherrypy.session.get(AUTH_TICKET_PARAM,None),
             }
         return self.template("flash.pt",flashData)
 
 
-class CourseController(EcoControllerBase):
+class CourseController(EcoControllerBase,RESTContent):
+    def query(self,id):
+        return Course.get(int(id))
 
+    @cherrypy.expose()
     def index(self):
         #import pdb; pdb.set_trace()
         # COURSE LIST
@@ -404,51 +404,22 @@ class CourseController(EcoControllerBase):
             #No user logged in
             return httptools.redirect("/logout")
 
-    index.exposed = True
-
-
-    def default(self,course_id,*args,**kwargs):
-        #import pdb; pdb.set_trace()
-        course_id = int(course_id)
-        try:
-            self.course = Course.get(course_id)
-        except Exception, e:
-            print e
-            cherrypy.session['message'] = "invalid id"
-            return httptools.redirect("/course")
-        
-        #if self.course:
-        if len(args) == 0:
-            return self.view_course(**kwargs)
-        action = args[0]
-
-        dispatch = {
-            'delete' : self.delete,
-            'update' : self.update,
-            'create_new' : self.create_new,
-            'students' : self.view_students,
-            'update_students' : self.update_students,
-            }
-        if dispatch.has_key(action):
-            return dispatch[action](**kwargs)
-
-    default.exposed = True
-
-    def delete(self,confirm=""):
+    @cherrypy.expose()
+    def delete(self,course,confirm=""):
         #import pdb; pdb.set_trace()
         if cherrypy.session.get(UNI_PARAM,None) in ADMIN_USERS:
 
             # first remove the students from the course, then delete it
-            students = self.course.students
+            students = course.students
             for student in students:
-                self.course.removeEcouser(student.id)
+                course.removeEcouser(student.id)
             
-            self.course.destroySelf()
+            course.destroySelf()
             cherrypy.session['message'] = "deleted"
         return httptools.redirect("/course")
         
-
-    def view_course(self,**kwargs):
+    @cherrypy.expose()
+    def show(self,course,**kwargs):
 
         # This shows the list of ecomaps
 
@@ -456,24 +427,24 @@ class CourseController(EcoControllerBase):
 
         uni = cherrypy.session.get(UNI_PARAM, None)
         loginName = cherrypy.session.get('fullname', 'unknown')
-        postTo = "/course/%s/update" % self.course.id
-        courseDescription = self.course.description
+        postTo = "/course/%s/update" % course.id
+        courseDescription = course.description
 
         if uni == None and config.MODE == "regressiontest":
             uni = "foo"
 
         if uni:
             # My ecomaps are the ecomaps I created in this course specifically
-            myEcos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecouser.q.uni == uni, Ecomap.q.courseID == self.course.id), orderBy=['name'])]
-            publicEcos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecouser.q.uni != uni, Ecomap.q.courseID == self.course.id, Ecomap.q.public == True), orderBy=['name'])]
+            myEcos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecouser.q.uni == uni, Ecomap.q.courseID == course.id), orderBy=['name'])]
+            publicEcos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecouser.q.uni != uni, Ecomap.q.courseID == course.id, Ecomap.q.public == True), orderBy=['name'])]
             
-            if uni == self.course.instructor.uni:
-                students = self.course.students
+            if uni == course.instructor.uni:
+                students = course.students
             else:
                 students = None
             
             if uni in ADMIN_USERS:
-                allEcos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecomap.q.courseID == self.course.id), orderBy=['name'])]
+                allEcos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecomap.q.courseID == course.id), orderBy=['name'])]
             else:
                 allEcos = None
             for e in myEcos:
@@ -484,14 +455,15 @@ class CourseController(EcoControllerBase):
             #No user logged in
             return httptools.redirect("/logout")
 
-
-    def view_students(self):
+    @cherrypy.expose()
+    def students(self,course):
         #import pdb; pdb.set_trace()
-        postTo = "/course/%s/update_students" % self.course.id
-        courseDescription = self.course.description
-        return self.template("list_students.pt",{'students' : self.course.students, 'postTo' : postTo, 'courseDescription' : courseDescription,})
+        postTo = "/course/%s/update_students" % course.id
+        courseDescription = course.description
+        return self.template("list_students.pt",{'students' : course.students, 'postTo' : postTo, 'courseDescription' : courseDescription,})
 
-    def update_students(self,**kwargs):
+    @cherrypy.expose()
+    def update_students(self,course,**kwargs):
         #import pdb; pdb.set_trace()
         action = kwargs['action']
         if action == 'Delete Selected':
@@ -509,22 +481,22 @@ class CourseController(EcoControllerBase):
                 for item in itemList:
                     thisItem = Ecouser.get(item)
                     thisName += thisItem.firstname + " " + thisItem.lastname + ", "
-                    self.course.removeEcouser(thisItem.id)
+                    course.removeEcouser(thisItem.id)
                 cherrypy.session['message'] = "'" + thisName + "' has been deleted"
-                return httptools.redirect("/course/%s/students" % self.course.id)
+                return httptools.redirect("/course/%s/students" % course.id)
 
             else:
-                return httptools.redirect("/course/%s/" % self.course.id)
+                return httptools.redirect("/course/%s/" % course.id)
         elif action == 'Add Student':
             studentUNI = kwargs.get('student_uni',None)
             if studentUNI:
-                if studentUNI != self.course.instructor.uni:
+                if studentUNI != course.instructor.uni:
                     thisUser = Ecouser.select(Ecouser.q.uni == studentUNI)
                     # make sure this is a valid, existing user
                     if thisUser.count() == 1:
-                        self.course.addEcouser(thisUser[0].id)
+                        course.addEcouser(thisUser[0].id)
                         cherrypy.session['message'] = "'" + thisUser[0].firstname + " " + thisUser[0].lastname + "' has been added"
-                        return httptools.redirect("/course/%s/students" % self.course.id)
+                        return httptools.redirect("/course/%s/students" % course.id)
                     else:
                         print "not a valid user"
                         # not a valid user (we will be able to add these later and check with WIND
@@ -534,9 +506,9 @@ class CourseController(EcoControllerBase):
 
         # im only dealing with delete selected right now
         else:
-            return httptools.redirect("/course/%s/" % self.course.id)
+            return httptools.redirect("/course/%s/" % course.id)
 
-
+    @cherrypy.expose()
     def create_new(self):
         #import pdb; pdb.set_trace()
         
@@ -551,21 +523,19 @@ class CourseController(EcoControllerBase):
             'name' : 'Enter Subject Name Here',
             'description' : 'Enter Description here',
             'owner' : Ecouser.select(Ecouser.q.uni == uni)[0].id,
-            'course' : self.course.id
+            'course' : course.id
             }
 
         thisEcomap = Ecomap(name=d['name'],description=d['description'],owner=d['owner'],course=d['course'])
         return httptools.redirect("/ecomap/%s/" % thisEcomap.id)
 
-    create_new.exposed = True
-
-    
-    def update(self,**kwargs):
+    @cherrypy.expose()
+    def update(self,course,**kwargs):
         #import pdb; pdb.set_trace()
         action = kwargs['action']
         #make sure at least one checkbox was selected
         ecomapList = kwargs.get('ecomap_id',None)
-        redirectTo = "/course/%s/" % self.course.id
+        redirectTo = "/course/%s/" % course.id
         
         if ecomapList:
             if type(ecomapList) is str:
@@ -592,4 +562,4 @@ class CourseController(EcoControllerBase):
 
         return httptools.redirect(redirectTo)
 
-    update.exposed = True
+
