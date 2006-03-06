@@ -82,18 +82,17 @@ class Eco(EcoControllerBase):
                       WindLoginFilter(after_login="/course",allowed_paths=["/","/flashConduit"],
                                       uni_key=UNI_PARAM,ticket_key=AUTH_TICKET_PARAM)]
 
+    @cherrypy.expose()
     def index(self):
         # import pdb; pdb.set_trace()
         return self.template("index.pt",{})
 
-    index.exposed = True
-
-
     #legacy redirect for flash
+    @cherrypy.expose()
     def myList(self):
         raise cherrypy.HTTPRedirect("/course")
-    myList.exposed = True
 
+    @cherrypy.expose()
     def flashConduit(self,HTMLid="",HTMLticket=""):
         #import pdb; pdb.set_trace()
 
@@ -183,14 +182,11 @@ class Eco(EcoControllerBase):
 
         return responseData
 
-    flashConduit.exposed = True
-
-
+    @cherrypy.expose()
     def logout(self,**kwargs):
         return self.template("logout.pt",{})
-    logout.exposed = True
 
-
+    @cherrypy.expose()
     def create_course_form(self):
         uni = cherrypy.session.get(UNI_PARAM, None)
 
@@ -201,9 +197,7 @@ class Eco(EcoControllerBase):
         output = parser.text()
         return output
 
-    create_course_form.exposed = True
-
-
+    @cherrypy.expose()
     def create_course(self,description="",instructor="",students=""):
         #import pdb; pdb.set_trace()
 
@@ -248,17 +242,15 @@ class Eco(EcoControllerBase):
             parser.close()
             return output
 
-    create_course.exposed = True
-
-
+    @cherrypy.expose()
     def guest_login(self,uni="",password=""):
         return self.template("guest_login.pt",{})
-    guest_login.exposed = True
 
+    @cherrypy.expose()
     def add_guest_account_form(self):
         return self.template("add_guest_account.pt",{})
-    add_guest_account_form.exposed = True
 
+    @cherrypy.expose()
     def add_guest_account(self,uni="",firstname="",lastname="",password="",pass2=""):
         # TODO: this should be done with formencode
         if password != pass2:
@@ -270,7 +262,7 @@ class Eco(EcoControllerBase):
         u = Ecouser(uni=uni, password=password, firstname=firstname, lastname=lastname)
         cherrypy.session['message'] = "New user has been created.  Please log in"
         raise cherrypy.HTTPRedirect("/guest_login")
-    add_guest_account.exposed = True
+
 
 class RESTContent:
     @cherrypy.expose()
