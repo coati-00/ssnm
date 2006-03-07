@@ -5,7 +5,7 @@ from ecomap.helpers import EcomapSchema
 import ecomap.config as config
 from DisablePostParsingFilter import DisablePostParsingFilter
 
-from cherrypy.lib import httptools
+#from cherrypy.lib import httptools
 from mx import DateTime
 import cherrypy
 import sys, os.path
@@ -267,6 +267,7 @@ class Eco(EcoControllerBase):
 class RESTContent:
     @cherrypy.expose()
     def default(self, *vpath, **params):
+        #import pdb; pdb.set_trace()
         if len(vpath) == 1:
             identifier = vpath[0]
             action = self.show
@@ -280,11 +281,11 @@ class RESTContent:
                 raise cherrypy.NotFound
         else:
             raise cherrypy.NotFound
-        items = self.query(identifier)
-        if items.count() == 0:
+        item = self.query(identifier)
+        if item == None:
             raise cherrypy.NotFound
         else:
-            return action(items[0], **params)
+            return action(item, **params)
 
 
 class EcomapController(EcoControllerBase,RESTContent):
@@ -330,7 +331,8 @@ class EcomapController(EcoControllerBase,RESTContent):
 
     @cherrypy.expose()
     def show(self,ecomap,**kwargs):
-        server = '/'.join(cherrypy.request.browserUrl.split('/')[:3])
+        #import pdb; pdb.set_trace()
+        server = '/'.join(cherrypy.request.browserUrl.split('/')[:3]) + '/'
 
         data = {
             'ecomap' : ecomap,
@@ -488,20 +490,29 @@ class CourseController(EcoControllerBase,RESTContent):
                     if thisUser.count() == 1:
                         course.addEcouser(thisUser[0].id)
                         cherrypy.session['message'] = "'" + thisUser[0].firstname + " " + thisUser[0].lastname + "' has been added"
-                        raise cherrypy.HTTPRedirect("/course/%s/students" % course.id)
                     else:
-                        print "not a valid user"
-                        # not a valid user (we will be able to add these later and check with WIND
+                        # add this user to our list of users
+                        # make sure it is a valid UNI
+                        (firstName,lastName) = ldap_lookup(studentUNI)
+                        if firstName == "" and lastName == "":
+                            # not in the ldap.  bad uni.  exit
+                            cherrypy.session['message'] = "Sorry, That is not a valid UNI"
+                        else:
+                            eus = EcouserSchema()
+                            d = eus.to_python({'uni' : studentUNI, 'firstname' : firstName, 'lastname' : lastName})
+                            thisUser = Ecouser(uni=d['uni'],firstname=d['firstname'],lastname=d['lastname'])
+                            self.course.addEcouser(thisUser.id)
+                            cherrypy.session['message'] = "'" + d['firstname'] + " " + d['lastname'] + "' has been added"
                 else:
-                    print "can't add instructor"
+                    cherrypy.session['message'] = "Sorry, The instructor cannot be a student in the class"
                     # can't add the instructor as a student
+                raise cherrypy.HTTPRedirect("/course/%s/students" % course.id)
 
-        # im only dealing with delete selected right now
         else:
-            raise cherrypy.HTTPRedirect("/course/%s/" % course.id)
+            raise cherrypy.HTTPRedirect("/course/%s/" % course.id)		
 
     @cherrypy.expose()
-    def create_new(self):
+    def create_new(self,course):
         #import pdb; pdb.set_trace()
         
         uni = cherrypy.session.get(UNI_PARAM,None)
