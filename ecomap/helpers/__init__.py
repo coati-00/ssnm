@@ -20,10 +20,12 @@ class EcomapSchema(formencode.Schema):
 
 class EcouserSchema(formencode.Schema):
     uni          = validators.String(not_empty=True)
+    securityLevel= validators.Int()
     firstname    = validators.String()
     lastname     = validators.String()
 
 class CourseSchema(formencode.Schema):
+    name         = validators.String()
     description  = validators.String(not_empty=True)
     instructor   = validators.Int()
 
@@ -86,8 +88,8 @@ def get_or_create_user(username,firstname="",lastname=""):
             lastname = username
 
         eus = EcouserSchema()
-        d = eus.to_python({'uni' : username, 'firstname' : firstname, 'lastname' : lastname})
-        u = Ecouser(uni=d['uni'],firstname=d['firstname'],lastname=d['lastname'])
+        d = eus.to_python({'uni' : username, 'securityLevel' : 2, 'firstname' : firstname, 'lastname' : lastname})
+        u = Ecouser(uni=d['uni'],securityLevel=d['securityLevel'],firstname=d['firstname'],lastname=d['lastname'])
     return u
 
 def get_user(username):

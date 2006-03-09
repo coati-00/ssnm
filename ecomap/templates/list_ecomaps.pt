@@ -8,7 +8,7 @@
 <p/>
 <form tal:attributes="action postTo" method="post">
 
-<a href="/course">my courses</a> > <span tal:content="courseDescription" />
+<a href="/course">my courses</a> > <span tal:content="courseName" />
 
 <h3>My Social Support Network Maps</h3>
 
@@ -45,6 +45,7 @@
 </table>
 -->
 
+<!--
 <h4 style="cursor:pointer" tal:condition="students" onClick="document.getElementById('allstudents').style.display = (document.getElementById('allstudents').style.display == 'none') ? 'block' : 'none'">Students enrolled</h4>
 
 <div id="allstudents" style="display:none">
@@ -58,6 +59,7 @@
 </tr>
 </table>
 </div>
+-->
 
 <h4 style="cursor:pointer" tal:condition="allEcomaps" onClick="document.getElementById('allmaps').style.display = (document.getElementById('allmaps').style.display == 'none') ? 'block' : 'none'">All Social Support Network Maps</h4>
 

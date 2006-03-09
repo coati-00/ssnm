@@ -10,7 +10,7 @@
 
 <!--a href="/create_course_form">Add Student</a-->
 <p>Add student by UNI:<input type="text" name="student_uni" width="10" /><input type="submit" name="action" value="Add Student" /></p>
-<a href="/course">my courses</a> > <span tal:content="courseDescription" />
+<a href="/course">my courses</a> > <span tal:content="courseName" />
 
 <h1>Students</h1>
 

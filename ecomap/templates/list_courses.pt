@@ -15,10 +15,11 @@
 <!--p tal:condition="not:(myCourses or instructorOf)">You do not have any courses.</p-->
 
 <table tal:condition="instructorOf">
-<tr><th></th><th>Description</th><th>Instructor</th><th></th></tr>
+<tr><th></th><th>Name</th><th>Description</th><th>Instructor</th><th></th></tr>
 <tr tal:repeat="course instructorOf">
 <td></td>
-<td><a tal:attributes="href string:/course/${course/id}/" tal:content="course/description" /></td>
+<td tal:content="course/name" />
+<td tal:content="course/description" />
 <td tal:content="string:${course/instructor/firstname} ${course/instructor/lastname}"></td>
 <td><a tal:attributes="href string:/course/${course/id}/">View SSNMs</a> <a tal:attributes="href string:/course/${course/id}/students">View Students</a></td>
 </tr>
@@ -38,11 +39,13 @@
 
 <div tal:condition="allCourses" id="allcourses" style="display:block">
 <table tal:condition="allCourses">
-<tr><th></th><th>Description</th><th>Instructor</th></tr>
+<tr><th></th><th>Name</th><th>Description</th><th>Instructor</th><th></th></tr>
 <tr tal:repeat="course allCourses">
 <td><a tal:attributes="href string:/course/${course/id}/delete/" onclick="return confirm('Are you sure you want to delete the selected items??');">DEL</a></td>
-<td><a tal:attributes="href string:/course/${course/id}/" tal:content="course/description" /></td>
+<td tal:content="course/name" />
+<td tal:content="course/description" />
 <td tal:content="string:${course/instructor/firstname} ${course/instructor/lastname}"></td>
+<td><a tal:attributes="href string:/course/${course/id}/">View SSNMs</a> <a tal:attributes="href string:/course/${course/id}/students">View Students</a></td>
 </tr>
 </table>
 

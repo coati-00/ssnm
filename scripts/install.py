@@ -27,3 +27,4 @@ if options.drop:
     dropTables()
 
 createTables()
+user = Ecouser(uni="kfe2102",firstname="Kurt",lastname="Eldridge",securityLevel=1)

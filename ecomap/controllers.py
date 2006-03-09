@@ -190,7 +190,7 @@ class Eco(EcoControllerBase):
     def create_course_form(self):
         uni = cherrypy.session.get(UNI_PARAM, None)
 
-        defaults = {'description' : "", 'instructor' : ""}
+        defaults = {'name' : "", 'description' : "", 'instructor' : ""}
         parser = htmlfill.FillingParser(defaults)
         parser.feed(self.template("create_course.pt",{'allInstructors' : [i for i in Ecouser.select()]}))
         parser.close()
@@ -198,7 +198,7 @@ class Eco(EcoControllerBase):
         return output
 
     @cherrypy.expose()
-    def create_course(self,description="",instructor="",students=""):
+    def create_course(self,name="",description="",instructor="",students=""):
         #import pdb; pdb.set_trace()
 
         es = CourseSchema()
@@ -214,10 +214,14 @@ class Eco(EcoControllerBase):
             else:
                 raise cherrypy.HTTPRedirect("/logout")
         try:
-            d = es.to_python({'description' : description, 'instructor' : instructor})
-            thisCourse = Course(description=d['description'],instructor=d['instructor'])
+            d = es.to_python({'name' : name, 'description' : description, 'instructor' : instructor})
+            thisCourse = Course(name=d['name'],description=d['description'],instructor=d['instructor'])
 
             # scan through user list to get users.  make sure they exist, then add to course
+            
+            # this piece will need to be able to create new users as well, not just leave out
+            # users who aren't already in the ecouser table
+            
             lastUNI = None
             for thisUNI in uniList:
                 # uniList is sorted, so all dupes would be consecutive.  only add once
@@ -232,10 +236,10 @@ class Eco(EcoControllerBase):
 
             print thisCourse.students
 
-            cherrypy.session['message'] = "New course '" + description + "' has been created."
+            cherrypy.session['message'] = "New course '" + name + "' has been created."
             raise cherrypy.HTTPRedirect("/course")
         except formencode.Invalid, e:
-            defaults = {'description' : description, 'instructor' : instructor}
+            defaults = {'name' : name, 'description' : description, 'instructor' : instructor}
             parser = htmlfill.FillingParser(defaults,errors=e.unpack_errors())
             parser.feed(self.template("create_course.pt",{'allInstructors' : [i for i in Ecouser.select()]}))
             output = parser.text()
@@ -259,7 +263,7 @@ class Eco(EcoControllerBase):
         if uni == "":
             cherrypy.session['message'] = "A user name is required"
             raise cherrypy.HTTPRedirect("/add_guest_account_form")
-        u = Ecouser(uni=uni, password=password, firstname=firstname, lastname=lastname)
+        u = Ecouser(uni=uni, securityLevel=2, password=password, firstname=firstname, lastname=lastname)
         cherrypy.session['message'] = "New user has been created.  Please log in"
         raise cherrypy.HTTPRedirect("/guest_login")
 
@@ -390,7 +394,7 @@ class CourseController(EcoControllerBase,RESTContent):
                 raise cherrypy.HTTPRedirect("/course/%s/" % myCourses[0].id)
                 
             if uni in ADMIN_USERS:
-                allCourses = [e for e in Course.select(Course.q.instructorID == Ecouser.q.id, orderBy=['description'])]
+                allCourses = [e for e in Course.select(Course.q.instructorID == Ecouser.q.id, orderBy=['name'])]
             else:
                 allCourses = None
             return self.template("list_courses.pt",{'loginName' : loginName, 'allCourses' : allCourses, 'myCourses' : myCourses, 'instructorOf' : instructorOf,})
@@ -422,7 +426,7 @@ class CourseController(EcoControllerBase,RESTContent):
         uni = cherrypy.session.get(UNI_PARAM, None)
         loginName = cherrypy.session.get('fullname', 'unknown')
         postTo = "/course/%s/update" % course.id
-        courseDescription = course.description
+        courseName = course.name
 
         if uni == None and config.MODE == "regressiontest":
             uni = "foo"
@@ -444,7 +448,7 @@ class CourseController(EcoControllerBase,RESTContent):
             for e in myEcos:
                 e.createdStr = e.created.strftime("%m/%d/%Y")
                 e.modifiedStr = e.modified.strftime("%m/%d/%Y")
-            return self.template("list_ecomaps.pt",{'students' : students, 'loginName' : loginName, 'myEcomaps' : myEcos, 'publicEcomaps' : publicEcos, 'allEcomaps' : allEcos, 'postTo' : postTo, 'courseDescription' : courseDescription,})
+            return self.template("list_ecomaps.pt",{'students' : students, 'loginName' : loginName, 'myEcomaps' : myEcos, 'publicEcomaps' : publicEcos, 'allEcomaps' : allEcos, 'postTo' : postTo, 'courseName' : courseName,})
         else:
             #No user logged in
             raise cherrypy.HTTPRedirect("/logout")
@@ -453,8 +457,8 @@ class CourseController(EcoControllerBase,RESTContent):
     def students(self,course):
         #import pdb; pdb.set_trace()
         postTo = "/course/%s/update_students" % course.id
-        courseDescription = course.description
-        return self.template("list_students.pt",{'students' : course.students, 'postTo' : postTo, 'courseDescription' : courseDescription,})
+        courseName = course.name
+        return self.template("list_students.pt",{'students' : course.students, 'postTo' : postTo, 'courseName' : courseName,})
 
     @cherrypy.expose()
     def update_students(self,course,**kwargs):
@@ -499,9 +503,9 @@ class CourseController(EcoControllerBase,RESTContent):
                             cherrypy.session['message'] = "Sorry, That is not a valid UNI"
                         else:
                             eus = EcouserSchema()
-                            d = eus.to_python({'uni' : studentUNI, 'firstname' : firstName, 'lastname' : lastName})
-                            thisUser = Ecouser(uni=d['uni'],firstname=d['firstname'],lastname=d['lastname'])
-                            self.course.addEcouser(thisUser.id)
+                            d = eus.to_python({'uni' : studentUNI, 'securityLevel' : 2, 'firstname' : firstName, 'lastname' : lastName})
+                            thisUser = Ecouser(uni=d['uni'],securityLevel=d['securityLevel'],firstname=d['firstname'],lastname=d['lastname'])
+                            course.addEcouser(thisUser.id)
                             cherrypy.session['message'] = "'" + d['firstname'] + " " + d['lastname'] + "' has been added"
                 else:
                     cherrypy.session['message'] = "Sorry, The instructor cannot be a student in the class"
