@@ -97,3 +97,11 @@ def get_user(username):
     if res.count() > 0:
         return res[0]
     return None
+
+def isAdmin(username):
+    res = Ecouser.select(Ecouser.q.uni == username)
+    if res.count() > 0:
+        if res[0].securityLevel == 1:
+            return True
+    return False
+    

@@ -20,7 +20,8 @@ DEBUG = True
 
 UNI_PARAM = "UNI"
 AUTH_TICKET_PARAM = "auth_ticket"
-ADMIN_USERS = ("kfe2102","dm2150","ssw12")
+#ADMIN_USERS = ("kfe2102","dm2150","ssw12")
+
 
 def init_config():
     environment = "development"
@@ -137,7 +138,7 @@ class Eco(EcoControllerBase):
                 if not ecoid == "":
                     thisEcomap = Ecomap.get(ecoid)
                     # if this is public or it's yours or Susan, Debbie or I am logged in, allow the data to Flash
-                    if thisEcomap.public or thisEcomap.owner.uni == sessionUni or sessionUni in ADMIN_USERS:
+                    if thisEcomap.public or thisEcomap.owner.uni == sessionUni or isAdmin(sessionUni):
                         if action == "load":
                             print "load into flash: " + thisEcomap.flashData
                             if thisEcomap.owner.uni == sessionUni:
@@ -349,7 +350,7 @@ class EcomapController(EcoControllerBase,RESTContent):
 
     @cherrypy.expose()
     def delete(self,ecomap,confirm=""):
-        if cherrypy.session.get(UNI_PARAM,None) in ADMIN_USERS:
+        if isAdmin(cherrypy.session.get(UNI_PARAM,None)):
             ecomap.destroySelf()
             cherrypy.session['message'] = "deleted"
         raise cherrypy.HTTPRedirect("/course")
@@ -393,7 +394,7 @@ class CourseController(EcoControllerBase,RESTContent):
                 # This is a student with only one course.  Redirect to that course
                 raise cherrypy.HTTPRedirect("/course/%s/" % myCourses[0].id)
                 
-            if uni in ADMIN_USERS:
+            if isAdmin(uni):
                 allCourses = [e for e in Course.select(Course.q.instructorID == Ecouser.q.id, orderBy=['name'])]
             else:
                 allCourses = None
@@ -405,7 +406,7 @@ class CourseController(EcoControllerBase,RESTContent):
     @cherrypy.expose()
     def delete(self,course,confirm=""):
         #import pdb; pdb.set_trace()
-        if cherrypy.session.get(UNI_PARAM,None) in ADMIN_USERS:
+        if isAdmin(cherrypy.session.get(UNI_PARAM,None)):
 
             # first remove the students from the course, then delete it
             students = course.students
@@ -441,7 +442,7 @@ class CourseController(EcoControllerBase,RESTContent):
             else:
                 students = None
             
-            if uni in ADMIN_USERS:
+            if isAdmin(uni):
                 allEcos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecomap.q.courseID == course.id), orderBy=['name'])]
             else:
                 allEcos = None

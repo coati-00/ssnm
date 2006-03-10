@@ -25,10 +25,11 @@
 </tr>
 </table>
 <table tal:condition="myCourses">
-<tr><th></th><th>Description</th><th>Instructor</th></tr>
+<tr><th></th><th>Name</th><th>Description</th><th>Instructor</th><th></th></tr>
 <tr tal:repeat="course myCourses">
 <td></td>
-<td><a tal:attributes="href string:/course/${course/id}/" tal:content="course/description" /></td>
+<td><a tal:attributes="href string:/course/${course/id}/" tal:content="course/name" /></td>
+<td tal:content="course/description" />
 <td tal:content="string:${course/instructor/firstname} ${course/instructor/lastname}"></td>
 </tr>
 </table>
