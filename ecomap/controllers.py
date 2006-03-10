@@ -306,33 +306,33 @@ class EcomapController(EcoControllerBase,RESTContent):
     def query(self,id):
         return Ecomap.get(int(id))
 
-    @cherrypy.expose()
-    def edit_form(self,ecomap):
-        defaults = {'name' : ecomap.name, 'description' : ecomap.description}
-        parser = htmlfill.FillingParser(defaults)
-        parser.feed(self.template("edit_ecomap.pt",{'ecomap' : ecomap}))
-        output = parser.text()
-        parser.close()
-        return output
+    #@cherrypy.expose()
+    #def edit_form(self,ecomap):
+    #    defaults = {'name' : ecomap.name, 'description' : ecomap.description}
+    #    parser = htmlfill.FillingParser(defaults)
+    #    parser.feed(self.template("edit_ecomap.pt",{'ecomap' : ecomap}))
+    #    output = parser.text()
+    #    parser.close()
+    #    return output
 
-    @cherrypy.expose()
-    def edit(self,ecomap,name="",description=""):
-        es = EcomapSchema()
-        try:
-            d = es.to_python({'name' : name, 'description' : description, 'owner' : ecomap.ownerID})
-            ecomap.name = d['name']
-            ecomap.description = d['description']
-            ecomap.modified = DateTime.now()
-            cherrypy.session['message'] = "changes saved"
-            raise cherrypy.HTTPRedirect("/ecomap/" + str(ecomap.id) + "/")
+    #@cherrypy.expose()
+    #def edit(self,ecomap,name="",description=""):
+    #    es = EcomapSchema()
+    #    try:
+    #        d = es.to_python({'name' : name, 'description' : description, 'owner' : ecomap.ownerID})
+    #        ecomap.name = d['name']
+    #        ecomap.description = d['description']
+    #        ecomap.modified = DateTime.now()
+    #        cherrypy.session['message'] = "changes saved"
+    #        raise cherrypy.HTTPRedirect("/ecomap/" + str(ecomap.id) + "/")
 
-        except formencode.Invalid, e:
-            defaults = {'name' : name, 'description' : description}
-            parser = htmlfill.FillingParser(defaults,errors=e.unpack_errors())
-            parser.feed(self.template("edit_ecomap.pt",{'ecomap' : ecomap}))
-            output = parser.text()
-            parser.close()
-            return output
+    #    except formencode.Invalid, e:
+    #        defaults = {'name' : name, 'description' : description}
+    #        parser = htmlfill.FillingParser(defaults,errors=e.unpack_errors())
+    #        parser.feed(self.template("edit_ecomap.pt",{'ecomap' : ecomap}))
+    #        output = parser.text()
+    #        parser.close()
+    #        return output
 
     @cherrypy.expose()
     def show(self,ecomap,**kwargs):
