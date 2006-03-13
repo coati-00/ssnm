@@ -2,7 +2,7 @@
 <html metal:use-macro="sitemacros/macros/ecomap">
   <body metal:fill-slot="body">
 
-    <div id="header"><img src="images/logo.png" /></div>
+    <div id="header"><img src="/images/logo.png" /></div>
     <p metal:use-macro="sitemacros/macros/message"/>
     <form action="/add_guest_account" method="post">
       <fieldset>

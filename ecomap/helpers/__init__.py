@@ -104,4 +104,9 @@ def isAdmin(username):
         if res[0].securityLevel == 1:
             return True
     return False
-    
+
+def isInstructor(username,course):
+    #import pdb; pdb.set_trace()
+    if course.instructor.uni == username:
+        return True
+    return False

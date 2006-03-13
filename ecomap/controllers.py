@@ -190,62 +190,80 @@ class Eco(EcoControllerBase):
     @cherrypy.expose()
     def create_course_form(self):
         uni = cherrypy.session.get(UNI_PARAM, None)
-
-        defaults = {'name' : "", 'description' : "", 'instructor' : ""}
-        parser = htmlfill.FillingParser(defaults)
-        parser.feed(self.template("create_course.pt",{'allInstructors' : [i for i in Ecouser.select()]}))
-        parser.close()
-        output = parser.text()
-        return output
+        if isAdmin(cherrypy.session.get(UNI_PARAM,None)):
+            defaults = {'name' : "", 'description' : "", 'instructor' : ""}
+            parser = htmlfill.FillingParser(defaults)
+            parser.feed(self.template("create_course.pt",{'allInstructors' : [i for i in Ecouser.select()]}))
+            parser.close()
+            output = parser.text()
+            return output
+        else:
+            cherrypy.session['message'] = "You do not have authorization to perform that action.  This event will be reported"
+            raise cherrypy.HTTPRedirect("/course")
 
     @cherrypy.expose()
     def create_course(self,name="",description="",instructor="",students=""):
         #import pdb; pdb.set_trace()
+        if isAdmin(cherrypy.session.get(UNI_PARAM,None)):
 
-        es = CourseSchema()
-
-        # MUST sanitize this comma delimited list
-        uniList = students.split(",")
-        uniList.sort()
-
-        uni = cherrypy.session.get(UNI_PARAM,None)
-        if uni == None:
-            if config.MODE == "regressiontest":
-                uni = "foo"
-            else:
-                raise cherrypy.HTTPRedirect("/logout")
-        try:
-            d = es.to_python({'name' : name, 'description' : description, 'instructor' : instructor})
-            thisCourse = Course(name=d['name'],description=d['description'],instructor=d['instructor'])
-
-            # scan through user list to get users.  make sure they exist, then add to course
+            es = CourseSchema()
+    
+            # MUST sanitize this comma delimited list
+            uniList = students.split(",")
             
-            # this piece will need to be able to create new users as well, not just leave out
-            # users who aren't already in the ecouser table
-            
-            lastUNI = None
-            for thisUNI in uniList:
-                # uniList is sorted, so all dupes would be consecutive.  only add once
-                if thisUNI != lastUNI:
-                    # don't add the student if he is the instructor of the course
-                    if thisUNI != thisCourse.instructor.uni:
-                        thisUser = Ecouser.select(Ecouser.q.uni == thisUNI)
-                        # make sure this is a valid, existing user
-                        if thisUser.count() == 1:
-                            thisCourse.addEcouser(thisUser[0].id)
-                            lastUNI = thisUNI
-
-            print thisCourse.students
-
-            cherrypy.session['message'] = "New course '" + name + "' has been created."
+            # weed out dupes
+            u = {}
+            for x in uniList:
+                u[x] = 1
+            uniList = u.keys()
+    
+            invalidIDs = []
+    
+            uni = cherrypy.session.get(UNI_PARAM,None)
+            try:
+                d = es.to_python({'name' : name, 'description' : description, 'instructor' : instructor})
+                thisCourse = Course(name=d['name'],description=d['description'],instructor=d['instructor'])
+    
+                # scan through user list to get users.  make sure they exist, then add to course
+                if students != "":
+                    for studentUNI in uniList:
+                        # don't add the student if he is the instructor of the course
+                        if studentUNI != thisCourse.instructor.uni:
+                            thisUser = Ecouser.select(Ecouser.q.uni == studentUNI)
+                            # make sure this is a valid, existing user
+                            if thisUser.count() == 1:
+                                if not thisUser[0] in thisCourse.students:
+                                    thisCourse.addEcouser(thisUser[0].id)
+                            else:
+                                # add this user to our list of users
+                                # make sure it is a valid UNI
+                                (firstName,lastName) = ldap_lookup(studentUNI)
+                                if firstName == "" and lastName == "":
+                                    # not in the ldap.  bad uni.  exit
+                                    invalidIDs.append(studentUNI)
+                                else:
+                                    eus = EcouserSchema()
+                                    d = eus.to_python({'uni' : studentUNI, 'securityLevel' : 2, 'firstname' : firstName, 'lastname' : lastName})
+                                    thisUser = Ecouser(uni=d['uni'],securityLevel=d['securityLevel'],firstname=d['firstname'],lastname=d['lastname'])
+                                    if not thisUser in thisCourse.students:
+                                        thisCourse.addEcouser(thisUser.id)
+                    print thisCourse.students
+   
+                cherrypy.session['message'] = "New course '" + name + "' has been created"
+                if len(invalidIDs) > 0:
+                    cherrypy.session['message'] += " but the following UNIs were not valid: %s" % invalidIDs
+                raise cherrypy.HTTPRedirect("/course")
+            except formencode.Invalid, e:
+                defaults = {'name' : name, 'description' : description, 'instructor' : instructor}
+                parser = htmlfill.FillingParser(defaults,errors=e.unpack_errors())
+                parser.feed(self.template("create_course.pt",{'allInstructors' : [i for i in Ecouser.select()]}))
+                parser.close()
+                output = parser.text()
+                return output
+        else:
+            cherrypy.session['message'] = "You do not have authorization to perform that action.  This event will be reported"
             raise cherrypy.HTTPRedirect("/course")
-        except formencode.Invalid, e:
-            defaults = {'name' : name, 'description' : description, 'instructor' : instructor}
-            parser = htmlfill.FillingParser(defaults,errors=e.unpack_errors())
-            parser.feed(self.template("create_course.pt",{'allInstructors' : [i for i in Ecouser.select()]}))
-            output = parser.text()
-            parser.close()
-            return output
+
 
     @cherrypy.expose()
     def guest_login(self,uni="",password=""):
@@ -253,20 +271,28 @@ class Eco(EcoControllerBase):
 
     @cherrypy.expose()
     def add_guest_account_form(self):
-        return self.template("add_guest_account.pt",{})
+        if isAdmin(cherrypy.session.get(UNI_PARAM,None)):
+            return self.template("add_guest_account.pt",{})
+        else:
+            cherrypy.session['message'] = "You do not have authorization to perform that action.  This event will be reported"
+            raise cherrypy.HTTPRedirect("/course")
 
     @cherrypy.expose()
     def add_guest_account(self,uni="",firstname="",lastname="",password="",pass2=""):
-        # TODO: this should be done with formencode
-        if password != pass2:
-            cherrypy.session['message'] = "Those passwords don't match"
-            raise cherrypy.HTTPRedirect("/add_guest_account_form")
-        if uni == "":
-            cherrypy.session['message'] = "A user name is required"
-            raise cherrypy.HTTPRedirect("/add_guest_account_form")
-        u = Ecouser(uni=uni, securityLevel=2, password=password, firstname=firstname, lastname=lastname)
-        cherrypy.session['message'] = "New user has been created.  Please log in"
-        raise cherrypy.HTTPRedirect("/guest_login")
+        if isAdmin(cherrypy.session.get(UNI_PARAM,None)):
+            # TODO: this should be done with formencode
+            if password != pass2:
+                cherrypy.session['message'] = "Those passwords don't match"
+                raise cherrypy.HTTPRedirect("/add_guest_account_form")
+            if uni == "":
+                cherrypy.session['message'] = "A user name is required"
+                raise cherrypy.HTTPRedirect("/add_guest_account_form")
+            u = Ecouser(uni=uni, securityLevel=2, password=password, firstname=firstname, lastname=lastname)
+            cherrypy.session['message'] = "New user has been created.  Please log in"
+            raise cherrypy.HTTPRedirect("/guest_login")
+        else:
+            cherrypy.session['message'] = "You do not have authorization to perform that action.  This event will be reported"
+            raise cherrypy.HTTPRedirect("/course")
 
 
 class RESTContent:
@@ -294,45 +320,16 @@ class RESTContent:
 
 
 class EcomapController(EcoControllerBase,RESTContent):
-    _cpFilterList = [WindLoginFilter(after_login="/myList",allowed_paths=["/","/flashConduit"],
+    _cpFilterList = [WindLoginFilter(after_login="/course",allowed_paths=["/","/flashConduit"],
                                       uni_key=UNI_PARAM,ticket_key=AUTH_TICKET_PARAM)]
+
+    # convenience redirect to the RIGHT place
     @cherrypy.expose()
     def index(self):
-        # this should really be a secured list of your ecomaps
-        # it is a duplicate of the functionality of myList
-        # it may be more appropriate to redirect to myList
-        return self.template("list_ecomaps.pt",{'ecomaps' : [e for e in Ecomap.select()]})
+        raise cherrypy.HTTPRedirect("/course")
 
     def query(self,id):
         return Ecomap.get(int(id))
-
-    #@cherrypy.expose()
-    #def edit_form(self,ecomap):
-    #    defaults = {'name' : ecomap.name, 'description' : ecomap.description}
-    #    parser = htmlfill.FillingParser(defaults)
-    #    parser.feed(self.template("edit_ecomap.pt",{'ecomap' : ecomap}))
-    #    output = parser.text()
-    #    parser.close()
-    #    return output
-
-    #@cherrypy.expose()
-    #def edit(self,ecomap,name="",description=""):
-    #    es = EcomapSchema()
-    #    try:
-    #        d = es.to_python({'name' : name, 'description' : description, 'owner' : ecomap.ownerID})
-    #        ecomap.name = d['name']
-    #        ecomap.description = d['description']
-    #        ecomap.modified = DateTime.now()
-    #        cherrypy.session['message'] = "changes saved"
-    #        raise cherrypy.HTTPRedirect("/ecomap/" + str(ecomap.id) + "/")
-
-    #    except formencode.Invalid, e:
-    #        defaults = {'name' : name, 'description' : description}
-    #        parser = htmlfill.FillingParser(defaults,errors=e.unpack_errors())
-    #        parser.feed(self.template("edit_ecomap.pt",{'ecomap' : ecomap}))
-    #        output = parser.text()
-    #        parser.close()
-    #        return output
 
     @cherrypy.expose()
     def show(self,ecomap,**kwargs):
@@ -348,21 +345,29 @@ class EcomapController(EcoControllerBase,RESTContent):
             }
         return self.template("view_ecomap.pt",data)
 
-    @cherrypy.expose()
-    def delete(self,ecomap,confirm=""):
-        if isAdmin(cherrypy.session.get(UNI_PARAM,None)):
-            ecomap.destroySelf()
-            cherrypy.session['message'] = "deleted"
-        raise cherrypy.HTTPRedirect("/course")
 
-    @cherrypy.expose()
-    def flash(self,ecomap):
-        flashData = {
-            'id' : ecomap.id,
-            'ticket' : cherrypy.session.get(AUTH_TICKET_PARAM,None),
-            }
-        return self.template("flash.pt",flashData)
+def action_auth(f):
+    """ control over who can do what """
+    def wrapped(*args, **kwargs):
+        import pdb; pdb.set_trace()
+        if config.MODE == "regressiontest":
+            return f(*args,**kwargs)
+        uni = cherrypy.session.get(UNI_PARAM, None)
+  #      if uni:
+  #          
+  #          authUsers = kwargs['authorized'].split(",")
+            
+        
 
+        # NOW, since you are logged in ok, check if you're allowed to do what you're trying to do
+        
+#       userid        = get_cookie("quip_username")
+#       authenticated = get_cookie('quip_authenticated')
+#       if authenticated != "1":
+#           raise cherrypy.HTTPRedirect("/login")
+#       else:
+        return f(*args,**kwargs)
+    return wrapped
 
 class CourseController(EcoControllerBase,RESTContent):
     def query(self,id):
@@ -375,8 +380,6 @@ class CourseController(EcoControllerBase,RESTContent):
         uni = cherrypy.session.get(UNI_PARAM, None)
         loginName = cherrypy.session.get('fullname', 'unknown')
 
-        if uni == None and config.MODE == "regressiontest":
-            uni = "foo"
 
         if uni:
             myCourses = []
@@ -399,9 +402,9 @@ class CourseController(EcoControllerBase,RESTContent):
             else:
                 allCourses = None
             return self.template("list_courses.pt",{'loginName' : loginName, 'allCourses' : allCourses, 'myCourses' : myCourses, 'instructorOf' : instructorOf,})
-        else:
+        #else:
             #No user logged in
-            raise cherrypy.HTTPRedirect("/logout")
+        #    raise cherrypy.HTTPRedirect("/logout")
 
     @cherrypy.expose()
     def delete(self,course,confirm=""):
@@ -415,7 +418,9 @@ class CourseController(EcoControllerBase,RESTContent):
             
             course.destroySelf()
             cherrypy.session['message'] = "deleted"
-        raise cherrypy.HTTPRedirect("/course")
+        else:
+            cherrypy.session['message'] = "You do not have authorization to perform that action.  This event will be reported"
+            raise cherrypy.HTTPRedirect("/course")
         
     @cherrypy.expose()
     def show(self,course,**kwargs):
@@ -429,103 +434,145 @@ class CourseController(EcoControllerBase,RESTContent):
         postTo = "/course/%s/update" % course.id
         courseName = course.name
 
-        if uni == None and config.MODE == "regressiontest":
-            uni = "foo"
-
         if uni:
             # My ecomaps are the ecomaps I created in this course specifically
             myEcos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecouser.q.uni == uni, Ecomap.q.courseID == course.id), orderBy=['name'])]
             publicEcos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecouser.q.uni != uni, Ecomap.q.courseID == course.id, Ecomap.q.public == True), orderBy=['name'])]
             
-            if uni == course.instructor.uni:
-                students = course.students
-            else:
-                students = None
-            
-            if isAdmin(uni):
+            if isAdmin(uni) or isInstructor(uni,course):
                 allEcos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecomap.q.courseID == course.id), orderBy=['name'])]
             else:
                 allEcos = None
             for e in myEcos:
                 e.createdStr = e.created.strftime("%m/%d/%Y")
                 e.modifiedStr = e.modified.strftime("%m/%d/%Y")
-            return self.template("list_ecomaps.pt",{'students' : students, 'loginName' : loginName, 'myEcomaps' : myEcos, 'publicEcomaps' : publicEcos, 'allEcomaps' : allEcos, 'postTo' : postTo, 'courseName' : courseName,})
+            return self.template("list_ecomaps.pt",{'loginName' : loginName, 'myEcomaps' : myEcos, 'publicEcomaps' : publicEcos, 'allEcomaps' : allEcos, 'postTo' : postTo, 'courseName' : courseName,})
         else:
             #No user logged in
             raise cherrypy.HTTPRedirect("/logout")
 
+
+    @cherrypy.expose()
+    def edit_form(self,course):
+
+        uni = cherrypy.session.get(UNI_PARAM, None)
+        if isAdmin(uni) or isInstructor(uni,course):
+            defaults = {'name' : course.name, 'description' : course.description}
+            parser = htmlfill.FillingParser(defaults)
+            parser.feed(self.template("edit_course.pt",{'isAdmin': isAdmin(uni), 'course' : course, 'allInstructors' : [i for i in Ecouser.select()]}))
+            parser.close()
+            output = parser.text()
+            return output
+        else:
+            cherrypy.session['message'] = "You do not have authorization to perform that action.  This event will be reported"
+            raise cherrypy.HTTPRedirect("/course")
+
+    @cherrypy.expose()
+    def edit(self,course,name="",description="",instructor=""):
+        uni = cherrypy.session.get(UNI_PARAM, None)
+        if isAdmin(uni) or isInstructor(uni,course):
+
+            es = CourseSchema()
+    
+            try:
+                d = es.to_python({'name' : name, 'description' : description, 'instructor' : instructor})
+                course.name = d['name']
+                course.description = d['description']
+                course.instructor = d['instructor']
+                cherrypy.session['message'] = "changes saved"
+                raise cherrypy.HTTPRedirect("/course/" + str(course.id) + "/")
+    
+            except formencode.Invalid, e:
+                defaults = {'name' : course.name, 'description' : course.description}
+                parser = htmlfill.FillingParser(defaults,errors=e.unpack_errors())
+                parser.feed(self.template("edit_course.pt",{'isAdmin': isAdmin(uni), 'course' : course, 'allInstructors' : [i for i in Ecouser.select()]}))
+                parser.close()
+                output = parser.text()
+                return output
+        else:
+            cherrypy.session['message'] = "You do not have authorization to perform that action.  This event will be reported"
+            raise cherrypy.HTTPRedirect("/course")
+
     @cherrypy.expose()
     def students(self,course):
-        #import pdb; pdb.set_trace()
-        postTo = "/course/%s/update_students" % course.id
-        courseName = course.name
-        return self.template("list_students.pt",{'students' : course.students, 'postTo' : postTo, 'courseName' : courseName,})
+        uni = cherrypy.session.get(UNI_PARAM, None)
+        if isAdmin(uni) or isInstructor(uni,course):
+            #import pdb; pdb.set_trace()
+            postTo = "/course/%s/update_students" % course.id
+            courseName = course.name
+            return self.template("list_students.pt",{'students' : course.students, 'postTo' : postTo, 'courseName' : courseName,})
+        else:
+            cherrypy.session['message'] = "You do not have authorization to perform that action.  This event will be reported"
+            raise cherrypy.HTTPRedirect("/course")
 
     @cherrypy.expose()
     def update_students(self,course,**kwargs):
         #import pdb; pdb.set_trace()
-        action = kwargs['action']
-        if action == 'Delete Selected':
-            #check that some were selected
-            studentList = kwargs.get('student_id',None)
-            if studentList:
-                if type(studentList) is str:
-                    itemList = [int(kwargs['student_id'])]
-                elif type(kwargs['student_id']) is list:
-                    itemList = [k for k in kwargs['student_id']]
-                else:
-                    output = "error - unknown argument type"
-
-                thisName = ""
-                for item in itemList:
-                    thisItem = Ecouser.get(item)
-                    thisName += thisItem.firstname + " " + thisItem.lastname + ", "
-                    course.removeEcouser(thisItem.id)
-                cherrypy.session['message'] = "'" + thisName + "' has been deleted"
-                raise cherrypy.HTTPRedirect("/course/%s/students" % course.id)
-
-            else:
-                raise cherrypy.HTTPRedirect("/course/%s/" % course.id)
-        elif action == 'Add Student':
-            studentUNI = kwargs.get('student_uni',None)
-            if studentUNI:
-                if studentUNI != course.instructor.uni:
-                    thisUser = Ecouser.select(Ecouser.q.uni == studentUNI)
-                    # make sure this is a valid, existing user
-                    if thisUser.count() == 1:
-                        course.addEcouser(thisUser[0].id)
-                        cherrypy.session['message'] = "'" + thisUser[0].firstname + " " + thisUser[0].lastname + "' has been added"
+        uni = cherrypy.session.get(UNI_PARAM, None)
+        if isAdmin(uni) or isInstructor(uni,course):
+            action = kwargs['action']
+            if action == 'Delete Selected':
+                #check that some were selected
+                studentList = kwargs.get('student_id',None)
+                if studentList:
+                    if type(studentList) is str:
+                        itemList = [int(kwargs['student_id'])]
+                    elif type(kwargs['student_id']) is list:
+                        itemList = [k for k in kwargs['student_id']]
                     else:
-                        # add this user to our list of users
-                        # make sure it is a valid UNI
-                        (firstName,lastName) = ldap_lookup(studentUNI)
-                        if firstName == "" and lastName == "":
-                            # not in the ldap.  bad uni.  exit
-                            cherrypy.session['message'] = "Sorry, That is not a valid UNI"
-                        else:
-                            eus = EcouserSchema()
-                            d = eus.to_python({'uni' : studentUNI, 'securityLevel' : 2, 'firstname' : firstName, 'lastname' : lastName})
-                            thisUser = Ecouser(uni=d['uni'],securityLevel=d['securityLevel'],firstname=d['firstname'],lastname=d['lastname'])
-                            course.addEcouser(thisUser.id)
-                            cherrypy.session['message'] = "'" + d['firstname'] + " " + d['lastname'] + "' has been added"
+                        output = "error - unknown argument type"
+    
+                    thisName = ""
+                    for item in itemList:
+                        thisItem = Ecouser.get(item)
+                        thisName += thisItem.firstname + " " + thisItem.lastname + ", "
+                        course.removeEcouser(thisItem.id)
+                    cherrypy.session['message'] = "'" + thisName + "' has been deleted"
+                    raise cherrypy.HTTPRedirect("/course/%s/students" % course.id)
+    
                 else:
-                    cherrypy.session['message'] = "Sorry, The instructor cannot be a student in the class"
-                    # can't add the instructor as a student
-                raise cherrypy.HTTPRedirect("/course/%s/students" % course.id)
-
+                    raise cherrypy.HTTPRedirect("/course/%s/" % course.id)
+            elif action == 'Add Student':
+                studentUNI = kwargs.get('student_uni',None)
+                if studentUNI:
+                    if studentUNI != course.instructor.uni:
+                        thisUser = Ecouser.select(Ecouser.q.uni == studentUNI)
+                        # make sure this is a valid, existing user
+                        if thisUser.count() == 1:
+                            if not thisUser[0] in course.students:
+                                course.addEcouser(thisUser[0].id)
+                                cherrypy.session['message'] = "'" + thisUser[0].firstname + " " + thisUser[0].lastname + "' has been added"
+                        else:
+                            # add this user to our list of users
+                            # make sure it is a valid UNI
+                            (firstName,lastName) = ldap_lookup(studentUNI)
+                            if firstName == "" and lastName == "":
+                                # not in the ldap.  bad uni.  exit
+                                cherrypy.session['message'] = "Sorry, That is not a valid UNI"
+                            else:
+                                eus = EcouserSchema()
+                                d = eus.to_python({'uni' : studentUNI, 'securityLevel' : 2, 'firstname' : firstName, 'lastname' : lastName})
+                                thisUser = Ecouser(uni=d['uni'],securityLevel=d['securityLevel'],firstname=d['firstname'],lastname=d['lastname'])
+                                if not thisUser in course.students:
+                                    course.addEcouser(thisUser.id)
+                                    cherrypy.session['message'] = "'" + d['firstname'] + " " + d['lastname'] + "' has been added"
+                    else:
+                        cherrypy.session['message'] = "Sorry, The instructor cannot be a student in the class"
+                        # can't add the instructor as a student
+                    raise cherrypy.HTTPRedirect("/course/%s/students" % course.id)
+    
+            else:
+                raise cherrypy.HTTPRedirect("/course/%s/" % course.id)		
         else:
-            raise cherrypy.HTTPRedirect("/course/%s/" % course.id)		
+            cherrypy.session['message'] = "You do not have authorization to perform that action.  This event will be reported"
+            raise cherrypy.HTTPRedirect("/course")
+
 
     @cherrypy.expose()
     def create_new(self,course):
         #import pdb; pdb.set_trace()
         
         uni = cherrypy.session.get(UNI_PARAM,None)
-        if uni == None:
-            if config.MODE == "regressiontest":
-                uni = "foo"
-            else:
-                raise cherrypy.HTTPRedirect("/logout")
 
         d = {
             'name' : 'Enter Subject Name Here',
@@ -556,6 +603,15 @@ class CourseController(EcoControllerBase,RESTContent):
             raise cherrypy.HTTPRedirect(redirectTo)
 
         if action == 'Delete Selected':
+            # TODO:
+            # if you are the owner or you're the instructor or an admin
+
+            # weed out dupes
+            u = {}
+            for x in itemList:
+                u[x] = 1
+            itemList = u.keys()
+
             for item in itemList:
                 thisItem = Ecomap.get(item)
                 theDescription = thisItem.description

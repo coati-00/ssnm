@@ -8,7 +8,7 @@
 <p/>
 <form action="/update" method="post">
 
-<a href="/create_course_form">Create New Course</a>
+<div tal:condition="allCourses"><a href="/create_course_form">Create New Course</a> <a href="/add_guest_account_form">Add Guest User</a></div>
 
 <h1>My Courses</h1>
 
@@ -21,7 +21,7 @@
 <td tal:content="course/name" />
 <td tal:content="course/description" />
 <td tal:content="string:${course/instructor/firstname} ${course/instructor/lastname}"></td>
-<td><a tal:attributes="href string:/course/${course/id}/">View SSNMs</a> <a tal:attributes="href string:/course/${course/id}/students">View Students</a></td>
+<td><a tal:attributes="href string:/course/${course/id}/">View SSNMs</a> <a tal:attributes="href string:/course/${course/id}/students">View Students</a> <a tal:attributes="href string:/course/${course/id}/edit_form">Edit Course Info</a></td>
 </tr>
 </table>
 <table tal:condition="myCourses">
@@ -46,7 +46,7 @@
 <td tal:content="course/name" />
 <td tal:content="course/description" />
 <td tal:content="string:${course/instructor/firstname} ${course/instructor/lastname}"></td>
-<td><a tal:attributes="href string:/course/${course/id}/">View SSNMs</a> <a tal:attributes="href string:/course/${course/id}/students">View Students</a></td>
+<td><a tal:attributes="href string:/course/${course/id}/">View SSNMs</a> <a tal:attributes="href string:/course/${course/id}/students">View Students</a> <a tal:attributes="href string:/course/${course/id}/edit_form">Edit Course Info</a></td>
 </tr>
 </table>
 

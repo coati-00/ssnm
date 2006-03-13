@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-<metal:block>
   <html metal:define-macro="ecomap">
     <head>
       <title metal:define-slot="page_title">SSNM</title>
@@ -9,13 +8,12 @@
     </head>
     <body metal:define-slot="body">
 
+  <metal:block define-macro="message">
+    <p tal:condition="message" tal:content="message" class="message"/>
+  </metal:block>
+
 
 
     </body>
   </html>
 
-  <metal:block define-macro="message">
-    <p tal:condition="message" tal:content="message" class="message"/>
-  </metal:block>
-
-</metal:block>
