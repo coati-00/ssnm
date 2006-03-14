@@ -8,13 +8,10 @@
 <p/>
 <form tal:attributes="action postTo" method="post">
 
-<!--a href="/create_course_form">Add Student</a-->
 <p>Add student by UNI:<input type="text" name="student_uni" width="10" /><input type="submit" name="action" value="Add Student" /></p>
 <a href="/course">my courses</a> > <span tal:content="courseName" />
 
 <h1>Students</h1>
-
-<!--p tal:condition="not:(myCourses or instructorOf)">You do not have any courses.</p-->
 
 <table tal:condition="students">
 <tr><th></th><th>First Name</th><th>Last Name</th><th>UNI</th></tr>

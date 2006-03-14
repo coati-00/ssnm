@@ -402,9 +402,9 @@ class CourseController(EcoControllerBase,RESTContent):
             else:
                 allCourses = None
             return self.template("list_courses.pt",{'loginName' : loginName, 'allCourses' : allCourses, 'myCourses' : myCourses, 'instructorOf' : instructorOf,})
-        #else:
+        else:
             #No user logged in
-        #    raise cherrypy.HTTPRedirect("/logout")
+            raise cherrypy.HTTPRedirect("/logout")
 
     @cherrypy.expose()
     def delete(self,course,confirm=""):
@@ -418,6 +418,7 @@ class CourseController(EcoControllerBase,RESTContent):
             
             course.destroySelf()
             cherrypy.session['message'] = "deleted"
+            raise cherrypy.HTTPRedirect("/course")
         else:
             cherrypy.session['message'] = "You do not have authorization to perform that action.  This event will be reported"
             raise cherrypy.HTTPRedirect("/course")

@@ -6,7 +6,7 @@
     <p metal:use-macro="sitemacros/macros/message"/>
     <form action="/add_guest_account" method="post">
       <fieldset>
-	<legend>add a guest account</legend>
+	<legend>Add a guest account</legend>
 	<label>username: <input type="text" name="uni" /></label><br />
 	<label>firstname: <input type="text" name="firstname" /></label><br />
 	<label>lastname: <input type="text" name="lastname" /></label><br />

@@ -14,24 +14,26 @@
 
 <!--p tal:condition="not:(myCourses or instructorOf)">You do not have any courses.</p-->
 
-<table tal:condition="instructorOf">
+<table>
 <tr><th></th><th>Name</th><th>Description</th><th>Instructor</th><th></th></tr>
-<tr tal:repeat="course instructorOf">
+<tal:block repeat="course instructorOf" tal:condition="instructorOf">
+<tr>
 <td></td>
 <td tal:content="course/name" />
 <td tal:content="course/description" />
 <td tal:content="string:${course/instructor/firstname} ${course/instructor/lastname}"></td>
 <td><a tal:attributes="href string:/course/${course/id}/">View SSNMs</a> <a tal:attributes="href string:/course/${course/id}/students">View Students</a> <a tal:attributes="href string:/course/${course/id}/edit_form">Edit Course Info</a></td>
 </tr>
-</table>
-<table tal:condition="myCourses">
-<tr><th></th><th>Name</th><th>Description</th><th>Instructor</th><th></th></tr>
-<tr tal:repeat="course myCourses">
+</tal:block>
+<tal:block repeat="course myCourses" tal:condition="myCourses">
+<tr>
 <td></td>
-<td><a tal:attributes="href string:/course/${course/id}/" tal:content="course/name" /></td>
+<td tal:content="course/name" />
 <td tal:content="course/description" />
 <td tal:content="string:${course/instructor/firstname} ${course/instructor/lastname}"></td>
+<td><a tal:attributes="href string:/course/${course/id}/">View SSNMs</a></td>
 </tr>
+</tal:block>
 </table>
 
 

@@ -19,8 +19,6 @@ Add Students:<br/><textarea name="students" rows="5" cols="30"></textarea>
 
 </label>
 
-<!-- <input type="text" name="instructor" size="10" /><form:iferror name="instructor"> <span class="errormessage"><form:error name="instructor"/></span></form:iferror><br /> -->
-
 <input type="submit" value="Create"/>
 </fieldset>
 </form>
