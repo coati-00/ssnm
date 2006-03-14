@@ -1,19 +1,23 @@
 <?xml version="1.0"?>
-  <html metal:define-macro="ecomap">
+<html metal:define-macro="ecomap">
+
     <head>
-      <title metal:define-slot="page_title">SSNM</title>
-      <link rel="stylesheet" href="/css/ecomap.css" type="text/css" />
-      <metal:block define-slot="js_slot"></metal:block>
-      <metal:block define-slot="css_slot"></metal:block>
+        <title metal:define-slot="page_title">SSNM</title>
+        <link rel="stylesheet" href="/css/ecomap.css" type="text/css" />
+        <metal:block define-slot="js_slot"></metal:block>
+        <metal:block define-slot="css_slot"></metal:block>
     </head>
+
     <body metal:define-slot="body">
 
-  <metal:block define-macro="message">
-    <p tal:condition="message" tal:content="message" class="message"/>
-  </metal:block>
-
-
-
+        <div id="header" metal:define-slot="header"><a href="/course"><img src="/images/logo.png" /></a></div>
+        
+        <metal:block define-macro="message">
+            <p tal:condition="message" tal:content="message" class="message"/>
+        </metal:block>
+        
+        <div id="content" metal:define-slot="content">This is where the page content goes</div>
+    
     </body>
-  </html>
+</html>
 

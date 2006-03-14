@@ -1,53 +1,59 @@
 <?xml version="1.0"?>
 <html metal:use-macro="sitemacros/macros/ecomap">
-<body metal:fill-slot="body">
-<div id="header"><img src="/images/logo.png" /></div>
 
-<div id="logout">You are logged in as <span tal:content="loginName"/> <a href="/logout">Log Out</a></div>
-<metal:block use-macro="sitemacros/macros/message" />
-<p/>
-<form tal:attributes="action postTo" method="post">
+    <div metal:fill-slot="content" id="content">
 
-<a href="/course">my courses</a> > <span tal:content="courseName" />
+        <div id="logout">
+            You are logged in as <span tal:content="loginName"/> <a href="/logout">Log Out</a>
+        </div>
+        
+        <div id="breadcrumbs">
+            <a href="/course">my courses</a> > <span tal:content="courseName" />
+        </div>
+        
+        <h3>My Social Support Network Maps</h3>
+        
+        <p tal:condition="not:myEcomaps">You have no Social Support Network Maps.  <a href="create_new">Click here</a> to create one.</p>
+        
+        <a tal:condition="myEcomaps" href="create_new">Create New Map</a>
 
-<h3>My Social Support Network Maps</h3>
+        <form tal:attributes="action postTo" method="post">
 
-<p tal:condition="not:myEcomaps">You have no Social Support Network Maps.  <a href="create_new">Click here</a> to create one.</p>
+        <table tal:condition="myEcomaps">
+            <tr><th></th><th>Subject Name</th><th>Map Description</th><th>Created</th><th>Modified</th></tr>
+            <tal:block repeat="ecomap myEcomaps">
+                <tr>
+                <td><input type="checkbox" name="ecomap_id" tal:attributes="value string:${ecomap/id}"/></td>
+                <td><a tal:attributes="href string:/ecomap/${ecomap/id}/" tal:content="ecomap/name"/></td>
+                <td tal:content="ecomap/description"></td>
+                <td tal:content="ecomap/createdStr"></td>
+                <td tal:content="ecomap/modifiedStr"></td>
+                </tr>
+            </tal:block>
+        </table>
+        
+        <input tal:condition="myEcomaps" type="submit" name="action" value="Delete Selected" onclick="return confirm('Are you sure you want to delete the selected items??');"/> <!--<input type="submit" name="action" value="share"/>-->
+        
+        <h4 style="cursor:pointer" tal:condition="allEcomaps" onClick="document.getElementById('allmaps').style.display = (document.getElementById('allmaps').style.display == 'none') ? 'block' : 'none'">All Social Support Network Maps</h4>
+        
+        <div id="allmaps" style="display:none">
+            <table tal:condition="allEcomaps">
+                <tr><th></th><th>Name</th><th>Description</th><th>Owner</th><th>Created</th><th>Modified</th></tr>
+                <tal:block repeat="ecomap allEcomaps">
+                    <tr>
+                    <td><input type="checkbox" name="ecomap_id" tal:attributes="value string:${ecomap/id}"/></td>
+                    <td><a tal:attributes="href string:/ecomap/${ecomap/id}/" tal:content="ecomap/name"/></td>
+                    <td tal:content="ecomap/description"></td>
+                    <td tal:content="string:${ecomap/owner/firstname} ${ecomap/owner/lastname}"></td>
+                    <td tal:content="ecomap/createdStr"></td>
+                    <td tal:content="ecomap/modifiedStr"></td>
+                    </tr>
+                </tal:block>
+            </table>
+        </div>
+        
+        </form>
 
-<a tal:condition="myEcomaps" href="create_new">Create New Map</a>
+    </div>
 
-
-<table tal:condition="myEcomaps">
-<tr><th></th><th>Subject Name</th><th>Map Description</th><th>Created</th><th>Modified</th><!--<th>Public</th>--></tr>
-<tr tal:repeat="ecomap myEcomaps">
-<td><input type="checkbox" name="ecomap_id" tal:attributes="value string:${ecomap/id}"/></td>
-<td><a tal:attributes="href string:/ecomap/${ecomap/id}/" tal:content="ecomap/name"/></td>
-<td tal:content="ecomap/description"></td>
-<td tal:content="ecomap/createdStr"></td>
-<td tal:content="ecomap/modifiedStr"></td>
-<!--<td><img tal:attributes="src string:/images/${ecomap/public}.png"/></td>-->
-</tr>
-</table>
-
-<input tal:condition="myEcomaps" type="submit" name="action" value="Delete Selected" onclick="return confirm('Are you sure you want to delete the selected items??');"/> <!--<input type="submit" name="action" value="share"/>-->
-
-<h4 style="cursor:pointer" tal:condition="allEcomaps" onClick="document.getElementById('allmaps').style.display = (document.getElementById('allmaps').style.display == 'none') ? 'block' : 'none'">All Social Support Network Maps</h4>
-
-<div id="allmaps" style="display:none">
-<table tal:condition="allEcomaps">
-<tr><th></th><th>Name</th><th>Description</th><th>Owner</th><th>Created</th><th>Modified</th></tr>
-<tr tal:repeat="ecomap allEcomaps">
-<td><input type="checkbox" name="ecomap_id" tal:attributes="value string:${ecomap/id}"/></td>
-<td><a tal:attributes="href string:/ecomap/${ecomap/id}/" tal:content="ecomap/name"/></td>
-<td tal:content="ecomap/description"></td>
-<td tal:content="string:${ecomap/owner/firstname} ${ecomap/owner/lastname}"></td>
-<td tal:content="ecomap/createdStr"></td>
-<td tal:content="ecomap/modifiedStr"></td>
-</tr>
-</table>
-</div>
-
-</form>
-
-</body>
 </html>

@@ -1,19 +1,20 @@
 <?xml version="1.0"?>
 <html metal:use-macro="sitemacros/macros/ecomap">
-  <body metal:fill-slot="body">
 
-    <div id="header"><img src="/images/logo.png" /></div>
-    <p metal:use-macro="sitemacros/macros/message"/>
-    <form action="/add_guest_account" method="post">
-      <fieldset>
-	<legend>Add a guest account</legend>
-	<label>username: <input type="text" name="uni" /></label><br />
-	<label>firstname: <input type="text" name="firstname" /></label><br />
-	<label>lastname: <input type="text" name="lastname" /></label><br />
-	<label>password: <input type="password" name="password" /></label><br />
-	<label>confirm password: <input type="password" name="pass2" /></label><br />
-	<input type="submit" value="create account" />
-      </fieldset>
-    </form>
-  </body>
+    <div metal:fill-slot="content" id="content">
+
+        <form action="/add_guest_account" method="post">
+        <fieldset>
+            <legend>Add a guest account</legend>
+            <label>username: <input type="text" name="uni" /></label><br />
+            <label>firstname: <input type="text" name="firstname" /></label><br />
+            <label>lastname: <input type="text" name="lastname" /></label><br />
+            <label>password: <input type="password" name="password" /></label><br />
+            <label>confirm password: <input type="password" name="pass2" /></label><br />
+            <input type="submit" value="create account" />
+        </fieldset>
+        </form>
+
+    </div>
+
 </html>

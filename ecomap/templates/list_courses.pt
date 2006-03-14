@@ -1,60 +1,63 @@
 <?xml version="1.0"?>
 <html metal:use-macro="sitemacros/macros/ecomap">
-<body metal:fill-slot="body">
-<div id="header"><img src="/images/logo.png" /></div>
 
-<div id="logout">You are logged in as <span tal:content="loginName"/> <a href="/logout">Log Out</a></div>
-<metal:block use-macro="sitemacros/macros/message" />
-<p/>
-<form action="/update" method="post">
+    <div metal:fill-slot="content" id="content">
 
-<div tal:condition="allCourses"><a href="/create_course_form">Create New Course</a> <a href="/add_guest_account_form">Add Guest User</a></div>
+        <div id="logout">
+            You are logged in as <span tal:content="loginName"/> <a href="/logout">Log Out</a>
+        </div>
+        
+        <form action="/update" method="post">
+        
+        <div tal:condition="allCourses">
+            <a href="/create_course_form">Create New Course</a> <a href="/add_guest_account_form">Add Guest User</a>
+        </div>
+        
+        <h1>My Courses</h1>
+        
+        <!--p tal:condition="not:(myCourses or instructorOf)">You do not have any courses.</p-->
+        
+        <table>
+            <tr><th></th><th>Name</th><th>Description</th><th>Instructor</th><th></th></tr>
+            <tal:block repeat="course instructorOf" tal:condition="instructorOf">
+                <tr>
+                <td></td>
+                <td tal:content="course/name" />
+                <td tal:content="course/description" />
+                <td tal:content="string:${course/instructor/firstname} ${course/instructor/lastname}"></td>
+                <td><a tal:attributes="href string:/course/${course/id}/">View SSNMs</a> <a tal:attributes="href string:/course/${course/id}/students">View Students</a> <a tal:attributes="href string:/course/${course/id}/edit_form">Edit Course Info</a></td>
+                </tr>
+            </tal:block>
+            <tal:block repeat="course myCourses" tal:condition="myCourses">
+                <tr>
+                <td></td>
+                <td tal:content="course/name" />
+                <td tal:content="course/description" />
+                <td tal:content="string:${course/instructor/firstname} ${course/instructor/lastname}"></td>
+                <td><a tal:attributes="href string:/course/${course/id}/">View SSNMs</a></td>
+                </tr>
+            </tal:block>
+        </table>
+        
+        <h4 style="cursor:pointer" tal:condition="allCourses" onClick="document.getElementById('allcourses').style.display = (document.getElementById('allcourses').style.display == 'none') ? 'block' : 'none'">All Courses</h4>
+        
+        <div tal:condition="allCourses" id="allcourses" style="display:block">
+            <table tal:condition="allCourses">
+                <tr><th></th><th>Name</th><th>Description</th><th>Instructor</th><th></th></tr>
+                <tal:block repeat="course allCourses">
+                    <tr>
+                    <td><a tal:attributes="href string:/course/${course/id}/delete/" onclick="return confirm('Are you sure you want to delete the selected items??');">DEL</a></td>
+                    <td tal:content="course/name" />
+                    <td tal:content="course/description" />
+                    <td tal:content="string:${course/instructor/firstname} ${course/instructor/lastname}"></td>
+                    <td><a tal:attributes="href string:/course/${course/id}/">View SSNMs</a> <a tal:attributes="href string:/course/${course/id}/students">View Students</a> <a tal:attributes="href string:/course/${course/id}/edit_form">Edit Course Info</a></td>
+                    </tr>
+                </tal:block>
+            </table>
+        </div>
+        
+        </form>
 
-<h1>My Courses</h1>
+    </div>
 
-<!--p tal:condition="not:(myCourses or instructorOf)">You do not have any courses.</p-->
-
-<table>
-<tr><th></th><th>Name</th><th>Description</th><th>Instructor</th><th></th></tr>
-<tal:block repeat="course instructorOf" tal:condition="instructorOf">
-<tr>
-<td></td>
-<td tal:content="course/name" />
-<td tal:content="course/description" />
-<td tal:content="string:${course/instructor/firstname} ${course/instructor/lastname}"></td>
-<td><a tal:attributes="href string:/course/${course/id}/">View SSNMs</a> <a tal:attributes="href string:/course/${course/id}/students">View Students</a> <a tal:attributes="href string:/course/${course/id}/edit_form">Edit Course Info</a></td>
-</tr>
-</tal:block>
-<tal:block repeat="course myCourses" tal:condition="myCourses">
-<tr>
-<td></td>
-<td tal:content="course/name" />
-<td tal:content="course/description" />
-<td tal:content="string:${course/instructor/firstname} ${course/instructor/lastname}"></td>
-<td><a tal:attributes="href string:/course/${course/id}/">View SSNMs</a></td>
-</tr>
-</tal:block>
-</table>
-
-
-<h4 style="cursor:pointer" tal:condition="allCourses" onClick="document.getElementById('allcourses').style.display = (document.getElementById('allcourses').style.display == 'none') ? 'block' : 'none'">All Courses</h4>
-
-
-<div tal:condition="allCourses" id="allcourses" style="display:block">
-<table tal:condition="allCourses">
-<tr><th></th><th>Name</th><th>Description</th><th>Instructor</th><th></th></tr>
-<tr tal:repeat="course allCourses">
-<td><a tal:attributes="href string:/course/${course/id}/delete/" onclick="return confirm('Are you sure you want to delete the selected items??');">DEL</a></td>
-<td tal:content="course/name" />
-<td tal:content="course/description" />
-<td tal:content="string:${course/instructor/firstname} ${course/instructor/lastname}"></td>
-<td><a tal:attributes="href string:/course/${course/id}/">View SSNMs</a> <a tal:attributes="href string:/course/${course/id}/students">View Students</a> <a tal:attributes="href string:/course/${course/id}/edit_form">Edit Course Info</a></td>
-</tr>
-</table>
-
-</div>
-
-</form>
-
-</body>
 </html>

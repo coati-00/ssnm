@@ -1,17 +1,11 @@
 <?xml version="1.0"?>
 <html metal:use-macro="sitemacros/macros/ecomap">
-<head>
-<title>Log in</title>
-<link rel="stylesheet" href="/css/ecomap.css" type="text/css" />
-</head>
 
-<body metal:fill-slot="body">
+    <div metal:fill-slot="content" id="content">
 
-<div id="header"><img src="images/logo.png" /></div>
+        <h1>Log In</h1>
+        <p><a href='login'>Click here</a> to log in to the Social Support Network Map tool</p>
 
-<h1>Log In</h1>
+    </div>
 
-<p><a href='login'>Click here</a> to log in to the Social Support Network Map tool</p>
-
-</body>
 </html>

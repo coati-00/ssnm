@@ -460,7 +460,7 @@ class CourseController(EcoControllerBase,RESTContent):
         if isAdmin(uni) or isInstructor(uni,course):
             defaults = {'name' : course.name, 'description' : course.description}
             parser = htmlfill.FillingParser(defaults)
-            parser.feed(self.template("edit_course.pt",{'isAdmin': isAdmin(uni), 'course' : course, 'allInstructors' : [i for i in Ecouser.select()]}))
+            parser.feed(self.template("edit_course.pt",{'isAdmin': isAdmin(uni), 'courseName' : course.name, 'course' : course, 'allInstructors' : [i for i in Ecouser.select()]}))
             parser.close()
             output = parser.text()
             return output
