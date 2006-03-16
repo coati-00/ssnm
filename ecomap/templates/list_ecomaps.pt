@@ -17,7 +17,7 @@
         
         <a tal:condition="myEcomaps" href="create_new">Create New Map</a>
 
-        <form tal:attributes="action postTo" method="post">
+        <form action="update" method="post">
 
         <table tal:condition="myEcomaps">
             <tr><th></th><th>Subject Name</th><th>Map Description</th><th>Created</th><th>Modified</th></tr>

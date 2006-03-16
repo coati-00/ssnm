@@ -21,6 +21,10 @@ td,th{
     right:30px;
 }
 
+img{
+    border:0;
+}
+
 p.message { 
     color:#0A8318;
 }

@@ -11,6 +11,8 @@
         
         <p>Add user by UNI:<input type="text" name="user_uni" width="10" /><input type="submit" name="action" value="Add User" /></p>
         
+        <p><a href="/add_guest_account_form">Add non-UNI (Guest) user</a></p>
+
         <h1>Users</h1>
         
         <table tal:condition="allUsers">

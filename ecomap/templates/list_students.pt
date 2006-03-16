@@ -11,7 +11,7 @@
             <a href="/course">my courses</a> > <span tal:content="courseName" />
         </div>
 
-        <form tal:attributes="action postTo" method="post">
+        <form action="update_students" method="post">
         
         <p>Add student by UNI:<input type="text" name="student_uni" width="10" /><input type="submit" name="action" value="Add Student" /></p>
         

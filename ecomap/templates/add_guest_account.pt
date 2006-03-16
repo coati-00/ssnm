@@ -3,6 +3,11 @@
 
     <div metal:fill-slot="content" id="content">
 
+        <div id="breadcrumbs">
+            <a href="/admin_users_form">Manage users</a> > Add guest account
+        </div>
+
+
         <form action="/add_guest_account" method="post">
         <fieldset>
             <legend>Add a guest account</legend>

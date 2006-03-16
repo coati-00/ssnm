@@ -193,7 +193,7 @@ class Eco(EcoControllerBase):
         if isAdmin(cherrypy.session.get(UNI_PARAM,None)):
             defaults = {'name' : "", 'description' : "", 'instructor' : ""}
             parser = htmlfill.FillingParser(defaults)
-            parser.feed(self.template("create_course.pt",{'allInstructors' : [i for i in Ecouser.select()]}))
+            parser.feed(self.template("create_course.pt",{'allInstructors' : [i for i in Ecouser.select(orderBy=['firstname'])]}))
             parser.close()
             output = parser.text()
             return output
@@ -358,7 +358,6 @@ class Eco(EcoControllerBase):
         else:
             cherrypy.session['message'] = "You do not have authorization to perform that action.  This event will be reported"
             raise cherrypy.HTTPRedirect("/course")
-
         
 
 class RESTContent:
@@ -467,7 +466,7 @@ class CourseController(EcoControllerBase,RESTContent):
                 allCourses = [e for e in Course.select(Course.q.instructorID == Ecouser.q.id, orderBy=['name'])]
             else:
                 allCourses = None
-            return self.template("list_courses.pt",{'loginName' : loginName, 'allCourses' : allCourses, 'myCourses' : myCourses, 'instructorOf' : instructorOf,})
+            return self.template("list_courses.pt",{'loginName' : loginName, 'allCourses' : allCourses, 'myCourses' : myCourses, 'instructorOf' : instructorOf})
         else:
             #No user logged in
             raise cherrypy.HTTPRedirect("/logout")
@@ -491,14 +490,11 @@ class CourseController(EcoControllerBase,RESTContent):
         
     @cherrypy.expose()
     def show(self,course,**kwargs):
-
         # This shows the list of ecomaps
-
         #import pdb; pdb.set_trace()
 
         uni = cherrypy.session.get(UNI_PARAM, None)
         loginName = cherrypy.session.get('fullname', 'unknown')
-        postTo = "/course/%s/update" % course.id
         courseName = course.name
 
         if uni:
@@ -513,7 +509,7 @@ class CourseController(EcoControllerBase,RESTContent):
             for e in myEcos:
                 e.createdStr = e.created.strftime("%m/%d/%Y")
                 e.modifiedStr = e.modified.strftime("%m/%d/%Y")
-            return self.template("list_ecomaps.pt",{'loginName' : loginName, 'myEcomaps' : myEcos, 'publicEcomaps' : publicEcos, 'allEcomaps' : allEcos, 'postTo' : postTo, 'courseName' : courseName,})
+            return self.template("list_ecomaps.pt",{'loginName' : loginName, 'myEcomaps' : myEcos, 'publicEcomaps' : publicEcos, 'allEcomaps' : allEcos, 'courseName' : courseName,})
         else:
             #No user logged in
             raise cherrypy.HTTPRedirect("/logout")
@@ -521,12 +517,13 @@ class CourseController(EcoControllerBase,RESTContent):
 
     @cherrypy.expose()
     def edit_form(self,course):
-
+        #import pdb; pdb.set_trace()
         uni = cherrypy.session.get(UNI_PARAM, None)
         if isAdmin(uni) or isInstructor(uni,course):
-            defaults = {'name' : course.name, 'description' : course.description}
+
+            defaults = {'name' : course.name, 'description' : course.description, 'instructor' : course.instructor.id}
             parser = htmlfill.FillingParser(defaults)
-            parser.feed(self.template("edit_course.pt",{'isAdmin': isAdmin(uni), 'courseName' : course.name, 'course' : course, 'allInstructors' : [i for i in Ecouser.select()]}))
+            parser.feed(self.template("edit_course.pt",{'isAdmin': isAdmin(uni), 'courseName' : course.name, 'course' : course, 'allInstructors' : [i for i in Ecouser.select(orderBy=['firstname'])]}))
             parser.close()
             output = parser.text()
             return output
@@ -550,9 +547,9 @@ class CourseController(EcoControllerBase,RESTContent):
                 raise cherrypy.HTTPRedirect("/course/" + str(course.id) + "/")
     
             except formencode.Invalid, e:
-                defaults = {'name' : course.name, 'description' : course.description}
+                defaults = {'name' : course.name, 'description' : course.description, 'instructor' : course.instructor.id}
                 parser = htmlfill.FillingParser(defaults,errors=e.unpack_errors())
-                parser.feed(self.template("edit_course.pt",{'isAdmin': isAdmin(uni), 'course' : course, 'allInstructors' : [i for i in Ecouser.select()]}))
+                parser.feed(self.template("edit_course.pt",{'isAdmin': isAdmin(uni), 'courseName' : course.name, 'course' : course, 'allInstructors' : [i for i in Ecouser.select(orderBy=['firstname'])]}))
                 parser.close()
                 output = parser.text()
                 return output
@@ -563,14 +560,15 @@ class CourseController(EcoControllerBase,RESTContent):
     @cherrypy.expose()
     def students(self,course):
         uni = cherrypy.session.get(UNI_PARAM, None)
+        loginName = cherrypy.session.get('fullname', 'unknown')
         if isAdmin(uni) or isInstructor(uni,course):
             #import pdb; pdb.set_trace()
-            postTo = "/course/%s/update_students" % course.id
             courseName = course.name
-            return self.template("list_students.pt",{'students' : course.students, 'postTo' : postTo, 'courseName' : courseName,})
+            return self.template("list_students.pt",{'loginName' : loginName, 'students' : course.students, 'courseName' : courseName,})
         else:
             cherrypy.session['message'] = "You do not have authorization to perform that action.  This event will be reported"
             raise cherrypy.HTTPRedirect("/course")
+
 
     @cherrypy.expose()
     def update_students(self,course,**kwargs):

@@ -10,7 +10,7 @@
         <form action="/update" method="post">
         
         <div tal:condition="allCourses">
-            <a href="/create_course_form">Create New Course</a> <a href="/add_guest_account_form">Add Guest User</a>
+            <a href="/create_course_form">Create New Course</a> <a href="/admin_users_form">Manage Users</a>
         </div>
         
         <h1>My Courses</h1>
