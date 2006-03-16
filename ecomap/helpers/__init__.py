@@ -1,6 +1,7 @@
 from ecomap.model import *
 import formencode
 from formencode import validators
+import cherrypy
 
 def createTables():
     Ecouser.createTable(ifNotExists=True)
@@ -67,29 +68,20 @@ def ldap_lookup(username):
         pass
     return (firstname,lastname)
 
-#This function needs to be linked to the data model
-#LDAP lookup section can be used as is ** :)
 def get_or_create_user(username,firstname="",lastname=""):
 
-    """ if the user is already in the system, it returns the user object.
-    otherwise, it creates a new one and returns that. the function has the
-    side effect of putting the user into any class that wind says they
-    should be a part of if they aren't already in it. """
+    """ get OR CREATE is misleading.  this is really get OR FAIL
+    users are created by adding them to courses.  users who are not in 
+    this system will be given an error and told to talk to their instructor """
+    
     res = Ecouser.select(Ecouser.q.uni == username)
     u = None
     if res.count() > 0:
         # found the user. 
         u = res[0]
     else:
-        #this user doesn't exist in our DB yet.  Get details from LDAP if possible
-        (firstname,lastname) = ldap_lookup(username)
-                
-        if lastname == "":
-            lastname = username
-
-        eus = EcouserSchema()
-        d = eus.to_python({'uni' : username, 'securityLevel' : 2, 'firstname' : firstname, 'lastname' : lastname})
-        u = Ecouser(uni=d['uni'],securityLevel=d['securityLevel'],firstname=d['firstname'],lastname=d['lastname'])
+        cherrypy.session['message'] = "Sorry, you are not registered for any courses.  Please contact your instructor for help."
+        raise cherrypy.HTTPRedirect("/")
     return u
 
 def get_user(username):
@@ -106,7 +98,6 @@ def isAdmin(username):
     return False
 
 def isInstructor(username,course):
-    #import pdb; pdb.set_trace()
     if course.instructor.uni == username:
         return True
     return False

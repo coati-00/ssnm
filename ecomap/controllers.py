@@ -294,6 +294,72 @@ class Eco(EcoControllerBase):
             cherrypy.session['message'] = "You do not have authorization to perform that action.  This event will be reported"
             raise cherrypy.HTTPRedirect("/course")
 
+    @cherrypy.expose()
+    def admin_users_form(self):
+        if isAdmin(cherrypy.session.get(UNI_PARAM,None)):
+            loginName = cherrypy.session.get('fullname', 'unknown')
+            return self.template("admin_users.pt",{'loginName' : loginName, 'allUsers' : [i for i in Ecouser.select(orderBy=['securityLevel','firstname'])]})
+        else:
+            cherrypy.session['message'] = "You do not have authorization to perform that action.  This event will be reported"
+            raise cherrypy.HTTPRedirect("/course")
+        
+    @cherrypy.expose()
+    def admin_users(self,**kwargs):
+        if isAdmin(cherrypy.session.get(UNI_PARAM,None)):
+            itemList = kwargs.get('user_id',None)
+            action = kwargs['action']
+            if itemList:
+                if type(itemList) is str:
+                    personList = [int(kwargs['user_id'])]
+                elif type(kwargs['user_id']) is list:
+                    personList = [k for k in kwargs['user_id']]
+                else:
+                    output = "error - unknown argument type"
+
+            thisName = ""
+            if action == 'Delete Selected':
+                for person in personList:
+                    # get the user, remove him from all his courses and delete him
+                    thisPerson = Ecouser.get(person)
+                    thisName += thisPerson.firstname + " " + thisPerson.lastname + ", "
+                    hisCourses = thisPerson.courses
+                    for thisCourse in hisCourses:
+                        thisCourse.removeEcouser(thisPerson.id)
+                    thisPerson.destroySelf()
+                cherrypy.session['message'] = "'" + thisName + "' has been deleted"
+                raise cherrypy.HTTPRedirect("/admin_users_form")
+
+            if action == 'Toggle Admin':
+                #import pdb; pdb.set_trace()
+                for person in personList:
+                    # get the user and toggle his admin status
+                    thisPerson = Ecouser.get(person)
+                    if thisPerson.securityLevel == 2:
+                        thisPerson.securityLevel = 1
+                    elif thisPerson.securityLevel == 1:
+                        thisPerson.securityLevel = 2
+                cherrypy.session['message'] = "Users have had their status changed"
+                raise cherrypy.HTTPRedirect("/admin_users_form")
+
+            elif action == 'Add User':
+                 userUNI = kwargs.get('user_uni',None)
+                 if userUNI:
+                     (firstName,lastName) = ldap_lookup(userUNI)
+                     if firstName == "" and lastName == "":
+                         # not in the ldap.  bad uni.  exit
+                         cherrypy.session['message'] = "Sorry, That is not a valid UNI"
+                     else:
+                         eus = EcouserSchema()
+                         d = eus.to_python({'uni' : userUNI, 'securityLevel' : 2, 'firstname' : firstName, 'lastname' : lastName})
+                         thisUser = Ecouser(uni=d['uni'],securityLevel=d['securityLevel'],firstname=d['firstname'],lastname=d['lastname'])
+                         cherrypy.session['message'] = "'" + d['firstname'] + " " + d['lastname'] + "' has been added"
+                 raise cherrypy.HTTPRedirect("/admin_users_form")
+            
+        else:
+            cherrypy.session['message'] = "You do not have authorization to perform that action.  This event will be reported"
+            raise cherrypy.HTTPRedirect("/course")
+
+        
 
 class RESTContent:
     @cherrypy.expose()
@@ -563,7 +629,7 @@ class CourseController(EcoControllerBase,RESTContent):
                     raise cherrypy.HTTPRedirect("/course/%s/students" % course.id)
     
             else:
-                raise cherrypy.HTTPRedirect("/course/%s/" % course.id)		
+                raise cherrypy.HTTPRedirect("/course/%s/" % course.id)      
         else:
             cherrypy.session['message'] = "You do not have authorization to perform that action.  This event will be reported"
             raise cherrypy.HTTPRedirect("/course")
