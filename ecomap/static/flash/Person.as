@@ -17,9 +17,9 @@ class Person{
     private var supportLevel_hit_mc:MovieClip;
     private var supportLevel_mc:MovieClip;
 
-    private var constWidth:Number = 60;
-    private var constHeight:Number = 50;
-    private var constColors = new Array(0xFF3333,0x33CC33,0x6699CC);
+    private var constWidth:Number = 100;
+    private var constHeight:Number = 41;
+    private var constColors = new Array(0xFF3333,0xFBE52A,0x33CC33); //,0x6699CC);
 
 
     
@@ -42,7 +42,7 @@ class Person{
         supTypes = new Array();
         numSupports = 0;
         container_mc = target_mc.createEmptyMovieClip("container_mc"+theDepth,theDepth);
-        container_mc.createTextField("name_txt",1,12,2,constWidth-14,32);
+        container_mc.createTextField("name_txt",1,12,2,constWidth-14,30);
 
         var myStyle:TextFormat = new TextFormat("Tahoma",10);
         container_mc.name_txt.setNewTextFormat(myStyle);
@@ -102,6 +102,7 @@ class Person{
 
         setSupportLevel(theSupportLevel);
         setPosition(x,y);
+        setName("Click to change name");
 
         // Attach behaviors to the container_mc MovieClip container object
 
@@ -131,8 +132,9 @@ class Person{
             
             // Check if the drop location is legitimite
             // Draw a connecting line
-            trace(this._parent.parent.toXML());
+            //trace(this._parent.parent.toXML());
             //trace(this._parent._droptarget);
+            
             if (this._parent._droptarget.indexOf("trash") != -1){
             //if (this._parent._droptarget == "/trash"){
                 this._parent.parent.destroy();
@@ -146,6 +148,13 @@ class Person{
         }
 
         container_mc.name_txt.onSetFocus = function(){
+            trace(Selection.getBeginIndex());
+            trace(Selection.getEndIndex());
+            //trace(this.text);
+            //trace(Selection.getFocus());
+            //trace(this.getCaretIndex());
+            //Selection.setFocus(this);
+            //this.setSelection(0,this.length);
             this.border = true;
         }
         
@@ -218,7 +227,7 @@ class Person{
             theMovieClip.endFill();
         }else if (theSupportLevel == 2){
             theMovieClip.beginFill(0x000000);
-            theMovieClip.drawArc(xPos+w-2,yPos+(h/2),(w/2)-2,360,0,(h/2)-2);
+            theMovieClip.drawCircle([xPos+(w/2), yPos+(h/2)], w/2-2, 0x000000, 100, 0x000000, 0, 1); //drawArc(xPos+w-2,yPos+(h/2),(w/2)-2,360,0,(h/2)-2);
             theMovieClip.endFill();
         }    
     }
@@ -265,7 +274,7 @@ class Person{
             trace("add: " + theSupportType);
             var support:SupportType = new SupportType(numSupports+100,container_mc,theSupportType,0,0,false);
 
-            support.setPosition(numSupports*14+3,constHeight-7);
+            support.setPosition(numSupports*14+20,constHeight-7);
 
             supTypes[theSupportType] = support;
             supportTypes[theSupportType] = true;

@@ -407,6 +407,7 @@ class EcomapController(EcoControllerBase,RESTContent):
             'ticket' : cherrypy.session.get(AUTH_TICKET_PARAM,None),
             'myName' : cherrypy.session.get('fullname',""),
             'server' : server,
+            'returnPath' : "course/%s" % ecomap.course.id,
             }
         return self.template("view_ecomap.pt",data)
 
