@@ -131,7 +131,7 @@ class Eco(EcoControllerBase):
                 action = root.getElementsByTagName("action")[0].firstChild.nodeValue
             else:
                 action = ""
-            dataNode = root.getElementsByTagName("persons")[0].toxml()
+            dataNode = root.getElementsByTagName("flashData")[0].toxml()
 
             if ticketid == sessionTicket:
                 #tickets match, so the session is valid

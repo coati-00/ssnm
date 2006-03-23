@@ -274,7 +274,7 @@ class Person{
             trace("add: " + theSupportType);
             var support:SupportType = new SupportType(numSupports+100,container_mc,theSupportType,0,0,false);
 
-            support.setPosition(numSupports*14+20,constHeight-7);
+            support.setPosition(numSupports*14+15,constHeight-7);
 
             supTypes[theSupportType] = support;
             supportTypes[theSupportType] = true;
@@ -307,7 +307,7 @@ class Person{
             theSupportType = supTypes[support].getName();
 
             supTypes[support].setDepth(100+i);
-            supTypes[support].setPosition(i*14+3,constHeight-7);
+            supTypes[support].setPosition(i*14+15,constHeight-7);
             i++;
         }
 
