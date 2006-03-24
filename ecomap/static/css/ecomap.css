@@ -100,6 +100,14 @@ colgroup#studenttablecols col.last { width: 30%; }
 colgroup#studenttablecols col.uni { width: 30%; }
 colgroup#studenttablecols col.delete { width: 10%; }
 
+
+colgroup#alluserstablecols col.first { width: 20%; }
+colgroup#alluserstablecols col.last { width: 20%; }
+colgroup#alluserstablecols col.id { width: 20%; }
+colgroup#alluserstablecols col.account { width: 20%; }
+colgroup#alluserstablecols col.security { width: 10%; }
+colgroup#alluserstablecols col.delete { width: 10%; }
+
 colgroup#maptablecols col.name { width: 20%; }
 colgroup#maptablecols col.description { width: 40%; }
 colgroup#maptablecols col.created { width: 15%; }

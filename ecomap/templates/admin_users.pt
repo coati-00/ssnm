@@ -3,57 +3,88 @@
 <html metal:use-macro="sitemacros/macros/ecomap">
 
     <div metal:fill-slot="content" id="content">
-
-        <div id="logout">
-            You are logged in as <span tal:content="loginName"/> <a href="/logout">Log Out</a>
-        </div>
-
-        <form action="admin_users" method="post">
-        
-        <p>Add user by UNI:<input type="text" name="user_uni" width="10" /><input type="submit" name="action" value="Add User" /></p>
-        
-        <p><a href="/add_guest_account_form">Add non-UNI (Guest) user</a></p>
-
-        <h1>Users</h1>
-        
-        <table tal:condition="allUsers">
-        
-            <tr>
-            
-				<th></th>
-				<th>First Name</th>
-				<th>Last Name</th>
-				<th>User ID</th>
-				<th>Account type</th>
-				<th>Security Level</th>
-            
-            </tr>
-            
-            <tal:block repeat="thisUser allUsers">
-            
-			<tr>
+	
+		<div id="toolbar">
+		
+			<div id="standard">
+				<a href="#">About</a>
+				<a href="#">Help</a>
+				<a href="#">Contact</a>
+			</div>
 			
-				<td><input type="checkbox" name="user_id" tal:attributes="value string:${thisUser/id}"/></td>
-				<td tal:content="thisUser/firstname" />
-				<td tal:content="thisUser/lastname" />
-				<td tal:content="thisUser/uni" />
-				<td tal:condition="python:thisUser.password == ''">UNI</td>
-				<td tal:condition="python:thisUser.password != ''">Guest</td>
-				<td tal:condition="python:thisUser.securityLevel == 1">Admin</td>
-				<td tal:condition="python:thisUser.securityLevel == 2">User</td>
+			<div id="log">
+				Logged in as <span tal:content="loginName"/>
+				|
+				<a href="/logout">Logout</a>
+			</div>
+		
+		</div>
+	
+		<div id="container">
+		
+			<form action="admin_users" method="post">
+			
+			<h2>Users</h2>
+			
+			<p>
+			Add user by UNI:<input type="text" name="user_uni" width="10" />
+			<input type="submit" name="action" value="Add User" />
+			</p>
+			
+			<p><a href="/add_guest_account_form">Add non-UNI (Guest) user</a></p>
+	
+			<table tal:condition="allUsers" class="infotable" cellspacing="0" summary="Network Map Table">
+		
+				<colgroup id="alluserstablecols" span="6">
+					<col class="first"/>
+					<col class="last"/>
+					<col class="id"/>
+					<col class="account"/>
+					<col class="security"/>
+					<col class="delete"/>
+				</colgroup>
+			
+				<thead>
+			
+					<tr>
+						<th>First Name</th>
+						<th>Last Name</th>
+						<th>User ID</th>
+						<th>Account type</th>
+						<th>Security Level</th>
+						<th>Delete</th>
+					</tr>
+			
+				</thead>
 				
-			</tr>
-                
-            </tal:block>
-            
-        </table>
-        
-		<input tal:condition="allUsers" type="submit" name="action" value="Delete Selected" onclick="return confirm('Are you sure you want to completely erase these users??');"/>
-       
-		<input tal:condition="allUsers" type="submit" name="action" value="Toggle Admin"/>
-        
-        </form>
+				<tbody>
+			
+					<tal:block repeat="thisUser allUsers">
+					<tr>
+					
+						<td tal:content="thisUser/firstname" />
+						<td tal:content="thisUser/lastname" />
+						<td tal:content="thisUser/uni" />
+						<td tal:condition="python:thisUser.password == ''">UNI</td>
+						<td tal:condition="python:thisUser.password != ''">Guest</td>
+						<td tal:condition="python:thisUser.securityLevel == 1">Admin</td>
+						<td tal:condition="python:thisUser.securityLevel == 2">User</td>
+						<td><input type="checkbox" name="user_id" tal:attributes="value string:${thisUser/id}"/></td>
+					</tr>
+					</tal:block>
+				
+				</tbody>
+			
+			</table>
+			
+			<input tal:condition="allUsers" type="submit" name="action" value="Delete Selected" onclick="return confirm('Are you sure you want to completely erase these users??');"/>
+		   
+			<input tal:condition="allUsers" type="submit" name="action" value="Toggle Admin"/>
+			
+			</form>
 
+    	</div>
+    
     </div>
 
 </html>
