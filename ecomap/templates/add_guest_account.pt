@@ -1,25 +1,59 @@
 <?xml version="1.0"?>
+
 <html metal:use-macro="sitemacros/macros/ecomap">
 
     <div metal:fill-slot="content" id="content">
+	
+	<div id="toolbar">
+	
+		<div id="standard">
+			<a href="#">About</a>
+			<a href="#">Help</a>
+			<a href="#">Contact</a>
+		</div>
+		
+		<div id="log">
+			Logged in as <span tal:content="loginName"/>
+			|
+			<a href="/logout">Logout</a>
+		</div>
+	
+	</div>
+	
+	<div id="breadcrumbbar">
+	
+		<a href="/admin_users_form">Manage users</a> > Add Guest Account
+		
+	</div>
 
-        <div id="breadcrumbs">
-            <a href="/admin_users_form">Manage users</a> > Add guest account
-        </div>
-
-
-        <form action="/add_guest_account" method="post">
+	<form action="/add_guest_account" method="post">
+        
+		<div id="container">
+		
+        <h2>Guest Account</h2>
+        
         <fieldset>
-            <legend>Add a guest account</legend>
-            <label>username: <input type="text" name="uni" /></label><br />
-            <label>firstname: <input type="text" name="firstname" /></label><br />
-            <label>lastname: <input type="text" name="lastname" /></label><br />
-            <label>password: <input type="password" name="password" /></label><br />
-            <label>confirm password: <input type="password" name="pass2" /></label><br />
-            <input type="submit" value="create account" />
+        
+            <legend>Add a Guest Account</legend>
+            
+            <label>User Name: <input type="text" name="uni" /></label>
+            <br />
+            <label>First Name: <input type="text" name="firstname" /></label>
+            <br />
+            <label>Last Name: <input type="text" name="lastname" /></label>
+            <br />
+            <label>Password: <input type="password" name="password" /></label>
+            <br />
+            <label>Confirm Password: <input type="password" name="pass2" /></label>
+            <br />
+            <input type="submit" value="Create Account" />
+            
         </fieldset>
+        
         </form>
-
+        
+    	</div>
+    
     </div>
 
 </html>

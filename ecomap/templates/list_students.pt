@@ -1,38 +1,81 @@
 <?xml version="1.0"?>
+
 <html metal:use-macro="sitemacros/macros/ecomap">
 
     <div metal:fill-slot="content" id="content">
-
-        <div id="logout">
-            You are logged in as <span tal:content="loginName"/> <a href="/logout">Log Out</a>
+	
+		<div id="toolbar">
+		
+			<div id="standard">
+				<a href="#">About</a>
+				<a href="#">Help</a>
+				<a href="#">Contact</a>
+			</div>
+			
+			<div id="log">
+				Logged in as <span tal:content="loginName"/>
+				|
+				<a href="/logout">Logout</a>
+			</div>
+		
+		</div>
+	
+		<div id="breadcrumbbar">
+            <a href="/course">My Courses</a> &gt; <span tal:content="courseName" />
         </div>
-
-        <div id="breadcrumbs">
-            <a href="/course">my courses</a> > <span tal:content="courseName" />
-        </div>
-
+        
+		<div id="container">
+		
+        <h2>Students</h2>
+        
         <form action="update_students" method="post">
         
         <p>Add student by UNI:<input type="text" name="student_uni" width="10" /><input type="submit" name="action" value="Add Student" /></p>
         
-        <h1>Students</h1>
         
-        <table tal:condition="students">
-            <tr><th></th><th>First Name</th><th>Last Name</th><th>UNI</th></tr>
-            <tal:block repeat="student students">
-                <tr>
-                <td><input type="checkbox" name="student_id" tal:attributes="value string:${student/id}"/></td>
-                <td tal:content="student/firstname" />
-                <td tal:content="student/lastname" />
-                <td tal:content="student/uni" />
-                </tr>
-            </tal:block>
-        </table>
-        
-        <input tal:condition="students" type="submit" name="action" value="Delete Selected" onclick="return confirm('Are you sure you want to delete the selected items??');"/>
-        
+		<table tal:condition="students" class="infotable" cellspacing="0" summary="Network Map Table">
+		
+			<colgroup id="studenttablecols" span="4">
+				<col class="first"/>
+				<col class="last"/>
+				<col class="uni"/>
+				<col class="delete"/>
+			</colgroup>
+			
+			<thead>
+			
+			<tr>
+				<th>First Name</th>
+				<th>Last Name</th>
+				<th>UNI</th>
+				<th>Delete</th>
+			</tr>
+			
+			</thead>
+			
+			<tbody>
+			
+			<tal:block repeat="student students">
+			<tr>
+				<td tal:content="student/firstname" />
+				<td tal:content="student/lastname" />
+				<td tal:content="student/uni" />
+				<td><input type="checkbox" name="student_id" tal:attributes="value string:${student/id}"/></td>
+			</tr>
+			</tal:block>
+			
+			</tbody>
+			
+		</table>
+		
+		<div class="deletemap">
+        <input tal:condition="students" type="submit" name="action" value="Delete Selected" onclick="return confirm('Are you sure you want to delete the selected items?');"/>
+    	</div>
+    	
         </form>
 
+    	</div>
+    
     </div>
 
 </html>

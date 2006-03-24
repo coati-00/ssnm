@@ -1,15 +1,27 @@
 <?xml version="1.0"?>
+
 <html metal:use-macro="sitemacros/macros/ecomap">
 
     <div metal:fill-slot="content" id="content">
 
     <form action="/guest_login" method="post">
+    
     <fieldset>
-        <legend>login</legend>
-        <label>username: <input type="text" name="uni" /></label><br />
-        <label>password: <input type="password" name="password" /></label><br />
-        <input type="submit" value="login"/>
+    
+        <legend>Login</legend>
+        
+        <label>User Name: <input type="text" name="uni" /></label>
+        
+        <br />
+        
+        <label>Password: <input type="password" name="password" /></label>
+        
+        <br />
+        
+        <input type="submit" value="Log In"/>
+        
     </fieldset>
+    
     </form>
 
     </div>

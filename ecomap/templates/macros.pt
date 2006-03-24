@@ -1,23 +1,38 @@
 <?xml version="1.0"?>
+
 <html metal:define-macro="ecomap">
 
     <head>
-        <title metal:define-slot="page_title">SSNM</title>
+    
+        <title metal:define-slot="page_title">Social Support Network Map</title>
+        
         <link rel="stylesheet" href="/css/ecomap.css" type="text/css" />
+        
         <metal:block define-slot="js_slot"></metal:block>
+        
         <metal:block define-slot="css_slot"></metal:block>
+        
     </head>
 
     <body metal:define-slot="body">
 
-        <div id="header" metal:define-slot="header"><a href="/course"><img src="/images/logo.png" /></a></div>
-        
+        <h1 metal:define-slot="header">
+		<a href="/course" title="">Social Support Network Map</a>
+		</h1>
+		
+		<div style="background-color: #bddfde; height:10px;"></div>
+		
+		<div id="ccnmtl">
+		<a href="http://ccnmtl.columbia.edu/" title="Go to the CCNMTL web site." target="_blank">CCNMTL</a>
+		</div>
+	
         <metal:block define-macro="message">
-            <p tal:condition="message" tal:content="message" class="message"/>
+		<div tal:condition="message" tal:content="message" class="message"/>
         </metal:block>
         
         <div id="content" metal:define-slot="content">This is where the page content goes</div>
     
     </body>
+    
 </html>
 

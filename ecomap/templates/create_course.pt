@@ -1,20 +1,54 @@
 <?xml version="1.0"?>
+
 <html metal:use-macro="sitemacros/macros/ecomap">
 
     <div metal:fill-slot="content" id="content">
 
         <form action="/create_course" method="post">
+        
         <fieldset>
+        
             <legend>Create Course</legend>
-            <label>Name: <input type="text" name="name" size="30" /></label><form:iferror name="name"> <span class="errormessage"><form:error name="name" /></span></form:iferror><br />
-            <label>Description: <input type="text" name="description" size="60" /></label><form:iferror name="description"> <span class="errormessage"><form:error name="description"/></span></form:iferror><br />
-            <label>Instructor ID: 
+            
+            <label>Name: <input type="text" name="name" size="30" /></label>
+            
+            <form:iferror name="name"> 
+            <span class="errormessage">
+            <form:error name="name" />
+            </span>
+            </form:iferror>
+            
+            <br />
+            
+            <label>Description: <input type="text" name="description" size="60" /></label>
+            
+            <form:iferror name="description"> 
+            <span class="errormessage">
+            <form:error name="description"/>
+            </span>
+            </form:iferror>
+            
+            <br />
+            
+            <label>
+            Instructor ID: 
             <select name="instructor">
                 <option tal:repeat="i allInstructors" tal:attributes="value i/id" tal:content="string:${i/firstname} ${i/lastname}" />
-            </select></label><br/>
-            <label>Add Students:<br/><textarea name="students" rows="5" cols="30"></textarea></label>
+            </select>
+            </label>
+            
+            <br/>
+            
+			<label>
+			Add Students:
+			<br/>
+			<textarea name="students" rows="5" cols="30"></textarea>
+			</label>
+            
             <input type="submit" value="Create"/>
+            
         </fieldset>
+        
         </form>
     
     </div>

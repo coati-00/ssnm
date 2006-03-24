@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+
 <html metal:use-macro="sitemacros/macros/ecomap">
 
     <div metal:fill-slot="content" id="content">
@@ -16,25 +17,40 @@
         <h1>Users</h1>
         
         <table tal:condition="allUsers">
-            <tr><th></th><th>First Name</th><th>Last Name</th><th>User ID</th><th>Account type</th><th>Security Level</th></tr>
+        
+            <tr>
+            
+				<th></th>
+				<th>First Name</th>
+				<th>Last Name</th>
+				<th>User ID</th>
+				<th>Account type</th>
+				<th>Security Level</th>
+            
+            </tr>
+            
             <tal:block repeat="thisUser allUsers">
-                <tr>
-                <td><input type="checkbox" name="user_id" tal:attributes="value string:${thisUser/id}"/></td>
-                <td tal:content="thisUser/firstname" />
-                <td tal:content="thisUser/lastname" />
-                <td tal:content="thisUser/uni" />
-
-                <td tal:condition="python:thisUser.password == ''">UNI</td>
-                <td tal:condition="python:thisUser.password != ''">Guest</td>
-
-                <td tal:condition="python:thisUser.securityLevel == 1">Admin</td>
-                <td tal:condition="python:thisUser.securityLevel == 2">User</td>
-                </tr>
+            
+			<tr>
+			
+				<td><input type="checkbox" name="user_id" tal:attributes="value string:${thisUser/id}"/></td>
+				<td tal:content="thisUser/firstname" />
+				<td tal:content="thisUser/lastname" />
+				<td tal:content="thisUser/uni" />
+				<td tal:condition="python:thisUser.password == ''">UNI</td>
+				<td tal:condition="python:thisUser.password != ''">Guest</td>
+				<td tal:condition="python:thisUser.securityLevel == 1">Admin</td>
+				<td tal:condition="python:thisUser.securityLevel == 2">User</td>
+				
+			</tr>
+                
             </tal:block>
+            
         </table>
         
-        <input tal:condition="allUsers" type="submit" name="action" value="Delete Selected" onclick="return confirm('Are you sure you want to completely erase these users??');"/>
-        <input tal:condition="allUsers" type="submit" name="action" value="Toggle Admin"/>
+		<input tal:condition="allUsers" type="submit" name="action" value="Delete Selected" onclick="return confirm('Are you sure you want to completely erase these users??');"/>
+       
+		<input tal:condition="allUsers" type="submit" name="action" value="Toggle Admin"/>
         
         </form>
 
