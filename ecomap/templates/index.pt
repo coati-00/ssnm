@@ -2,18 +2,49 @@
 
 <html metal:use-macro="sitemacros/macros/ecomap">
 
-    <div metal:fill-slot="content" id="content">
-    
-		<div id="container">
+	<div metal:fill-slot="content" id="content">
 	
-			<h2>Log In</h2>
+		<div id="toolbar">
+		
+			<div id="standard">
+				<a href="#">
+					About
+				</a>
+				<a href="#">
+					Help
+				</a>
+				<a href="#">
+					Contact
+				</a>
+			</div>
+			
+			<div id="log">
+				<a href="/login">
+					Log In
+				</a>
+			</div>
+			
+		</div>
+		
+		<metal:block define-macro="message">
+		<div tal:condition="message" tal:content="message" class="message" />
+		</metal:block>
+		
+		<div id="container">
+		
+			<h2>
+				Log In
+			</h2>
 			
 			<p>
-			<a href='login'>Click here</a> to log in to the Social Support Network Map tool.
+				<a href='login'>
+					Click here
+				</a>
+				to log in to the Social Support Network Map tool. 
 			</p>
-	
+			
 		</div>
-    
-    </div>
-
+		
+	</div>
+	
 </html>

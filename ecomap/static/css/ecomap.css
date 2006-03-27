@@ -94,26 +94,21 @@ colgroup#coursetablecols col.name { width: 20%; }
 colgroup#coursetablecols col.description { width: 20%; }
 colgroup#coursetablecols col.instructor { width: 20%; }
 colgroup#coursetablecols col.functions { width: 40%; }
-
 colgroup#studenttablecols col.first { width: 30%; }
 colgroup#studenttablecols col.last { width: 30%; }
 colgroup#studenttablecols col.uni { width: 30%; }
 colgroup#studenttablecols col.delete { width: 10%; }
-
-
 colgroup#alluserstablecols col.first { width: 20%; }
 colgroup#alluserstablecols col.last { width: 20%; }
 colgroup#alluserstablecols col.id { width: 20%; }
 colgroup#alluserstablecols col.account { width: 20%; }
 colgroup#alluserstablecols col.security { width: 10%; }
 colgroup#alluserstablecols col.delete { width: 10%; }
-
 colgroup#maptablecols col.name { width: 20%; }
 colgroup#maptablecols col.description { width: 40%; }
 colgroup#maptablecols col.created { width: 15%; }
 colgroup#maptablecols col.modified { width: 15%; }
 colgroup#maptablecols col.delete { width: 10%; }
-
 colgroup#allmaptablecols col.name { width: 20%; }
 colgroup#allmaptablecols col.description { width: 30%; }
 colgroup#allmaptablecols col.owner { width: 20%; }
@@ -150,12 +145,13 @@ table.infotable td
 	border-bottom: 1px solid #bddfde;
 }
 
-.createmap
+.addbar
 {
 	float: right;
+	padding: 10px 10px 0px 0px;
 }
 
-.deletemap
+.deletebar
 {
 	text-align: right;
 	padding: 10px 10px 0px 0px;
@@ -177,32 +173,32 @@ p
 	padding: 10px;
 }
 
-/*
-body, legend { font-family: tahoma,arial; }
-
-h1
+fieldset
 {
-	font-size: 1.3em;
-	margin-bottom: .25em;
-	margin-top: 0.5em;
+	border: 1px solid #348eae;
+	margin: 0;
+	padding: 10px;
+	width: 400px;
 }
 
-td,th
+legend
 {
-	font-size: .85em;
-	padding-left: 5px;
-	padding-right: 5px;
+	border: 1px solid #348eae;
+	margin: 0;
+	padding: 5px;
+	font-size: 12px;
+	background-color: #bddfde;
+	color: #348eae;
 }
 
-#logout
+label
 {
-	font-size: .85em;
-	position: absolute;
-	top: 10px;
-	right: 30px;
+	margin: 0;
+	padding: 5px;
+	font-size: 12px;
+	color: #000;
+	text-align: right;
+	width: 120px;
+	display: block;
+	float: left;
 }
-
-img { border: 0; }
-
-p.message { color: #0A8318; }
-*/

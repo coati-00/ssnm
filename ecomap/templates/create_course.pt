@@ -2,55 +2,108 @@
 
 <html metal:use-macro="sitemacros/macros/ecomap">
 
-    <div metal:fill-slot="content" id="content">
-
-        <form action="/create_course" method="post">
-        
-        <fieldset>
-        
-            <legend>Create Course</legend>
-            
-            <label>Name: <input type="text" name="name" size="30" /></label>
-            
-            <form:iferror name="name"> 
-            <span class="errormessage">
-            <form:error name="name" />
-            </span>
-            </form:iferror>
-            
-            <br />
-            
-            <label>Description: <input type="text" name="description" size="60" /></label>
-            
-            <form:iferror name="description"> 
-            <span class="errormessage">
-            <form:error name="description"/>
-            </span>
-            </form:iferror>
-            
-            <br />
-            
-            <label>
-            Instructor ID: 
-            <select name="instructor">
-                <option tal:repeat="i allInstructors" tal:attributes="value i/id" tal:content="string:${i/firstname} ${i/lastname}" />
-            </select>
-            </label>
-            
-            <br/>
-            
-			<label>
-			Add Students:
-			<br/>
-			<textarea name="students" rows="5" cols="30"></textarea>
-			</label>
-            
-            <input type="submit" value="Create"/>
-            
-        </fieldset>
-        
-        </form>
-    
-    </div>
-
+	<div metal:fill-slot="content" id="content">
+	
+		<div id="toolbar">
+		
+			<div id="standard">
+				<a href="#">
+					About
+				</a>
+				<a href="#">
+					Help
+				</a>
+				<a href="#">
+					Contact
+				</a>
+			</div>
+			
+			<div id="log">
+				Logged in as 
+				<span tal:content="loginName" />
+				| 
+				<a href="/logout">
+					Logout
+				</a>
+			</div>
+			
+		</div>
+		
+		<div id="breadcrumbbar">
+			<div tal:condition="allCourses">
+				<a href="/create_course_form">
+					Create New Course
+				</a>
+				| 
+				<a href="/admin_users_form">
+					Manage Users
+				</a>
+			</div>
+		</div>
+		
+		<metal:block define-macro="message">
+			<div tal:condition="message" tal:content="message" class="message" />
+		</metal:block>
+		
+		<div id="container">
+		
+			<h2>
+				Create Course
+			</h2>
+			
+			<form action="/create_course" method="post">
+			
+				<fieldset>
+				
+					<legend>
+						Course Information
+					</legend>
+					
+					<label for="coursename">
+						Name:</label>
+					<input id="coursename" type="text" name="name" />
+					<form:iferror name="name">
+						<span class="errormessage">
+							<form:error name="name" />
+						</span>
+					</form:iferror>
+					<br />
+					<br />
+					<label for="coursedesc">
+						Description:</label>
+					<input id="coursedesc" type="text" name="description" />
+					<form:iferror name="description">
+						<span class="errormessage">
+							<form:error name="description" />
+						</span>
+					</form:iferror>
+					<br />
+					<br />
+					<label for="instid">
+						Instructor ID:
+					</label>
+					<select id="instid" name="instructor">
+						<option tal:repeat="i allInstructors" tal:attributes="value i/id" tal:content="string:${i/firstname} ${i/lastname}" />
+					</select>
+					<br />
+					<br />
+					<label for="addstudents">
+						Add Students:
+					</label>
+					<textarea id="addstudents" name="students" rows="5" cols="30">
+					</textarea>
+					<br />
+					<br />
+					<label for="createcourse">
+					</label>
+					<input id="createcourse" type="submit" value="Create Course" />
+					
+				</fieldset>
+				
+			</form>
+			
+		</div>
+		
+	</div>
+	
 </html>

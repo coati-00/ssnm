@@ -2,18 +2,49 @@
 
 <html metal:use-macro="sitemacros/macros/ecomap">
 
-    <div metal:fill-slot="content" id="content">
-    
-		<div id="container">
+	<div metal:fill-slot="content" id="content">
 	
-			<h2>Goodbye</h2>
+		<div id="toolbar">
+		
+			<div id="standard">
+				<a href="#">
+					About
+				</a>
+				<a href="#">
+					Help
+				</a>
+				<a href="#">
+					Contact
+				</a>
+			</div>
 			
-			<p>You have been logged out of the system.</p>
+			<div id="log">
+				<a href="/login">
+					Log In
+				</a>
+			</div>
 			
-			<p><a href="/login">Click here</a> to log back in.</p>
-
-    	</div>
-    
-    </div>
-
+		</div>
+		
+		<div id="container">
+		
+			<h2>
+				Goodbye
+			</h2>
+			
+			<p>
+				You have been logged out of the system.
+			</p>
+			
+			<p>
+				<a href="/login">
+					Click here
+				</a>
+				to log back in.
+			</p>
+			
+		</div>
+		
+	</div>
+	
 </html>
