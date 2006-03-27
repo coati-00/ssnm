@@ -10,6 +10,8 @@
 		
 		<link rel="stylesheet" href="/css/ecomap.css" type="text/css" />
 		
+		<link rel="icon" href="http://ccnmtl.columbia.edu/web/images/favicon.ico" type="image/x-icon" />
+		
 		<metal:block define-slot="js_slot">
 		</metal:block>
 		
