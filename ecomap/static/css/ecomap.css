@@ -23,7 +23,7 @@ h1
 	margin: 0;
 	padding: 0;
 	background-color: #348eae;
-	height: 90px;
+	height: 80px;
 	background-image: url(../images/logo_ssnm.gif);
 	background-repeat: no-repeat;
 }
@@ -235,7 +235,8 @@ legend
 	padding: 5px;
 	font-size: 12px;
 	background-color: #bddfde;
-	color: #348eae;
+	color: #369;
+	font-weight: bold;
 }
 
 label
