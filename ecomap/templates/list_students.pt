@@ -44,9 +44,7 @@
 		<div id="container">
 		
 			<div class="addbar">
-				<p>
-					Add student by UNI:<input type="text" name="student_uni" width="10" /><input type="submit" name="action" value="Add Student" />
-				</p>
+				Add student by UNI:<input type="text" name="student_uni" width="10" /><input type="submit" name="action" value="Add Student" />
 			</div>
 			
 			<h2>
