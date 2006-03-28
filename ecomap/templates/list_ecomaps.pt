@@ -120,8 +120,8 @@
 					<!--<input type="submit" name="action" value="share"/>-->
 				</div>
 				
-				<h2 style="cursor:pointer" tal:condition="allEcomaps" onclick="document.getElementById('allmaps').style.display = (document.getElementById('allmaps').style.display == 'none') ? 'block' : 'none'">
-					<a href="#"><img class="toggle" src="../../images/closed.gif" alt="" /></a> All Social Support Network Maps
+				<h2 style="cursor:pointer" tal:condition="allEcomaps" onclick="document.getElementById('allmaps').style.display = (document.getElementById('allmaps').style.display == 'none') ? 'block' : 'none'; document.getElementById('imgToggle').src = (document.getElementById('allmaps').style.display == 'none') ? '/images/closed.gif' : '/images/open.gif'">
+					<a href="#"><img id="imgToggle" class="toggle" src="/images/closed.gif" alt="" /></a> All Social Support Network Maps
 				</h2>
 				
 				<div id="allmaps" style="display:none">
