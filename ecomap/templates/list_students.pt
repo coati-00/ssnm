@@ -42,6 +42,8 @@
 		</metal:block>
 		
 		<div id="container">
+
+			<form action="update_students" method="post">
 		
 			<div class="addbar">
 				Add student by UNI:<input type="text" name="student_uni" width="10" /><input type="submit" name="action" value="Add Student" />
@@ -50,8 +52,6 @@
 			<h2>
 				Students
 			</h2>
-			
-			<form action="update_students" method="post">
 			
 				<table tal:condition="students" class="infotable" cellspacing="0" summary="Network Map Table">
 				
