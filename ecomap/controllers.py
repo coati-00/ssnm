@@ -412,29 +412,6 @@ class EcomapController(EcoControllerBase,RESTContent):
         return self.template("view_ecomap.pt",data)
 
 
-def action_auth(f):
-    """ control over who can do what """
-    def wrapped(*args, **kwargs):
-        import pdb; pdb.set_trace()
-        if config.MODE == "regressiontest":
-            return f(*args,**kwargs)
-        uni = cherrypy.session.get(UNI_PARAM, None)
-  #      if uni:
-  #          
-  #          authUsers = kwargs['authorized'].split(",")
-            
-        
-
-        # NOW, since you are logged in ok, check if you're allowed to do what you're trying to do
-        
-#       userid        = get_cookie("quip_username")
-#       authenticated = get_cookie('quip_authenticated')
-#       if authenticated != "1":
-#           raise cherrypy.HTTPRedirect("/login")
-#       else:
-        return f(*args,**kwargs)
-    return wrapped
-
 class CourseController(EcoControllerBase,RESTContent):
     def query(self,id):
         return Course.get(int(id))
@@ -508,8 +485,8 @@ class CourseController(EcoControllerBase,RESTContent):
             else:
                 allEcos = None
             for e in myEcos:
-                e.createdStr = e.created.strftime("%m/%d/%Y")
-                e.modifiedStr = e.modified.strftime("%m/%d/%Y")
+                e.createdStr = e.created.strftime("%A, %B %d, %Y")
+                e.modifiedStr = e.modified.strftime("%A, %B %d, %Y")
             return self.template("list_ecomaps.pt",{'loginName' : loginName, 'myEcomaps' : myEcos, 'publicEcomaps' : publicEcos, 'allEcomaps' : allEcos, 'courseName' : courseName,})
         else:
             #No user logged in
