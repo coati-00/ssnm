@@ -80,7 +80,7 @@ def get_or_create_user(username,firstname="",lastname=""):
         # found the user. 
         u = res[0]
     else:
-        cherrypy.session['message'] = "Sorry, you are not registered for any courses.  Please contact your instructor for help."
+        cherrypy.session['message'] = "You are not registered for any courses.  Please contact your instructor for help."
         raise cherrypy.HTTPRedirect("/")
     return u
 

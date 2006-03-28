@@ -165,20 +165,20 @@ class Eco(EcoControllerBase):
                                 #if it doesn't save, return NOT OK
                                 responseData = "<data><response>OK</response></data>"
                             else:
-                                responseData = "<data><response>This is not your ssnm</response></data>"
+                                responseData = "<data><response>This is not your social support network map.</response></data>"
                         else:
                             print "unknown data action"
                             responseData = "<data><response>Unknown data action</response></data>"
                         print thisEcomap.description
                     else:
-                        responseData = "<data><response>This is not your ssnm and it is not public</response></data>"
+                        responseData = "<data><response>This is not your social support network map. Also, it isn't public.</response></data>"
                         print "not your ecomap and not public"
                 else:
-                    responseData = "<data><response>That ssnm id does not exist</response></data>"
+                    responseData = "<data><response>That social support network map ID does'nt exist.</response></data>"
                     print "not a valid ecomap id"
             else:
-                responseData = "<data><response>Your session may have timed out</response></data>"
-                print "not a valid session, you little hacker"
+                responseData = "<data><response>Your session may have timed out.</response></data>"
+                print "This in't a valid session you little hacker! ;)"
 
 
         return responseData
@@ -198,7 +198,7 @@ class Eco(EcoControllerBase):
             output = parser.text()
             return output
         else:
-            cherrypy.session['message'] = "You do not have authorization to perform that action.  This event will be reported"
+            cherrypy.session['message'] = "You are not authorized to perform that action.  This event will be reported."
             raise cherrypy.HTTPRedirect("/course")
 
     @cherrypy.expose()
@@ -249,7 +249,7 @@ class Eco(EcoControllerBase):
                                         thisCourse.addEcouser(thisUser.id)
                     print thisCourse.students
    
-                cherrypy.session['message'] = "New course '" + name + "' has been created"
+                cherrypy.session['message'] = "The new course '" + name + "' has been created."
                 if len(invalidIDs) > 0:
                     cherrypy.session['message'] += " but the following UNIs were not valid: %s" % invalidIDs
                 raise cherrypy.HTTPRedirect("/course")
@@ -261,7 +261,7 @@ class Eco(EcoControllerBase):
                 output = parser.text()
                 return output
         else:
-            cherrypy.session['message'] = "You do not have authorization to perform that action.  This event will be reported"
+            cherrypy.session['message'] = "You don't have authorization to perform that action.  This event will be reported."
             raise cherrypy.HTTPRedirect("/course")
 
 
@@ -274,7 +274,7 @@ class Eco(EcoControllerBase):
         if isAdmin(cherrypy.session.get(UNI_PARAM,None)):
             return self.template("add_guest_account.pt",{})
         else:
-            cherrypy.session['message'] = "You do not have authorization to perform that action.  This event will be reported"
+            cherrypy.session['message'] = "You don't have authorization to perform that action.  This event will be reported."
             raise cherrypy.HTTPRedirect("/course")
 
     @cherrypy.expose()
@@ -291,7 +291,7 @@ class Eco(EcoControllerBase):
             cherrypy.session['message'] = "New user has been created.  Please log in"
             raise cherrypy.HTTPRedirect("/guest_login")
         else:
-            cherrypy.session['message'] = "You do not have authorization to perform that action.  This event will be reported"
+            cherrypy.session['message'] = "You don't have authorization to perform that action.  This event will be reported."
             raise cherrypy.HTTPRedirect("/course")
 
     @cherrypy.expose()
@@ -300,7 +300,7 @@ class Eco(EcoControllerBase):
             loginName = cherrypy.session.get('fullname', 'unknown')
             return self.template("admin_users.pt",{'loginName' : loginName, 'allUsers' : [i for i in Ecouser.select(orderBy=['securityLevel','firstname'])]})
         else:
-            cherrypy.session['message'] = "You do not have authorization to perform that action.  This event will be reported"
+            cherrypy.session['message'] = "You don't have authorization to perform that action.  This event will be reported."
             raise cherrypy.HTTPRedirect("/course")
         
     @cherrypy.expose()
@@ -326,7 +326,7 @@ class Eco(EcoControllerBase):
                     for thisCourse in hisCourses:
                         thisCourse.removeEcouser(thisPerson.id)
                     thisPerson.destroySelf()
-                cherrypy.session['message'] = "'" + thisName + "' has been deleted"
+                cherrypy.session['message'] = "'" + thisName + "' has been deleted."
                 raise cherrypy.HTTPRedirect("/admin_users_form")
 
             if action == 'Toggle Admin':
@@ -338,7 +338,7 @@ class Eco(EcoControllerBase):
                         thisPerson.securityLevel = 1
                     elif thisPerson.securityLevel == 1:
                         thisPerson.securityLevel = 2
-                cherrypy.session['message'] = "Users have had their status changed"
+                cherrypy.session['message'] = "Users have had their status changed."
                 raise cherrypy.HTTPRedirect("/admin_users_form")
 
             elif action == 'Add User':
@@ -347,7 +347,7 @@ class Eco(EcoControllerBase):
                      (firstName,lastName) = ldap_lookup(userUNI)
                      if firstName == "" and lastName == "":
                          # not in the ldap.  bad uni.  exit
-                         cherrypy.session['message'] = "Sorry, That is not a valid UNI"
+                         cherrypy.session['message'] = "That is not a valid UNI."
                      else:
                          eus = EcouserSchema()
                          d = eus.to_python({'uni' : userUNI, 'securityLevel' : 2, 'firstname' : firstName, 'lastname' : lastName})
@@ -356,7 +356,7 @@ class Eco(EcoControllerBase):
                  raise cherrypy.HTTPRedirect("/admin_users_form")
             
         else:
-            cherrypy.session['message'] = "You do not have authorization to perform that action.  This event will be reported"
+            cherrypy.session['message'] = "You don't have authorization to perform that action.  This event will be reported."
             raise cherrypy.HTTPRedirect("/course")
         
 
@@ -486,7 +486,7 @@ class CourseController(EcoControllerBase,RESTContent):
             cherrypy.session['message'] = "deleted"
             raise cherrypy.HTTPRedirect("/course")
         else:
-            cherrypy.session['message'] = "You do not have authorization to perform that action.  This event will be reported"
+            cherrypy.session['message'] = "You don't have authorization to perform that action.  This event will be reported."
             raise cherrypy.HTTPRedirect("/course")
         
     @cherrypy.expose()
@@ -567,7 +567,7 @@ class CourseController(EcoControllerBase,RESTContent):
             courseName = course.name
             return self.template("list_students.pt",{'loginName' : loginName, 'students' : course.students, 'courseName' : courseName,})
         else:
-            cherrypy.session['message'] = "You do not have authorization to perform that action.  This event will be reported"
+            cherrypy.session['message'] = "You don't have authorization to perform that action.  This event will be reported."
             raise cherrypy.HTTPRedirect("/course")
 
 
@@ -593,7 +593,7 @@ class CourseController(EcoControllerBase,RESTContent):
                         thisItem = Ecouser.get(item)
                         thisName += thisItem.firstname + " " + thisItem.lastname + ", "
                         course.removeEcouser(thisItem.id)
-                    cherrypy.session['message'] = "'" + thisName + "' has been deleted"
+                    cherrypy.session['message'] = "'" + thisName + "' has been deleted."
                     raise cherrypy.HTTPRedirect("/course/%s/students" % course.id)
     
                 else:
@@ -623,14 +623,14 @@ class CourseController(EcoControllerBase,RESTContent):
                                     course.addEcouser(thisUser.id)
                                     cherrypy.session['message'] = "'" + d['firstname'] + " " + d['lastname'] + "' has been added"
                     else:
-                        cherrypy.session['message'] = "Sorry, The instructor cannot be a student in the class"
+                        cherrypy.session['message'] = "The instructor cannot be a student in the class."
                         # can't add the instructor as a student
                     raise cherrypy.HTTPRedirect("/course/%s/students" % course.id)
     
             else:
                 raise cherrypy.HTTPRedirect("/course/%s/" % course.id)      
         else:
-            cherrypy.session['message'] = "You do not have authorization to perform that action.  This event will be reported"
+            cherrypy.session['message'] = "You don't have authorization to perform that action.  This event will be reported."
             raise cherrypy.HTTPRedirect("/course")
 
 
@@ -682,7 +682,7 @@ class CourseController(EcoControllerBase,RESTContent):
                 thisItem = Ecomap.get(item)
                 theDescription = thisItem.description
                 thisItem.destroySelf()
-            cherrypy.session['message'] = "'" + theDescription + "' has been deleted"
+            cherrypy.session['message'] = "'" + theDescription + "' has been deleted."
         elif action == 'share':
             es = EcomapSchema()
             for item in itemList:

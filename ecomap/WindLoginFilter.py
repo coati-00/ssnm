@@ -22,9 +22,9 @@ def validate_wind_ticket(ticketid):
         groups = [line for line in lines[1:] if line != ""]
         return (1,username,groups)
     elif lines[0] == "no":
-        return (0,"the ticket was already used or was invalid",[])
+        return (0,"The ticket was already used or was invalid.",[])
     else:
-        return (0,"WIND did not return a valid response",[])
+        return (0,"WIND did not return a valid response.",[])
         
 
 
@@ -77,7 +77,7 @@ class WindLoginFilter(basefilter.BaseFilter):
             if uni != "":
                 u = get_user(uni)
                 if u == None:
-                    cherrypy.session['message'] = "nonexistant user %s" % uni
+                    cherrypy.session['message'] = "The user %s does not exist." % uni
                     return
                 if u.password == password:
                     # they're good
@@ -87,7 +87,7 @@ class WindLoginFilter(basefilter.BaseFilter):
                     cherrypy.session['fullname'] = u.firstname + " " + u.lastname
                     raise cherrypy.HTTPRedirect(self.after_login)
                 else:
-                    cherrypy.session['message'] = "login failed"
+                    cherrypy.session['message'] = "Login has failed."
                 
             # give them the login form
             return
@@ -107,7 +107,7 @@ class WindLoginFilter(basefilter.BaseFilter):
             else:
                 (success,uni,groups) = validate_wind_ticket(ticket_id)
                 if int(success) == 0:
-                    cherrypy.response.body = ["WIND authentication failed. please try again or report this as a bug."]
+                    cherrypy.response.body = ["The WIND authentication has failed. Please try again."]
                     return
 
                 cherrypy.session[self.auth_key] = True
@@ -124,7 +124,7 @@ class WindLoginFilter(basefilter.BaseFilter):
             cherrypy.session[self.groups_key] = []
             cherrypy.session[self.ticket_key] = ""
 
-            #cherrypy.response.body = ["You are now logged out."]
+            #cherrypy.response.body = ["You are now logged out from the system."]
             return
 
         if cherrypy.session.get(self.auth_key,False):
