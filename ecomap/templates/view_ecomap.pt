@@ -3,38 +3,14 @@
 <html metal:use-macro="sitemacros/macros/ecomap">
 
 	<div metal:fill-slot="content" id="content">
-	
-		<div id="toolbar">
-			<div id="standard">
-				<a href="#">
-					About
-				</a>
-				<a href="#">
-					Help
-				</a>
-				<a href="#">
-					Contact
-				</a>
-			</div>
-			
-			<div id="log">
-				Logged in as 
-				<span tal:content="loginName" />
-				| 
-				<a href="/logout">
-					Logout
-				</a>
-			</div>
-			
-		</div>
 		
 		<div id="breadcrumbbar">
 		<span class="here">You are Here:</span>  
-			<a href="/course">
+			<a href="/course" onclick="return confirm('Leave this page without saving changes?')">
 				My Courses
 			</a>
 			&gt;
-			<a tal:attributes="href string:/course/${course/id}/">
+			<a tal:attributes="href string:/${returnPath}" onclick="return confirm('Leave this page without saving changes?')">
 				My Social Support Network Maps
 				</a>
 			&gt;

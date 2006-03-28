@@ -85,8 +85,21 @@ class Eco(EcoControllerBase):
 
     @cherrypy.expose()
     def index(self):
-        # import pdb; pdb.set_trace()
+        import pdb; pdb.set_trace()
         return self.template("index.pt",{})
+
+    @cherrypy.expose()
+    def about(self):
+        return self.template("about.pt",{'loginName' : cherrypy.session.get('fullname','')})
+
+    @cherrypy.expose()
+    def help(self):
+        return self.template("help.pt",{'loginName' : cherrypy.session.get('fullname','')})
+
+    @cherrypy.expose()
+    def contact(self):
+        return self.template("contact.pt",{'loginName' : cherrypy.session.get('fullname','')})
+
 
     #legacy redirect for flash
     @cherrypy.expose()
@@ -193,7 +206,7 @@ class Eco(EcoControllerBase):
         if isAdmin(cherrypy.session.get(UNI_PARAM,None)):
             defaults = {'name' : "", 'description' : "", 'instructor' : ""}
             parser = htmlfill.FillingParser(defaults)
-            parser.feed(self.template("create_course.pt",{'allInstructors' : [i for i in Ecouser.select(orderBy=['firstname'])]}))
+            parser.feed(self.template("create_course.pt",{'allInstructors' : [i for i in Ecouser.select(orderBy=['firstname'])],'loginName' : cherrypy.session.get('fullname','')}))
             parser.close()
             output = parser.text()
             return output
@@ -256,7 +269,7 @@ class Eco(EcoControllerBase):
             except formencode.Invalid, e:
                 defaults = {'name' : name, 'description' : description, 'instructor' : instructor}
                 parser = htmlfill.FillingParser(defaults,errors=e.unpack_errors())
-                parser.feed(self.template("create_course.pt",{'allInstructors' : [i for i in Ecouser.select()]}))
+                parser.feed(self.template("create_course.pt",{'allInstructors' : [i for i in Ecouser.select()], 'loginName' : cherrypy.session.get('fullname','')}))
                 parser.close()
                 output = parser.text()
                 return output
@@ -272,7 +285,7 @@ class Eco(EcoControllerBase):
     @cherrypy.expose()
     def add_guest_account_form(self):
         if isAdmin(cherrypy.session.get(UNI_PARAM,None)):
-            return self.template("add_guest_account.pt",{})
+            return self.template("add_guest_account.pt",{'loginName' : cherrypy.session.get('fullname','')})
         else:
             cherrypy.session['message'] = "You don't have authorization to perform that action.  This event will be reported."
             raise cherrypy.HTTPRedirect("/course")
@@ -297,7 +310,7 @@ class Eco(EcoControllerBase):
     @cherrypy.expose()
     def admin_users_form(self):
         if isAdmin(cherrypy.session.get(UNI_PARAM,None)):
-            loginName = cherrypy.session.get('fullname', 'unknown')
+            loginName = cherrypy.session.get('fullname', '')
             return self.template("admin_users.pt",{'loginName' : loginName, 'allUsers' : [i for i in Ecouser.select(orderBy=['securityLevel','firstname'])]})
         else:
             cherrypy.session['message'] = "You don't have authorization to perform that action.  This event will be reported."
@@ -354,6 +367,9 @@ class Eco(EcoControllerBase):
                          thisUser = Ecouser(uni=d['uni'],securityLevel=d['securityLevel'],firstname=d['firstname'],lastname=d['lastname'])
                          cherrypy.session['message'] = "'" + d['firstname'] + " " + d['lastname'] + "' has been added"
                  raise cherrypy.HTTPRedirect("/admin_users_form")
+            elif action == 'Add Guest Account':
+                 raise cherrypy.HTTPRedirect("/add_guest_account_form")
+
             
         else:
             cherrypy.session['message'] = "You don't have authorization to perform that action.  This event will be reported."
@@ -408,6 +424,7 @@ class EcomapController(EcoControllerBase,RESTContent):
             'myName' : cherrypy.session.get('fullname',""),
             'server' : server,
             'returnPath' : "course/%s" % ecomap.course.id,
+            'loginName' : cherrypy.session.get('fullname',''),
             }
         return self.template("view_ecomap.pt",data)
 
@@ -421,7 +438,7 @@ class CourseController(EcoControllerBase,RESTContent):
         #import pdb; pdb.set_trace()
         # COURSE LIST
         uni = cherrypy.session.get(UNI_PARAM, None)
-        loginName = cherrypy.session.get('fullname', 'unknown')
+        loginName = cherrypy.session.get('fullname', '')
 
 
         if uni:
@@ -472,7 +489,7 @@ class CourseController(EcoControllerBase,RESTContent):
         #import pdb; pdb.set_trace()
 
         uni = cherrypy.session.get(UNI_PARAM, None)
-        loginName = cherrypy.session.get('fullname', 'unknown')
+        loginName = cherrypy.session.get('fullname', '')
         courseName = course.name
 
         if uni:
@@ -501,7 +518,7 @@ class CourseController(EcoControllerBase,RESTContent):
 
             defaults = {'name' : course.name, 'description' : course.description, 'instructor' : course.instructor.id}
             parser = htmlfill.FillingParser(defaults)
-            parser.feed(self.template("edit_course.pt",{'isAdmin': isAdmin(uni), 'courseName' : course.name, 'course' : course, 'allInstructors' : [i for i in Ecouser.select(orderBy=['firstname'])]}))
+            parser.feed(self.template("edit_course.pt",{'isAdmin': isAdmin(uni), 'courseName' : course.name, 'course' : course, 'allInstructors' : [i for i in Ecouser.select(orderBy=['firstname'])], 'loginName' : cherrypy.session.get('fullname','')}))
             parser.close()
             output = parser.text()
             return output
@@ -527,7 +544,7 @@ class CourseController(EcoControllerBase,RESTContent):
             except formencode.Invalid, e:
                 defaults = {'name' : course.name, 'description' : course.description, 'instructor' : course.instructor.id}
                 parser = htmlfill.FillingParser(defaults,errors=e.unpack_errors())
-                parser.feed(self.template("edit_course.pt",{'isAdmin': isAdmin(uni), 'courseName' : course.name, 'course' : course, 'allInstructors' : [i for i in Ecouser.select(orderBy=['firstname'])]}))
+                parser.feed(self.template("edit_course.pt",{'isAdmin': isAdmin(uni), 'courseName' : course.name, 'course' : course, 'allInstructors' : [i for i in Ecouser.select(orderBy=['firstname'])], 'loginName' : cherrypy.session.get('fullname','')}))
                 parser.close()
                 output = parser.text()
                 return output
@@ -538,7 +555,7 @@ class CourseController(EcoControllerBase,RESTContent):
     @cherrypy.expose()
     def students(self,course):
         uni = cherrypy.session.get(UNI_PARAM, None)
-        loginName = cherrypy.session.get('fullname', 'unknown')
+        loginName = cherrypy.session.get('fullname', '')
         if isAdmin(uni) or isInstructor(uni,course):
             #import pdb; pdb.set_trace()
             courseName = course.name

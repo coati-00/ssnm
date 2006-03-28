@@ -50,6 +50,13 @@ class WindLoginFilter(basefilter.BaseFilter):
             return
         if "/flash/" in cherrypy.request.path:
             return
+        if "/about" in cherrypy.request.path:
+            return
+        if "/help" in cherrypy.request.path:
+            return
+        if "/contact" in cherrypy.request.path:
+            return
+
         if "/favicon.ico" in cherrypy.request.path:
             return
         if "/zerocool" in cherrypy.request.path:

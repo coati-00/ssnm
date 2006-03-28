@@ -3,31 +3,6 @@
 <html metal:use-macro="sitemacros/macros/ecomap">
 
 	<div metal:fill-slot="content" id="content">
-	
-		<div id="toolbar">
-		
-			<div id="standard">
-				<a href="#">
-					About
-				</a>
-				<a href="#">
-					Help
-				</a>
-				<a href="#">
-					Contact
-				</a>
-			</div>
-			
-			<div id="log">
-				Logged in as 
-				<span tal:content="loginName" />
-				| 
-				<a href="/logout">
-					Logout
-				</a>
-			</div>
-			
-		</div>
 		
 		<div id="breadcrumbbar">
 		<span class="here">You are Here:</span>  

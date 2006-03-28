@@ -4,28 +4,6 @@
 
 	<div metal:fill-slot="content" id="content">
 	
-		<div id="toolbar">
-		
-			<div id="standard">
-				<a href="#">
-					About
-				</a>
-				<a href="#">
-					Help
-				</a>
-				<a href="#">
-					Contact
-				</a>
-			</div>
-			
-			<div id="log">
-				<a href="/login">
-					Log In
-				</a>
-			</div>
-			
-		</div>
-		
 		<metal:block define-macro="message">
 		<div tal:condition="message" tal:content="message" class="message" />
 		</metal:block>

@@ -4,31 +4,6 @@
 
 	<div metal:fill-slot="content" id="content">
 	
-		<div id="toolbar">
-		
-			<div id="standard">
-				<a href="#">
-					About
-				</a>
-				<a href="#">
-					Help
-				</a>
-				<a href="#">
-					Contact
-				</a>
-			</div>
-			
-			<div id="log">
-				Logged in as 
-				<span tal:content="loginName" />
-				| 
-				<a href="/logout">
-					Logout
-				</a>
-			</div>
-			
-		</div>
-		
 		<div id="breadcrumbbar">
 		<span class="here">You are Here:</span>  
 			<a href="/course">
@@ -44,21 +19,20 @@
 		
 		<div id="container">
 		
+			<form action="admin_users" method="post">
+
 			<div class="addbar">
 				Add user by UNI:
 				<input type="text" name="user_uni" width="10" />
 				<input type="submit" name="action" value="Add User" />
 				|
-				<form style="display: inline;" method="link" action="/add_guest_account_form">
-					<input type="submit" value="Add Guest Account" />
-				</form>
+				<input type="submit" name="action" value="Add Guest Account" />
 			</div>
 			
 			<h2>
 				Manage Users
 			</h2>
 			
-			<form action="admin_users" method="post">
 			
 				<table tal:condition="allUsers" class="infotable" cellspacing="0" summary="Network Map Table">
 				

@@ -26,8 +26,8 @@ class EcouserSchema(formencode.Schema):
     lastname     = validators.String()
 
 class CourseSchema(formencode.Schema):
-    name         = validators.String()
-    description  = validators.String(not_empty=True)
+    name         = validators.String(not_empty=True)
+    description  = validators.String()
     instructor   = validators.Int()
 
 def setup_for_tests():
