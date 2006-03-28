@@ -144,16 +144,16 @@ colgroup#alluserstablecols col.security { width: 10%; }
 colgroup#alluserstablecols col.delete { width: 10%; }
 
 colgroup#maptablecols col.name { width: 20%; }
-colgroup#maptablecols col.description { width: 50%; }
-colgroup#maptablecols col.created { width: 10%; }
-colgroup#maptablecols col.modified { width: 10%; }
+colgroup#maptablecols col.description { width: 30%; }
+colgroup#maptablecols col.created { width: 20%; }
+colgroup#maptablecols col.modified { width: 20%; }
 colgroup#maptablecols col.delete { width: 10%; }
 
 colgroup#allmaptablecols col.name { width: 20%; }
-colgroup#allmaptablecols col.description { width: 30%; }
-colgroup#allmaptablecols col.owner { width: 20%; }
-colgroup#allmaptablecols col.created { width: 10%; }
-colgroup#allmaptablecols col.modified { width: 10%; }
+colgroup#allmaptablecols col.description { width: 20%; }
+colgroup#allmaptablecols col.owner { width: 10%; }
+colgroup#allmaptablecols col.created { width: 20%; }
+colgroup#allmaptablecols col.modified { width: 20%; }
 colgroup#allmaptablecols col.delete { width: 10%; }
 
 table.infotable
