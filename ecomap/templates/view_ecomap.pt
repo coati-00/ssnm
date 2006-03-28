@@ -29,7 +29,16 @@
 		</div>
 		
 		<div id="breadcrumbbar">
-		?
+		<span class="here">You are Here:</span>  
+			<a href="/course">
+				My Courses
+			</a>
+			&gt;
+			<a tal:attributes="href string:/course/${course/id}/">
+				My Social Support Network Maps
+				</a>
+			&gt;
+			<span tal:content="ecomap/name" />
 		</div>
 		
 		<metal:block define-macro="message">

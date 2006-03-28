@@ -30,15 +30,12 @@
 		</div>
 		
 		<div id="breadcrumbbar">
-			<div tal:condition="allCourses">
-				<a href="/create_course_form">
-					Create New Course
-				</a>
-				| 
-				<a href="/admin_users_form">
-					Manage Users
-				</a>
-			</div>
+		<span class="here">You are Here:</span>  
+			<a href="/course">
+				My Courses
+			</a>
+			&gt; 
+			Create Course
 		</div>
 		
 		<metal:block define-macro="message">

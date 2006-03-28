@@ -30,7 +30,12 @@
 		</div>
 		
 		<div id="breadcrumbbar">
-			? 
+		<span class="here">You are Here:</span>  
+			<a href="/course">
+				My Courses
+			</a>
+			&gt; 
+			Manage Users
 		</div>
 		
 		<metal:block define-macro="message">
@@ -40,19 +45,17 @@
 		<div id="container">
 		
 			<div class="addbar">
-				<p>
-					Add user by UNI:
-					<input type="text" name="user_uni" width="10" />
-					<input type="submit" name="action" value="Add User" />
-				</p>
-				<p>
-					<a href="/add_guest_account_form">
-						Add non-UNI (Guest) user</a>
-				</p>
+				Add user by UNI:
+				<input type="text" name="user_uni" width="10" />
+				<input type="submit" name="action" value="Add User" />
+				|
+				<form style="display: inline;" method="link" action="/add_guest_account_form">
+					<input type="submit" value="Add Guest Account" />
+				</form>
 			</div>
 			
 			<h2>
-				Users
+				Manage Users
 			</h2>
 			
 			<form action="admin_users" method="post">
@@ -85,7 +88,7 @@
 							<th>
 								Security Level
 							</th>
-							<th>
+							<th class="centered">
 								Delete
 							</th>
 						</tr>
@@ -93,34 +96,34 @@
 					
 					<tbody>
 						<tal:block repeat="thisUser allUsers">
-							<tr>
-								<td tal:content="thisUser/firstname" />
-								<td tal:content="thisUser/lastname" />
-								<td tal:content="thisUser/uni" />
-								<td tal:condition="python:thisUser.password == ''">
-									UNI
-								</td>
-								<td tal:condition="python:thisUser.password != ''">
-									Guest
-								</td>
-								<td tal:condition="python:thisUser.securityLevel == 1">
-									Admin
-								</td>
-								<td tal:condition="python:thisUser.securityLevel == 2">
-									User
-								</td>
-								<td>
-									<input type="checkbox" name="user_id" tal:attributes="value string:${thisUser/id}" />
-								</td>
-							</tr>
+						<tr>
+							<td tal:content="thisUser/firstname" />
+							<td tal:content="thisUser/lastname" />
+							<td tal:content="thisUser/uni" />
+							<td tal:condition="python:thisUser.password == ''">
+								UNI
+							</td>
+							<td tal:condition="python:thisUser.password != ''">
+								Guest
+							</td>
+							<td tal:condition="python:thisUser.securityLevel == 1">
+								Admin
+							</td>
+							<td tal:condition="python:thisUser.securityLevel == 2">
+								User
+							</td>
+							<td class="centered">
+								<input type="checkbox" name="user_id" tal:attributes="value string:${thisUser/id}" />
+							</td>
+						</tr>
 						</tal:block>
 					</tbody>
 					
 				</table>
 				
 				<div class="deletebar">
-					<input tal:condition="allUsers" type="submit" name="action" value="Delete Selected" onclick="return confirm('Are you sure you want to completely erase these users??');" />
 					<input tal:condition="allUsers" type="submit" name="action" value="Toggle Admin" />
+					<input tal:condition="allUsers" type="submit" name="action" value="Delete Selected" onclick="return confirm('Are you sure you want to completely erase these users??');" />
 				</div>
 				
 			</form>

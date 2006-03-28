@@ -30,7 +30,9 @@
 		</div>
 		
 		<div id="breadcrumbbar">
-			? 
+		<span class="here">You are Here:</span>
+		&gt;
+		Guest Login
 		</div>
 		
 		<metal:block define-macro="message">

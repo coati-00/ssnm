@@ -29,11 +29,12 @@
 		</div>
 		
 		<div id="breadcrumbbar">
+		<span class="here">You are Here:</span>   
 			<a href="/course">
 				My Courses
 			</a>
-			&gt; 
-			<span tal:content="courseName" />
+			&gt;
+			Students
 		</div>
 		
 		<metal:block define-macro="message">
@@ -74,7 +75,7 @@
 							<th>
 								UNI
 							</th>
-							<th>
+							<th class="centered">
 								Delete
 							</th>
 						</tr>
@@ -86,7 +87,7 @@
 								<td tal:content="student/firstname" />
 								<td tal:content="student/lastname" />
 								<td tal:content="student/uni" />
-								<td>
+								<td class="centered">
 									<input type="checkbox" name="student_id" tal:attributes="value string:${student/id}" />
 								</td>
 							</tr>

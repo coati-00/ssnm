@@ -29,10 +29,16 @@
 		</div>
 		
 		<div id="breadcrumbbar">
-			<a href="/admin_users_form">
-				Manage Users
+		<span class="here">You are Here:</span> 
+			<a href="/course">
+			My Courses
 			</a>
-			&gt; Add Guest Account 
+			&gt; 
+			<a href="/admin_users_form">
+			Manage Users
+			</a>
+			&gt; 
+			Add Guest Account 
 		</div>
 		
 		<metal:block define-macro="message">
