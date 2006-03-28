@@ -85,7 +85,6 @@ class Eco(EcoControllerBase):
 
     @cherrypy.expose()
     def index(self):
-        import pdb; pdb.set_trace()
         return self.template("index.pt",{})
 
     @cherrypy.expose()
