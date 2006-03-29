@@ -34,6 +34,7 @@
 					<label for="coursename">
 						Name:</label>
 					<input id="coursename" type="text" name="name" />
+					
 					<form:iferror name="name">
 						<span class="errormessage">
 							<form:error name="name" />

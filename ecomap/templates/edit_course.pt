@@ -1,31 +1,70 @@
 <?xml version="1.0"?>
+
 <html metal:use-macro="sitemacros/macros/ecomap">
 
-    <div metal:fill-slot="content" id="content">
-
-        <div id="breadcrumbs">
-            <a href="/course">my courses</a> > <span tal:content="courseName" />
-        </div>
-
-        <form action="edit" method="post">
-        <fieldset>
-            <legend>Edit Course</legend>
-            <label>Name: <input type="text" name="name" size="30" /></label><form:iferror name="name"> <span class="errormessage"><form:error name="name" /></span></form:iferror><br />
-            <label>Description: <input type="text" name="description" size="60" /></label><form:iferror name="description"> <span class="errormessage"><form:error name="description"/></span></form:iferror><br />
-            <label tal:condition="isAdmin">Instructor ID: 
-            
-            <select name="instructor">
-            <tal:block repeat="i allInstructors">
-                <option tal:attributes="value i/id" tal:content="string:${i/firstname} ${i/lastname}" />
-            </tal:block>
-            </select></label>
-            <br/>
-                        
-            <input type="hidden" tal:condition="python:not isAdmin" tal:attributes="value course/instructor/id" name="instructor"/>
-            <input type="submit" value="Save"/>
-        </fieldset>
-        </form>
-
-    </div>
-
+	<div metal:fill-slot="content" id="content">
+	
+		<div id="breadcrumbbar">
+		<span class="here">You are Here:</span>  
+			<a href="/course">
+				My Courses
+			</a>
+			&gt; 
+			Edit Course
+		</div>
+		
+		<metal:block define-macro="message">
+			<div tal:condition="message" tal:content="message" class="message" />
+		</metal:block>
+		
+		<div id="container">
+		
+			<h2>
+				Edit Course
+			</h2>
+			
+			<form action="edit" method="post">
+			
+			<fieldset>
+			
+			<legend>
+			Course Information
+			</legend>
+			
+			<label for="name">Name:</label><input id="name" type="text" name="name" />
+			<form:iferror name="name">
+			<span class="errormessage">
+			<form:error name="name" />
+			</span>
+			</form:iferror>
+			<br />
+			<br />
+			<label for="desc">Description:</label><input id="desc" type="text" name="description" />
+			<form:iferror name="description">
+			<span class="errormessage">
+			<form:error name="description" />
+			</span>
+			</form:iferror>
+			<br />
+			<br />
+			<label for="instid" tal:condition="isAdmin">Instructor ID:</label> 
+			<select id="instid" name="instructor">
+			<tal:block repeat="i allInstructors">
+			<option tal:attributes="value i/id" tal:content="string:${i/firstname} ${i/lastname}" />
+			</tal:block>
+			</select>
+			<br />
+			<br />
+			<label for="savebutton" tal:condition="isAdmin"></label> 
+			<input type="hidden" tal:condition="python:not isAdmin" tal:attributes="value course/instructor/id" name="instructor" />
+			<input id="savebutton" type="submit" value="Update Course Information" />
+			
+			</fieldset>
+			
+			</form>
+		
+		</div>
+	
+	</div>
+	
 </html>

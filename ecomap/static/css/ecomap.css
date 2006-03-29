@@ -38,7 +38,7 @@ h1 a
 
 h2
 {
-	margin-bottom: 20px;
+	margin: 0px 0px 20px 0px;
 	padding: 0;
 	color: #348eae;
 	font-size: 18px;
@@ -126,6 +126,11 @@ h2
 	margin: 0px;
 }
 
+#text
+{
+	margin-right: 35%;
+}
+
 colgroup#coursetablecols col.name { width: 20%; }
 colgroup#coursetablecols col.description { width: 20%; }
 colgroup#coursetablecols col.instructor { width: 20%; }
@@ -160,7 +165,7 @@ table.infotable
 {
 	width: 100%;
 	border: 0;
-	margin: 0;
+	margin: 0 0 20px 0;
 	padding: 0;
 }
 
@@ -192,7 +197,7 @@ table.infotable td.centered { text-align: center; }
 .addbar
 {
 	float: right;
-	padding: 10px 10px 0px 0px;
+	padding: 0px 0px 10px 0px;
 	font-size: 12px;
 	color: #348eae;
 }
@@ -200,7 +205,7 @@ table.infotable td.centered { text-align: center; }
 .deletebar
 {
 	text-align: right;
-	padding: 10px 10px 0px 0px;
+	padding: 10px 0px 0px 0px;
 }
 
 .toggle { border: 0; }
