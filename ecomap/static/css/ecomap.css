@@ -141,12 +141,12 @@ colgroup#studenttablecols col.last { width: 30%; }
 colgroup#studenttablecols col.uni { width: 30%; }
 colgroup#studenttablecols col.delete { width: 10%; }
 
-colgroup#alluserstablecols col.first { width: 20%; }
-colgroup#alluserstablecols col.last { width: 20%; }
-colgroup#alluserstablecols col.id { width: 20%; }
-colgroup#alluserstablecols col.account { width: 20%; }
-colgroup#alluserstablecols col.security { width: 10%; }
-colgroup#alluserstablecols col.delete { width: 10%; }
+colgroup#alluserstablecols col.first { width: 15%; }
+colgroup#alluserstablecols col.last { width: 15%; }
+colgroup#alluserstablecols col.id { width: 15%; }
+colgroup#alluserstablecols col.account { width: 15%; }
+colgroup#alluserstablecols col.security { width: 15%; }
+colgroup#alluserstablecols col.delete { width: 20%; }
 
 colgroup#maptablecols col.name { width: 20%; }
 colgroup#maptablecols col.description { width: 30%; }
@@ -227,7 +227,7 @@ p
 
 fieldset
 {
-	border: 1px solid #348eae;
+	border: 0px solid #348eae;
 	margin: 0;
 	padding: 10px;
 	width: 400px;
@@ -242,6 +242,7 @@ legend
 	background-color: #bddfde;
 	color: #369;
 	font-weight: bold;
+	display: none;
 }
 
 label
@@ -256,4 +257,5 @@ label
 	float: left;
 }
 
+textarea {height: 100px; width: 200px;}
 .here {color: #369;}

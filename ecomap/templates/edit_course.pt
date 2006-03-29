@@ -39,7 +39,7 @@
 			</form:iferror>
 			<br />
 			<br />
-			<label for="desc">Description:</label><input id="desc" type="text" name="description" />
+			<label for="desc">Description:</label><textarea id="desc" type="text" name="description"></textarea>
 			<form:iferror name="description">
 			<span class="errormessage">
 			<form:error name="description" />

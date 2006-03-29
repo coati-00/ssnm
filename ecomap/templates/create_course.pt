@@ -44,7 +44,7 @@
 					<br />
 					<label for="coursedesc">
 						Description:</label>
-					<input id="coursedesc" type="text" name="description" />
+					<textarea id="coursedesc" type="text" name="description"></textarea>
 					<form:iferror name="description">
 						<span class="errormessage">
 							<form:error name="description" />
