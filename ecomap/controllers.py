@@ -184,15 +184,12 @@ class Eco(EcoControllerBase):
         return "<data><response>OK</response></data>"
         
     def load_ecomap(self,this_ecomap,session_uni):
+        isreadonly = "true"
         if this_ecomap.owner.uni == session_uni:
-            return "<data><response>OK</response><isreadonly>false</isreadonly><name>" + \
-                   this_ecomap.name + "</name><description>" + this_ecomap.description + \
-                   "</description>" + this_ecomap.flashData + "</data>"
-        else:
-            #send it in as read only
-            return "<data><response>OK</response><isreadonly>true</isreadonly><name>" + \
-                   this_ecomap.name + "</name><description>" + this_ecomap.description + \
-                   "</description>" + this_ecomap.flashData + "</data>"
+            isreadonly = "false"
+        return "<data><response>OK</response><isreadonly>" + isreadonly + "</isreadonly><name>" + \
+               this_ecomap.name + "</name><description>" + this_ecomap.description + \
+               "</description>" + this_ecomap.flashData + "</data>"
 
 
 
