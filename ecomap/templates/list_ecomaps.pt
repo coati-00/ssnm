@@ -77,9 +77,9 @@
 								</td>
 								<td tal:content="ecomap/description">
 								</td>
-								<td tal:content="ecomap/createdStr">
+								<td tal:content="ecomap/formatted_created">
 								</td>
-								<td tal:content="ecomap/modifiedStr">
+								<td tal:content="ecomap/formatted_modified">
 								</td>
 								<td class="centered">
 									<input type="checkbox" name="ecomap_id" tal:attributes="value string:${ecomap/id}" />
@@ -145,9 +145,9 @@
 								</td>
 								<td tal:content="string:${ecomap/owner/firstname} ${ecomap/owner/lastname}">
 								</td>
-								<td tal:content="ecomap/createdStr">
+								<td tal:content="ecomap/formatted_created">
 								</td>
-								<td tal:content="ecomap/modifiedStr">
+								<td tal:content="ecomap/formatted_modified">
 								</td>
 								<td class="centered">
 									<input type="checkbox" name="ecomap_id" tal:attributes="value string:${ecomap/id}" />

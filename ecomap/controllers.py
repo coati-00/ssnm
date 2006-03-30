@@ -476,9 +476,6 @@ class CourseController(EcoControllerBase,RESTContent):
             all_ecos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecomap.q.courseID == course.id), orderBy=['name'])]
         else:
             all_ecos = None
-        for e in my_ecos:
-            e.createdStr = e.created.strftime("%A, %B %d, %Y")
-            e.modifiedStr = e.modified.strftime("%A, %B %d, %Y")
         return self.template("list_ecomaps.pt",{'login_name' : login_name, 'my_ecomaps' : my_ecos, 'public_ecomaps' : public_ecos, 'all_ecomaps' : all_ecos, 'course_name' : course_name,})
 
 

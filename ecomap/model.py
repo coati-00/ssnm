@@ -50,5 +50,13 @@ class Ecomap(SQLObject):
     public = BoolCol(default=False)
     flashData = UnicodeCol(default='')
 
+    def formatted_created(self):
+        return self.created.strftime("%A, %B %d, %Y")
+
+    def formatted_modified(self):
+        return self.modified.strftime("%A, %B %d, %Y")
+
+
+
     
 
