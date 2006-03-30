@@ -205,8 +205,7 @@ class Eco(EcoControllerBase):
             parser = htmlfill.FillingParser(defaults)
         else:
             parser = htmlfill.FillingParser(defaults,errors=e.unpack_errors())
-        parser.feed(self.template("create_course.pt",{'all_instructors' : list(Ecouser.select(orderBy=['firstname'])),
-                                                      'login_name' : get_fullname()}))
+        parser.feed(self.template("create_course.pt",{'all_instructors' : list(Ecouser.select(orderBy=['firstname']))}))
         parser.close()
         return parser.text()
 
@@ -277,7 +276,7 @@ class Eco(EcoControllerBase):
     @cherrypy.expose()
     @admin_only
     def add_guest_account_form(self):
-        return self.template("add_guest_account.pt",{'login_name' : get_fullname()})
+        return self.template("add_guest_account.pt",{})
 
     @cherrypy.expose()
     @admin_only
@@ -296,8 +295,7 @@ class Eco(EcoControllerBase):
     @cherrypy.expose()
     @admin_only
     def admin_users_form(self):
-        return self.template("admin_users.pt",{'login_name' : get_fullname(),
-                                               'allUsers' : list(Ecouser.select(orderBy=['securityLevel','firstname']))})
+        return self.template("admin_users.pt",{'allUsers' : list(Ecouser.select(orderBy=['securityLevel','firstname']))})
 
     def delete_users(self,users):
         names = []
@@ -397,7 +395,6 @@ class EcomapController(EcoControllerBase,RESTContent):
             'myName'     : get_fullname(),
             'server'     : server,
             'returnPath' : "course/%s" % ecomap.course.id,
-            'login_name' : get_fullname(),
             }
         return self.template("view_ecomap.pt",data)
 
@@ -421,7 +418,6 @@ class CourseController(EcoControllerBase,RESTContent):
     def index(self):
         # COURSE LIST
         uni = get_user()
-        login_name = get_fullname()
 
         my_courses = []
         # retreive the courses in which this user is a student
@@ -442,7 +438,7 @@ class CourseController(EcoControllerBase,RESTContent):
             all_courses = [e for e in Course.select(Course.q.instructorID == Ecouser.q.id, orderBy=['name'])]
         else:
             all_courses = None
-        return self.template("list_courses.pt",{'login_name' : login_name, 'all_courses' : all_courses, 'my_courses' : my_courses, 'instructor_of' : instructor_of})
+        return self.template("list_courses.pt",{'all_courses' : all_courses, 'my_courses' : my_courses, 'instructor_of' : instructor_of})
 
     @cherrypy.expose()
     @admin_only
@@ -460,7 +456,6 @@ class CourseController(EcoControllerBase,RESTContent):
     def show(self,course,**kwargs):
         # This shows the list of ecomaps
         uni = get_user()
-        login_name = get_fullname()
         course_name = course.name
 
         # My ecomaps are the ecomaps I created in this course specifically
@@ -476,7 +471,7 @@ class CourseController(EcoControllerBase,RESTContent):
             all_ecos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecomap.q.courseID == course.id), orderBy=['name'])]
         else:
             all_ecos = None
-        return self.template("list_ecomaps.pt",{'login_name' : login_name, 'my_ecomaps' : my_ecos, 'public_ecomaps' : public_ecos, 'all_ecomaps' : all_ecos, 'course_name' : course_name,})
+        return self.template("list_ecomaps.pt",{'my_ecomaps' : my_ecos, 'public_ecomaps' : public_ecos, 'all_ecomaps' : all_ecos, 'course_name' : course_name,})
 
 
     def course_form(self,course, e=None):
@@ -487,8 +482,7 @@ class CourseController(EcoControllerBase,RESTContent):
             parser = htmlfill.FillingParser(defaults)        
         parser.feed(self.template("edit_course.pt",{'is_admin': is_admin(get_user()),
                                                     'course_name' : course.name, 'course' : course,
-                                                    'all_instructors' : [i for i in Ecouser.select(orderBy=['firstname'])],
-                                                    'login_name' : get_fullname()}))
+                                                    'all_instructors' : [i for i in Ecouser.select(orderBy=['firstname'])]}))
         parser.close()
         return parser.text()
 
@@ -520,9 +514,8 @@ class CourseController(EcoControllerBase,RESTContent):
     @restrict_to_instructor_or_admin
     def students(self,course):
         uni = get_user()
-        login_name = get_fullname()
         course_name = course.name
-        return self.template("list_students.pt",{'login_name' : login_name, 'students' : course.students, 'course_name' : course_name,})
+        return self.template("list_students.pt",{'students' : course.students, 'course_name' : course_name,})
 
 
 
