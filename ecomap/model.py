@@ -39,6 +39,11 @@ class Course(SQLObject):
     ecomaps = MultipleJoin('Ecomap')
     students = RelatedJoin('Ecouser', joinColumn='course', otherColumn='student',intermediateTable='student_courses')
 
+    def delete(self):
+        for student in self.students:
+            self.removeEcouser(student.id)
+        self.destroySelf()
+
 
 class Ecomap(SQLObject):
     name = UnicodeCol(length=50)

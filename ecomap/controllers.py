@@ -443,12 +443,7 @@ class CourseController(EcoControllerBase,RESTContent):
     @cherrypy.expose()
     @admin_only
     def delete(self,course,confirm=""):
-        # first remove the students from the course, then delete it
-        students = course.students
-        for student in students:
-            course.removeEcouser(student.id)
-
-        course.destroySelf()
+        course.delete()
         message("deleted")
         raise cherrypy.HTTPRedirect("/course")
         
