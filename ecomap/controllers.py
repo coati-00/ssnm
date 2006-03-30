@@ -523,17 +523,12 @@ class CourseController(EcoControllerBase,RESTContent):
     @cherrypy.expose()
     def update(self,course,**kwargs):
         action = kwargs['action']
-        item_list = [Ecomap.get(id) for id in ensure_list(kwargs.get('ecomap_id',None))]
+        item_list = [Ecomap.get(id) for id in uniq(ensure_list(kwargs.get('ecomap_id',None)))]
 
         if action == 'Delete Selected':
             # TODO:
             # if you are the owner or you're the instructor or an admin
 
-            # weed out dupes
-            u = {}
-            for x in item_list:
-                u[x.id] = x
-            item_list = u.values()
             self.delete_ecomaps(item_list)
             
         elif action == 'share':
