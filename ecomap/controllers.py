@@ -401,14 +401,15 @@ class EcomapController(EcoControllerBase,RESTContent):
 
 def restrict_to_instructor_or_admin(f):
     def decorator(self,course,*args,**kwargs):
-        if is_admin(get_user()) or is_instructor(get_user(),course):
+        if admin_or_instructor(get_user(),course):
             return f(self,course,*args,**kwargs)
         else:
             message("You don't have authorization to perform that action.  This event will be reported.")
             raise cherrypy.HTTPRedirect("/course")
     return decorator
 
-
+def admin_or_instructor(uni,course):
+    return is_admin(uni) or is_instructor(uni,course)
 
 class CourseController(EcoControllerBase,RESTContent):
     def query(self,id):
@@ -418,15 +419,13 @@ class CourseController(EcoControllerBase,RESTContent):
     def index(self):
         # COURSE LIST
         uni = get_user()
-
         my_courses = []
         # retreive the courses in which this user is a student
-        this_user = Ecouser.select(Ecouser.q.uni == uni)
-        if this_user.count() == 1:
-            my_courses = this_user[0].courses
+        user = Ecouser.select(Ecouser.q.uni == uni)[0]
+        my_courses = user.courses
 
         # retreive the course in which this user is an instructor
-        instructor_of = Course.select(AND(Course.q.instructorID == Ecouser.q.id, Ecouser.q.uni == uni))
+        instructor_of = user.instructor_courses()
         if instructor_of.count() == 0:
             instructor_of = None
 
@@ -435,7 +434,7 @@ class CourseController(EcoControllerBase,RESTContent):
             raise cherrypy.HTTPRedirect("/course/%s/" % my_courses[0].id)
 
         if is_admin(uni):
-            all_courses = [e for e in Course.select(Course.q.instructorID == Ecouser.q.id, orderBy=['name'])]
+            all_courses = list(Course.select(Course.q.instructorID == Ecouser.q.id, orderBy=['name']))
         else:
             all_courses = None
         return self.template("list_courses.pt",{'all_courses' : all_courses, 'my_courses' : my_courses, 'instructor_of' : instructor_of})
@@ -462,7 +461,7 @@ class CourseController(EcoControllerBase,RESTContent):
         else:
             students = None
 
-        if is_admin(uni) or is_instructor(uni,course):
+        if admin_or_instructor(uni,course):
             all_ecos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecomap.q.courseID == course.id), orderBy=['name'])]
         else:
             all_ecos = None

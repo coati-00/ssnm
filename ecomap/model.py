@@ -31,6 +31,9 @@ class Ecouser(SQLObject):
     def fullname(self):
         return self.firstname + " " + self.lastname
 
+    def instructor_courses(self):
+        """ returns courses that this user is the instructor of """
+        return Course.select(Course.q.instructorID == self.id)
 
 class Course(SQLObject):
     name = UnicodeCol(length=50,default="")
