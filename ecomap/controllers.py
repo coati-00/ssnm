@@ -433,10 +433,10 @@ class CourseController(EcoControllerBase,RESTContent):
             # This is a student with only one course.  Redirect to that course
             raise cherrypy.HTTPRedirect("/course/%s/" % my_courses[0].id)
 
+        all_courses = []
         if is_admin(uni):
-            all_courses = list(Course.select(Course.q.instructorID == Ecouser.q.id, orderBy=['name']))
-        else:
-            all_courses = None
+            all_courses = get_all_courses()
+
         return self.template("list_courses.pt",{'all_courses' : all_courses, 'my_courses' : my_courses, 'instructor_of' : instructor_of})
 
     @cherrypy.expose()

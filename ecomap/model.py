@@ -47,6 +47,9 @@ class Course(SQLObject):
             self.removeEcouser(student.id)
         self.destroySelf()
 
+def get_all_courses():
+    return list(Course.select(Course.q.instructorID == Ecouser.q.id, orderBy=['name']))
+
 
 class Ecomap(SQLObject):
     name = UnicodeCol(length=50)
