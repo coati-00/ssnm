@@ -63,7 +63,7 @@
 								Security Level
 							</th>
 							<th class="centered">
-								Delete
+								Select
 							</th>
 						</tr>
 					</thead>
@@ -96,7 +96,8 @@
 				</table>
 				
 				<div class="deletebar">
-					<input tal:condition="allUsers" type="submit" name="action" value="Toggle Admin" />
+					<input tal:condition="allUsers" type="submit" name="action" value="Change Security Level" />
+					|
 					<input tal:condition="allUsers" type="submit" name="action" value="Delete Selected" onclick="return confirm('Are you sure you want to completely erase these users?');" />
 				</div>
 				

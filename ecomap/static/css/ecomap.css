@@ -6,15 +6,15 @@ body
 	font-family: arial, helvetica, sans-serif;
 }
 
-a:link, a:visited  
-{ 
-	color: #f60; 
+a:link, a:visited
+{
+	color: #f60;
 	text-decoration: underline;
 }
 
-a:hover, a:active  
-{ 
-	color: #f60; 
+a:hover, a:active
+{
+	color: #f60;
 	text-decoration: none;
 }
 
@@ -75,18 +75,17 @@ h2
 	border-bottom: 1px solid #348eae;
 }
 
-#toolbar a:link, #toolbar a:visited  
-{ 
-	color: #369; 
+#toolbar a:link, #toolbar a:visited
+{
+	color: #369;
 	text-decoration: underline;
 }
 
-#toolbar a:hover, #toolbar a:active  
-{ 
-	color: #369; 
+#toolbar a:hover, #toolbar a:active
+{
+	color: #369;
 	text-decoration: none;
 }
-
 
 #standard { float: right; }
 #standard a { padding-left: 10px; }
@@ -101,16 +100,15 @@ h2
 	color: #666;
 }
 
-
-#breadcrumbbar a:link, #breadcrumbbar a:visited  
-{ 
-	color: #f60; 
+#breadcrumbbar a:link, #breadcrumbbar a:visited
+{
+	color: #f60;
 	text-decoration: underline;
 }
 
-#breadcrumbbar a:hover, #breadcrumbbar a:active  
-{ 
-	color: #f60; 
+#breadcrumbbar a:hover, #breadcrumbbar a:active
+{
+	color: #f60;
 	text-decoration: none;
 }
 
@@ -126,10 +124,7 @@ h2
 	margin: 0px;
 }
 
-#text
-{
-	margin-right: 35%;
-}
+#text { margin-right: 35%; }
 
 colgroup#coursetablecols col.name { width: 20%; }
 colgroup#coursetablecols col.description { width: 20%; }
@@ -185,7 +180,7 @@ table.infotable td
 {
 	background-color: #fff;
 	color: #000;
-	font-size: 12px;
+	font-size: 11px;
 	padding: 10px 5px 10px 5px;
 	margin: 0;
 	vertical-align: top;
@@ -206,6 +201,8 @@ table.infotable td.centered { text-align: center; }
 {
 	text-align: right;
 	padding: 10px 0px 0px 0px;
+	font-size: 12px;
+	color: #348eae;
 }
 
 .toggle { border: 0; }
@@ -257,5 +254,10 @@ label
 	float: left;
 }
 
-textarea {height: 100px; width: 200px;}
-.here {color: #369;}
+textarea
+{
+	height: 100px;
+	width: 200px;
+}
+
+.here { color: #369; }

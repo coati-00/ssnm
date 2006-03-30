@@ -329,7 +329,7 @@ class Eco(EcoControllerBase):
                     output = "error - unknown argument type"
 
             thisName = ""
-            if action == 'Delete Selected':
+            if action == 'Delete':
                 for person in personList:
                     # get the user, remove him from all his courses and delete him
                     thisPerson = Ecouser.get(person)
@@ -341,7 +341,7 @@ class Eco(EcoControllerBase):
                 cherrypy.session['message'] = "'" + thisName + "' has been deleted."
                 raise cherrypy.HTTPRedirect("/admin_users_form")
 
-            if action == 'Toggle Admin':
+            if action == 'Change Security Level':
                 #import pdb; pdb.set_trace()
                 for person in personList:
                     # get the user and toggle his admin status
@@ -350,7 +350,7 @@ class Eco(EcoControllerBase):
                         thisPerson.securityLevel = 1
                     elif thisPerson.securityLevel == 1:
                         thisPerson.securityLevel = 2
-                cherrypy.session['message'] = "Users have had their status changed."
+                cherrypy.session['message'] = "Users have had their security level status changed."
                 raise cherrypy.HTTPRedirect("/admin_users_form")
 
             elif action == 'Add User':
