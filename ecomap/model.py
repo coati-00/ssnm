@@ -99,6 +99,29 @@ class Ecomap(SQLObject):
     def formatted_modified(self):
         return self.modified.strftime("%A, %B %d, %Y")
 
+    def save(self,session_uni,root):
+        #if this is your ecomap, you can save it, otherwise, youre out of luck
+        if self.owner.uni != session_uni:
+            return "<data><response>This is not your social support network map.</response></data>"
+
+        ecoName        = ecomap.helpers.safe_get_element_child(root,"name")
+        ecoDescription = ecomap.helpers.safe_get_element_child(root,"description")
+        self.flashData = root.getElementsByTagName("flashData")[0].toxml()
+        self.name = ecoName
+        self.description = ecoDescription
+        self.modified = DateTime.now()
+        #want to check if this actually saves so i can REALLY return an OK
+        #if it doesn't save, return NOT OK
+        return "<data><response>OK</response></data>"
+        
+    def load(self,session_uni):
+        isreadonly = "true"
+        if self.owner.uni == session_uni:
+            isreadonly = "false"
+        return "<data><response>OK</response><isreadonly>" + isreadonly + "</isreadonly><name>" + \
+               self.name + "</name><description>" + self.description + \
+               "</description>" + self.flashData + "</data>"
+
 
 
     

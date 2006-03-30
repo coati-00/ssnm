@@ -3,6 +3,13 @@ import formencode
 from formencode import validators
 import cherrypy
 
+def safe_get_element_child(root,name):
+    if root.getElementsByTagName(name)[0].hasChildNodes():
+        return root.getElementsByTagName(name)[0].firstChild.nodeValue
+    else:
+        return ""
+
+
 def createTables():
     Ecouser.createTable(ifNotExists=True)
     Course.createTable(ifNotExists=True)

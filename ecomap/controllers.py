@@ -83,13 +83,6 @@ def uniq(l):
         u[x] = 1
     return u.keys()    
 
-def safe_get_element_child(root,name):
-    if root.getElementsByTagName(name)[0].hasChildNodes():
-        return root.getElementsByTagName(name)[0].firstChild.nodeValue
-    else:
-        return ""
-
-
 class Eco(EcoControllerBase):
     # enable filtering to disable post filtering on the postTester funcion
     _cpFilterList = [ DisablePostParsingFilter(),
@@ -157,9 +150,9 @@ class Eco(EcoControllerBase):
         # if this is public or it's yours or Susan, Debbie or I am logged in, allow the data to Flash
         if this_ecomap.public or this_ecomap.owner.uni == session_uni or is_admin(session_uni):
             if action == "load":
-                return self.load_ecomap(this_ecomap,session_uni)
+                return this_ecomap.load_ecomap(session_uni)
             elif action == "save":
-                return self.save_ecomap(this_ecomap,session_uni,root)
+                return this_ecomap.save_ecomap(session_uni,root)
             else:
                 print "unknown data action"
                 return "<data><response>Unknown data action</response></data>"
@@ -167,29 +160,6 @@ class Eco(EcoControllerBase):
         else:
             print "not your ecomap and not public"
             return "<data><response>This is not your social support network map. Also, it isn't public.</response></data>"
-
-    def save_ecomap(self,this_ecomap,session_uni,root):
-        #if this is your ecomap, you can save it, otherwise, youre out of luck
-        if this_ecomap.owner.uni != session_uni:
-            return "<data><response>This is not your social support network map.</response></data>"
-
-        ecoName        = safe_get_element_child(root,"name")
-        ecoDescription = safe_get_element_child(root,"description")
-        this_ecomap.flashData = root.getElementsByTagName("flashData")[0].toxml()
-        this_ecomap.name = ecoName
-        this_ecomap.description = ecoDescription
-        this_ecomap.modified = DateTime.now()
-        #want to check if this actually saves so i can REALLY return an OK
-        #if it doesn't save, return NOT OK
-        return "<data><response>OK</response></data>"
-        
-    def load_ecomap(self,this_ecomap,session_uni):
-        isreadonly = "true"
-        if this_ecomap.owner.uni == session_uni:
-            isreadonly = "false"
-        return "<data><response>OK</response><isreadonly>" + isreadonly + "</isreadonly><name>" + \
-               this_ecomap.name + "</name><description>" + this_ecomap.description + \
-               "</description>" + this_ecomap.flashData + "</data>"
 
 
 
