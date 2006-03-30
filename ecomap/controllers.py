@@ -402,6 +402,15 @@ class EcomapController(EcoControllerBase,RESTContent):
         return self.template("view_ecomap.pt",data)
 
 
+def restrict_to_instructor_or_admin(f):
+    def decorator(self,course,*args,**kwargs):
+        if is_admin(get_user()) or is_instructor(get_user(),course):
+            return f(self,course,*args,**kwargs)
+        else:
+            message("You don't have authorization to perform that action.  This event will be reported.")
+            raise cherrypy.HTTPRedirect("/course")
+    return decorator
+
 
 
 class CourseController(EcoControllerBase,RESTContent):
@@ -436,20 +445,16 @@ class CourseController(EcoControllerBase,RESTContent):
         return self.template("list_courses.pt",{'login_name' : login_name, 'all_courses' : all_courses, 'my_courses' : my_courses, 'instructor_of' : instructor_of})
 
     @cherrypy.expose()
+    @admin_only
     def delete(self,course,confirm=""):
-        #import pdb; pdb.set_trace()
-        if is_admin(get_user()):
-            # first remove the students from the course, then delete it
-            students = course.students
-            for student in students:
-                course.removeEcouser(student.id)
-            
-            course.destroySelf()
-            message("deleted")
-            raise cherrypy.HTTPRedirect("/course")
-        else:
-            message("You don't have authorization to perform that action.  This event will be reported.")
-            raise cherrypy.HTTPRedirect("/course")
+        # first remove the students from the course, then delete it
+        students = course.students
+        for student in students:
+            course.removeEcouser(student.id)
+
+        course.destroySelf()
+        message("deleted")
+        raise cherrypy.HTTPRedirect("/course")
         
     @cherrypy.expose()
     def show(self,course,**kwargs):
@@ -515,41 +520,35 @@ class CourseController(EcoControllerBase,RESTContent):
 
 
     @cherrypy.expose()
+    @restrict_to_instructor_or_admin
     def students(self,course):
         uni = get_user()
         login_name = get_fullname()
-        if is_admin(uni) or is_instructor(uni,course):
-            course_name = course.name
-            return self.template("list_students.pt",{'login_name' : login_name, 'students' : course.students, 'course_name' : course_name,})
-        else:
-            message("You don't have authorization to perform that action.  This event will be reported.")
-            raise cherrypy.HTTPRedirect("/course")
+        course_name = course.name
+        return self.template("list_students.pt",{'login_name' : login_name, 'students' : course.students, 'course_name' : course_name,})
+
 
 
     @cherrypy.expose()
+    @restrict_to_instructor_or_admin
     def update_students(self,course,**kwargs):
         uni = get_user()
-        if is_admin(uni) or is_instructor(uni,course):
-            action = kwargs['action']
-            if action == 'Delete Selected':
-                #check that some were selected
-                student_list = ensure_list(kwargs.get('student_id',None))
-                if student_list:
-                    this_name = ""
-                    for item in item_list:
-                        this_item = Ecouser.get(item)
-                        this_name += this_item.firstname + " " + this_item.lastname + ", "
-                        course.removeEcouser(this_item.id)
-                    message("'" + this_name + "' has been deleted.")
-                    raise cherrypy.HTTPRedirect("/course/%s/students" % course.id)
-                else:
-                    return "error - unknown argument type"
+        action = kwargs['action']
+        if action == 'Delete Selected':
+            #check that some were selected
+            student_list = ensure_list(kwargs.get('student_id',None))
+            if student_list:
+                this_name = ""
+                for item in item_list:
+                    this_item = Ecouser.get(item)
+                    this_name += this_item.firstname + " " + this_item.lastname + ", "
+                    course.removeEcouser(this_item.id)
+                message("'" + this_name + "' has been deleted.")
+                raise cherrypy.HTTPRedirect("/course/%s/students" % course.id)
             else:
-                raise cherrypy.HTTPRedirect("/course/%s/" % course.id)      
+                return "error - unknown argument type"
         else:
-            message("You don't have authorization to perform that action.  This event will be reported.")
-            raise cherrypy.HTTPRedirect("/course")
-
+            raise cherrypy.HTTPRedirect("/course/%s/" % course.id)      
 
     @cherrypy.expose()
     def create_new(self,course):
