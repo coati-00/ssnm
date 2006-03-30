@@ -23,14 +23,11 @@
 	<body metal:define-slot="body">
 	
 		<h1 metal:define-slot="header">
-			<a href="/course" title="">Social Support Network Map</a>
+		<a href="/course" title="">Social Support Network Map</a>
 		</h1>
 		
-		
 		<div id="ccnmtl">
-			<a href="http://ccnmtl.columbia.edu/" title="Go to the CCNMTL web site." target="_blank">
-				CCNMTL
-			</a>
+		<a href="http://ccnmtl.columbia.edu/" title="Go to the CCNMTL web site." target="_blank">CCNMTL</a>
 		</div>
 
 		<div id="toolbar">
@@ -43,12 +40,10 @@
 			
 			<div id="log">
 				<tal:block condition="login_name">
-
-                    Logged in as <span tal:content="login_name" /> | <a href="/logout">Logout</a>
-
-                </tal:block>
-                <tal:block condition="python:login_name==''">
-                    <a href="/login">Log In</a>
+				Logged in as <span tal:content="login_name" /> | <a href="/logout">Logout</a>
+				</tal:block>
+				<tal:block condition="python:login_name==''">
+				<a href="/login">Log In</a>
 				</tal:block>
 			</div>
 			
@@ -57,7 +52,6 @@
 		<div id="content" metal:define-slot="content">
 			This is where the page content goes
 		</div>
-
 
 		
 	</body>

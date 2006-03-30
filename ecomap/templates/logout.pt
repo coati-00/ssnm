@@ -7,18 +7,15 @@
 		<div id="container">
 		
 			<h2>
-				Goodbye
+			Goodbye
 			</h2>
 			
 			<p>
-				You have been logged out of the system.
+			You have been logged out of the system.
 			</p>
 			
 			<p>
-				<a href="/login">
-					Click here
-				</a>
-				to log back in.
+			<a href="/login">Click here</a> to log back in.
 			</p>
 			
 		</div>
