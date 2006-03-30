@@ -2,9 +2,6 @@
 
 import sys
 sys.path.append(".")
-import ecomap.config as config
-
-config.MODE = "regressiontest"
 
 from ecomap.helpers import *
 

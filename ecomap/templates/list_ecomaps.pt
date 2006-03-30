@@ -19,7 +19,7 @@
 		
 		<div id="container">
 		
-			<div class="addbar" tal:condition="myEcomaps">
+			<div class="addbar" tal:condition="my_ecomaps">
 				<form method="link" action="create_new">
 					<input class="createmap" type="submit" value="Create New Map" />
 				</form>
@@ -29,7 +29,7 @@
 				My Social Support Network Maps
 			</h2>
 			
-			<p tal:condition="not:myEcomaps">
+			<p tal:condition="not:my_ecomaps">
 				You have no Social Support Network Maps. 
 				<a href="create_new">
 					Click here
@@ -39,7 +39,7 @@
 			
 			<form action="update" method="post">
 			
-				<table tal:condition="myEcomaps" class="infotable" cellspacing="0" summary="Network Map Table">
+				<table tal:condition="my_ecomaps" class="infotable" cellspacing="0" summary="Network Map Table">
 				
 					<colgroup id="maptablecols" span="5">
 						<col class="name" />
@@ -70,7 +70,7 @@
 					</thead>
 					
 					<tbody>
-						<tal:block repeat="ecomap myEcomaps">
+						<tal:block repeat="ecomap my_ecomaps">
 							<tr>
 								<td>
 									<a tal:attributes="href string:/ecomap/${ecomap/id}/" tal:content="ecomap/name" />
@@ -91,17 +91,17 @@
 				</table>
 				
 				<div class="deletebar">
-					<input tal:condition="myEcomaps" type="submit" name="action" value="Delete Selected" onclick="return confirm('Are you sure you want to delete the selected items?');" />
+					<input tal:condition="my_ecomaps" type="submit" name="action" value="Delete Selected" onclick="return confirm('Are you sure you want to delete the selected items?');" />
 					<!--<input type="submit" name="action" value="share"/>-->
 				</div>
 				
-				<h2 style="cursor:pointer" tal:condition="allEcomaps" onclick="document.getElementById('allmaps').style.display = (document.getElementById('allmaps').style.display == 'none') ? 'block' : 'none'; document.getElementById('imgToggle').src = (document.getElementById('allmaps').style.display == 'none') ? '/images/closed.gif' : '/images/open.gif'">
+				<h2 style="cursor:pointer" tal:condition="all_ecomaps" onclick="document.getElementById('allmaps').style.display = (document.getElementById('allmaps').style.display == 'none') ? 'block' : 'none'; document.getElementById('imgToggle').src = (document.getElementById('allmaps').style.display == 'none') ? '/images/closed.gif' : '/images/open.gif'">
 					<a href="#"><img id="imgToggle" class="toggle" src="/images/closed.gif" alt="" /></a> All Social Support Network Maps
 				</h2>
 				
 				<div id="allmaps" style="display:none">
 				
-					<table tal:condition="allEcomaps" class="infotable" cellspacing="0" summary="Network Map Table">
+					<table tal:condition="all_ecomaps" class="infotable" cellspacing="0" summary="Network Map Table">
 					
 						<colgroup id="allmaptablecols" span="6">
 							<col class="name" />
@@ -136,7 +136,7 @@
 						</thead>
 						
 						<tbody>
-						<tal:block repeat="ecomap allEcomaps">
+						<tal:block repeat="ecomap all_ecomaps">
 							<tr>
 								<td>
 									<a tal:attributes="href string:/ecomap/${ecomap/id}/" tal:content="ecomap/name" />
@@ -159,7 +159,7 @@
 					</table>
 					
 					<div class="deletebar">
-						<input tal:condition="myEcomaps" type="submit" name="action" value="Delete Selected" onclick="return confirm('Are you sure you want to delete the selected items?');" />
+						<input tal:condition="my_ecomaps" type="submit" name="action" value="Delete Selected" onclick="return confirm('Are you sure you want to delete the selected items?');" />
 						<!--<input type="submit" name="action" value="share"/>-->
 					</div>
 					

@@ -9,7 +9,6 @@ expects that the database specified in the dsn has been created
 import sys
 sys.path.append(".")
 sys.path.append("..")
-import ecomap.config as config
 
 from optparse import OptionParser
 
@@ -18,8 +17,6 @@ parser.add_option("-m", "--mode", dest="mode", help="specify the mode", default=
 parser.add_option("-d", "--drop", dest="drop", help="drop existing tables", default=False, action="store_true")
 
 (options, args) = parser.parse_args()
-
-config.MODE = options.mode
 
 from ecomap.helpers import *
 

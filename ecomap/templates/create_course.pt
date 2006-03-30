@@ -56,7 +56,7 @@
 						Instructor ID:
 					</label>
 					<select id="instid" name="instructor">
-						<option tal:repeat="i allInstructors" tal:attributes="value i/id" tal:content="string:${i/firstname} ${i/lastname}" />
+						<option tal:repeat="i all_instructors" tal:attributes="value i/id" tal:content="string:${i/firstname} ${i/lastname}" />
 					</select>
 					<br />
 					<br />

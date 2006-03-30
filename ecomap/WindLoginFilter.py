@@ -69,8 +69,7 @@ class WindLoginFilter(basefilter.BaseFilter):
             cherrypy.session['fullname'] = u.firstname + " " + u.lastname
             raise cherrypy.HTTPRedirect(self.after_login)
             
-        import ecomap.config as config
-        if config.MODE == "regressiontest":
+        if cherrypy.config.get("TESTMODE",False):
             cherrypy.session[self.uni_key] = "foo"
             cherrypy.session[self.auth_key] = True
             return
@@ -130,7 +129,7 @@ class WindLoginFilter(basefilter.BaseFilter):
             cherrypy.session[self.uni_key] = ""
             cherrypy.session[self.groups_key] = []
             cherrypy.session[self.ticket_key] = ""
-
+            cherrypy.session['fullname'] = ""
             #cherrypy.response.body = ["You are now logged out from the system."]
             return
 

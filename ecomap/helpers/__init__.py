@@ -69,10 +69,10 @@ def ldap_lookup(username):
     return (firstname,lastname)
 
 def get_or_create_user(username,firstname="",lastname=""):
-
-    """ get OR CREATE is misleading.  this is really get OR FAIL
-    users are created by adding them to courses.  users who are not in 
-    this system will be given an error and told to talk to their instructor """
+    """ if the user is already in the system, it returns the user object.
+    otherwise, it creates a new one and returns that. the function has the
+    side effect of putting the user into any class that wind says they
+    should be a part of if they aren't already in it. """
     
     res = Ecouser.select(Ecouser.q.uni == username)
     u = None
@@ -80,8 +80,15 @@ def get_or_create_user(username,firstname="",lastname=""):
         # found the user. 
         u = res[0]
     else:
-        cherrypy.session['message'] = "You are not registered for any courses.  Please contact your instructor for help."
-        raise cherrypy.HTTPRedirect("/")
+        #this user doesn't exist in our DB yet.  Get details from LDAP if possible
+        (firstname,lastname) = ldap_lookup(username)
+ 	               
+        if lastname == "":
+            lastname = username
+ 	
+        eus = EcouserSchema()
+        d = eus.to_python({'uni' : username, 'securityLevel' : 2, 'firstname' : firstname, 'lastname' : lastname})
+        u = Ecouser(uni=d['uni'],securityLevel=d['securityLevel'],firstname=d['firstname'],lastname=d['lastname'])
     return u
 
 def get_user(username):
@@ -90,14 +97,14 @@ def get_user(username):
         return res[0]
     return None
 
-def isAdmin(username):
+def is_admin(username):
     res = Ecouser.select(Ecouser.q.uni == username)
     if res.count() > 0:
         if res[0].securityLevel == 1:
             return True
     return False
 
-def isInstructor(username,course):
+def is_instructor(username,course):
     if course.instructor.uni == username:
         return True
     return False

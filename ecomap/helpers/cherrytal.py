@@ -5,6 +5,11 @@ import os, cherrypy, os.path
 def site_root():
     return os.path.abspath(os.path.normpath(os.path.join(os.path.dirname(__file__),"../../")))
 
+import logging
+l = logging.getLogger("simpleTAL.XMLTemplateCompiler")
+l.setLevel(50)
+
+
 class CherryTAL:
     """ a class that can be inherited from to easily use
     simpleTAL templates from a CherryPy app

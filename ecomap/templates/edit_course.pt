@@ -47,16 +47,16 @@
 			</form:iferror>
 			<br />
 			<br />
-			<label for="instid" tal:condition="isAdmin">Instructor ID:</label> 
+			<label for="instid" tal:condition="is_admin">Instructor ID:</label> 
 			<select id="instid" name="instructor">
-			<tal:block repeat="i allInstructors">
+			<tal:block repeat="i all_instructors">
 			<option tal:attributes="value i/id" tal:content="string:${i/firstname} ${i/lastname}" />
 			</tal:block>
 			</select>
 			<br />
 			<br />
-			<label for="savebutton" tal:condition="isAdmin"></label> 
-			<input type="hidden" tal:condition="python:not isAdmin" tal:attributes="value course/instructor/id" name="instructor" />
+			<label for="savebutton" tal:condition="is_admin"></label> 
+			<input type="hidden" tal:condition="python:not is_admin" tal:attributes="value course/instructor/id" name="instructor" />
 			<input id="savebutton" type="submit" value="Update Course Information" />
 			
 			</fieldset>
@@ -67,4 +67,5 @@
 	
 	</div>
 	
+
 </html>
