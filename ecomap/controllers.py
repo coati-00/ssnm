@@ -120,77 +120,75 @@ class Eco(EcoControllerBase):
 
     @cherrypy.expose()
     def flashConduit(self,HTMLid="",HTMLticket=""):
-        #import pdb; pdb.set_trace()
-
         #First, check to make sure there's a session established
         session_uni = get_user()
         session_ticket = get_auth()
 
         if not session_uni and session_ticket:
-            response_data = "<response>Session error</response>"
+            return "<response>Session error</response>"
 
-        else:
+        post_length = int(cherrypy.request.headerMap.get('Content-Length',0))
+        post_data = cherrypy.request.rfile.read(post_length)
 
-            post_length = int(cherrypy.request.headerMap.get('Content-Length',0))
-            post_data = cherrypy.request.rfile.read(post_length)
+        #post_data is going to have a ticket and an id to parse out
 
-            #post_data is going to have a ticket and an id to parse out
+        try:
+            doc = parseString(post_data)
+        except:
+            raise ParseError
 
-            try:
-                doc = parseString(post_data)
-            except:
-                raise ParseError
+        root = doc.getElementsByTagName("data")[0]
 
-            root = doc.getElementsByTagName("data")[0]
+        #Check this data for reasonable stuff coming in
+        ticketid  = safe_get_element_child(root,"ticket")
+        ecoid     = safe_get_element_child(root,"id")
+        action    = safe_get_element_child(root,"action")
+        data_node = root.getElementsByTagName("flashData")[0].toxml()
 
-            #Check this data for reasonable stuff coming in
-            ticketid  = safe_get_element_child(root,"ticket")
-            ecoid     = safe_get_element_child(root,"id")
-            action    = safe_get_element_child(root,"action")
-            data_node = root.getElementsByTagName("flashData")[0].toxml()
+        if ticketid != session_ticket:
+            print "This in't a valid session you little hacker! ;)"
+            return "<data><response>Your session may have timed out.</response></data>"
 
-            if ticketid == session_ticket:
-                #tickets match, so the session is valid
-                if not ecoid == "":
-                    this_ecomap = Ecomap.get(ecoid)
-                    # if this is public or it's yours or Susan, Debbie or I am logged in, allow the data to Flash
-                    if this_ecomap.public or this_ecomap.owner.uni == session_uni or is_admin(session_uni):
-                        if action == "load":
-                            if this_ecomap.owner.uni == session_uni:
-                                response_data = "<data><response>OK</response><isreadonly>false</isreadonly><name>" + this_ecomap.name + "</name><description>" + this_ecomap.description + "</description>" + this_ecomap.flashData + "</data>"
-                            else:
-                                #send it in as read only
-                                response_data = "<data><response>OK</response><isreadonly>true</isreadonly><name>" + this_ecomap.name + "</name><description>" + this_ecomap.description + "</description>" + this_ecomap.flashData + "</data>"
-                        elif action == "save":
-                            #if this is your ecomap, you can save it, otherwise, youre out of luck
-                            if this_ecomap.owner.uni == session_uni:
-                                ecoName        = safe_get_element_child(root,"name")
-                                ecoDescription = safe_get_element_child(root,"description")
-                                this_ecomap.flashData = data_node
-                                this_ecomap.name = ecoName
-                                this_ecomap.description = ecoDescription
-                                this_ecomap.modified = DateTime.now()
-                                #want to check if this actually saves so i can REALLY return an OK
-                                #if it doesn't save, return NOT OK
-                                response_data = "<data><response>OK</response></data>"
-                            else:
-                                response_data = "<data><response>This is not your social support network map.</response></data>"
-                        else:
-                            print "unknown data action"
-                            response_data = "<data><response>Unknown data action</response></data>"
-                        print this_ecomap.description
-                    else:
-                        response_data = "<data><response>This is not your social support network map. Also, it isn't public.</response></data>"
-                        print "not your ecomap and not public"
+        #tickets match, so the session is valid
+        if ecoid == "":
+            print "not a valid ecomap id"
+            return "<data><response>That social support network map ID does'nt exist.</response></data>"
+            
+        this_ecomap = Ecomap.get(ecoid)
+        # if this is public or it's yours or Susan, Debbie or I am logged in, allow the data to Flash
+        if this_ecomap.public or this_ecomap.owner.uni == session_uni or is_admin(session_uni):
+            if action == "load":
+                if this_ecomap.owner.uni == session_uni:
+                    response_data = "<data><response>OK</response><isreadonly>false</isreadonly><name>" + this_ecomap.name + "</name><description>" + this_ecomap.description + "</description>" + this_ecomap.flashData + "</data>"
                 else:
-                    response_data = "<data><response>That social support network map ID does'nt exist.</response></data>"
-                    print "not a valid ecomap id"
+                    #send it in as read only
+                    response_data = "<data><response>OK</response><isreadonly>true</isreadonly><name>" + this_ecomap.name + "</name><description>" + this_ecomap.description + "</description>" + this_ecomap.flashData + "</data>"
+            elif action == "save":
+                #if this is your ecomap, you can save it, otherwise, youre out of luck
+                if this_ecomap.owner.uni != session_uni:
+                    return "<data><response>This is not your social support network map.</response></data>"
+                
+                ecoName        = safe_get_element_child(root,"name")
+                ecoDescription = safe_get_element_child(root,"description")
+                this_ecomap.flashData = data_node
+                this_ecomap.name = ecoName
+                this_ecomap.description = ecoDescription
+                this_ecomap.modified = DateTime.now()
+                #want to check if this actually saves so i can REALLY return an OK
+                #if it doesn't save, return NOT OK
+                response_data = "<data><response>OK</response></data>"
+
             else:
-                response_data = "<data><response>Your session may have timed out.</response></data>"
-                print "This in't a valid session you little hacker! ;)"
-
-
+                print "unknown data action"
+                response_data = "<data><response>Unknown data action</response></data>"
+            print this_ecomap.description
+        else:
+            response_data = "<data><response>This is not your social support network map. Also, it isn't public.</response></data>"
+            print "not your ecomap and not public"
+            
         return response_data
+
+
 
     @cherrypy.expose()
     def logout(self,**kwargs):
