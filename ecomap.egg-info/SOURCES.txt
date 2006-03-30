@@ -1,7 +1,5 @@
 README
-dev.cfg
 ecomap_start.py
-prod.cfg
 push.conf
 pusher.py
 setup.py
@@ -18,7 +16,6 @@ ecomap.egg-info/sqlobject.txt
 ecomap.egg-info/top_level.txt
 ecomap/helpers/__init__.py
 ecomap/helpers/cherrytal.py
-ecomap/helpers/dummy_server.py
 ecomap/static/css/ecomap.css
 ecomap/static/flash/Person.as
 ecomap/static/flash/SupportType.as
@@ -36,6 +33,7 @@ ecomap/templates/add_guest_account.pt
 ecomap/templates/admin_users.pt
 ecomap/templates/contact.pt
 ecomap/templates/create_course.pt
+ecomap/templates/edit_course.pt
 ecomap/templates/guest_login.pt
 ecomap/templates/help.pt
 ecomap/templates/index.pt
