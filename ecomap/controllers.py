@@ -77,6 +77,13 @@ def admin_only(f):
             raise cherrypy.HTTPRedirect("/course/")
     return wrapped
 
+def uniq(l):
+    u = {}
+    for x in l:
+        u[x] = 1
+    return u.keys()    
+
+
 class Eco(EcoControllerBase):
     # enable filtering to disable post filtering on the postTester funcion
     _cpFilterList = [ DisablePostParsingFilter(),
@@ -221,13 +228,7 @@ class Eco(EcoControllerBase):
         es = CourseSchema()
 
         # MUST sanitize this comma delimited list
-        uni_list = students.split(",")
-
-        # weed out dupes
-        u = {}
-        for x in uni_list:
-            u[x] = 1
-        uni_list = u.keys()
+        uni_list = uniq(students.split(","))
 
         try:
             d = es.to_python({'name' : name, 'description' : description, 'instructor' : instructor})
