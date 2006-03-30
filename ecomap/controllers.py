@@ -83,6 +83,12 @@ def uniq(l):
         u[x] = 1
     return u.keys()    
 
+def safe_get_element_child(root,name):
+    if root.getElementsByTagName(name)[0].hasChildNodes():
+        return root.getElementsByTagName(name)[0].firstChild.nodeValue
+    else:
+        return ""
+
 
 class Eco(EcoControllerBase):
     # enable filtering to disable post filtering on the postTester funcion
@@ -138,18 +144,9 @@ class Eco(EcoControllerBase):
             root = doc.getElementsByTagName("data")[0]
 
             #Check this data for reasonable stuff coming in
-            if root.getElementsByTagName("ticket")[0].hasChildNodes():
-                ticketid = root.getElementsByTagName("ticket")[0].firstChild.nodeValue
-            else:
-                ticketid = ""
-            if root.getElementsByTagName("id")[0].hasChildNodes():
-                ecoid = root.getElementsByTagName("id")[0].firstChild.nodeValue
-            else:
-                ecoid = ""
-            if root.getElementsByTagName("action")[0].hasChildNodes():
-                action = root.getElementsByTagName("action")[0].firstChild.nodeValue
-            else:
-                action = ""
+            ticketid  = safe_get_element_child(root,"ticket")
+            ecoid     = safe_get_element_child(root,"id")
+            action    = safe_get_element_child(root,"action")
             data_node = root.getElementsByTagName("flashData")[0].toxml()
 
             if ticketid == session_ticket:
@@ -167,14 +164,8 @@ class Eco(EcoControllerBase):
                         elif action == "save":
                             #if this is your ecomap, you can save it, otherwise, youre out of luck
                             if this_ecomap.owner.uni == session_uni:
-                                if root.getElementsByTagName("name")[0].hasChildNodes():
-                                    ecoName = root.getElementsByTagName("name")[0].firstChild.nodeValue
-                                else:
-                                    ecoName = ""
-                                if root.getElementsByTagName("description")[0].hasChildNodes():
-                                    ecoDescription = root.getElementsByTagName("description")[0].firstChild.nodeValue
-                                else:
-                                    ecoDescription = ""
+                                ecoName        = safe_get_element_child(root,"name")
+                                ecoDescription = safe_get_element_child(root,"description")
                                 this_ecomap.flashData = data_node
                                 this_ecomap.name = ecoName
                                 this_ecomap.description = ecoDescription
