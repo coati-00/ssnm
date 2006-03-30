@@ -6,23 +6,18 @@ import cherrypy
 from os.path import *
 import sys
 
-# first look on the command line for a desired config file,
-# if it's not on the command line, then
-# look for setup.py in this directory. If it's not there, this script is
-# probably installed
+from optparse import OptionParser
+parser = OptionParser()
+parser.add_option("-m","--mode", dest="mode", help="specify the mode", default="dev",metavar="MODE")
 
+(options, args) = parser.parse_args()
 
 from ecomap.controllers import build_controllers
 
 build_controllers()
 
 if __name__ == "__main__":
-
-    if exists(join(dirname(__file__), "setup.py")):
-        cherrypy.config.update(file=join(dirname(__file__),"dev.cfg"))
-    else:
-        cherrypy.config.update(file=join(dirname(__file__),"prod.cfg"))
-    
+    cherrypy.config.update(file=join(dirname(__file__),options.mode + ".cfg"))
     cherrypy.server.start()
 
 def mp_setup():
