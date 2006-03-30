@@ -229,37 +229,10 @@ class Eco(EcoControllerBase):
             u[x] = 1
         uni_list = u.keys()
 
-        invalid_ids = []
-
-        uni = get_user()
         try:
             d = es.to_python({'name' : name, 'description' : description, 'instructor' : instructor})
             this_course = Course(name=d['name'],description=d['description'],instructor=d['instructor'])
-
-            # scan through user list to get users.  make sure they exist, then add to course
-            if students != "":
-                for student_uni in uni_list:
-                    # don't add the student if he is the instructor of the course
-                    if student_uni != this_course.instructor.uni:
-                        this_user = Ecouser.select(Ecouser.q.uni == student_uni)
-                        # make sure this is a valid, existing user
-                        if this_user.count() == 1:
-                            if not this_user[0] in this_course.students:
-                                this_course.addEcouser(this_user[0].id)
-                        else:
-                            # add this user to our list of users
-                            # make sure it is a valid UNI
-                            (firstname,lastname) = ldap_lookup(student_uni)
-                            if firstname == "" and lastname == "":
-                                # not in the ldap.  bad uni.  exit
-                                invalid_ids.append(student_uni)
-                            else:
-                                eus = EcouserSchema()
-                                d = eus.to_python({'uni' : student_uni, 'securityLevel' : 2, 'firstname' : firstname, 'lastname' : lastname})
-                                this_user = Ecouser(uni=d['uni'],securityLevel=d['securityLevel'],firstname=d['firstname'],lastname=d['lastname'])
-                                if not this_user in this_course.students:
-                                    this_course.addEcouser(this_user.id)
-                print this_course.students
+            invalid_ids = this_course.add_students(uni_list)
 
             m = "The new course '" + name + "' has been created."
             if len(invalid_ids) > 0:

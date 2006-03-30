@@ -1,5 +1,6 @@
 from sqlobject import *
 from turbogears.database import PackageHub
+import ecomap.helpers
 hub = PackageHub("quip")
 __connection__ = hub
 
@@ -46,6 +47,37 @@ class Course(SQLObject):
         for student in self.students:
             self.removeEcouser(student.id)
         self.destroySelf()
+
+    def add_students(self,uni_list):
+        invalid_ids = []
+        # scan through user list to get users.  make sure they exist, then add to course
+        for student_uni in uni_list:
+            # don't add the student if he is the instructor of the course
+            if student_uni == self.instructor.uni:
+                continue
+            
+            this_user = Ecouser.select(Ecouser.q.uni == student_uni)
+            # make sure this is a valid, existing user
+            if this_user.count() == 1:
+                if not this_user[0] in self.students:
+                    self.addEcouser(this_user[0].id)
+            else:
+                # add this user to our list of users
+                # make sure it is a valid UNI
+                (firstname,lastname) = ecomap.helpers.ldap_lookup(student_uni)
+                if firstname == "" and lastname == "":
+                    # not in the ldap.  bad uni.  exit
+                    invalid_ids.append(student_uni)
+                else:
+                    eus = EcouserSchema()
+                    d = eus.to_python({'uni' : student_uni, 'securityLevel' : 2, 'firstname' : firstname, 'lastname' : lastname})
+                    this_user = Ecouser(uni=d['uni'],securityLevel=d['securityLevel'],firstname=d['firstname'],lastname=d['lastname'])
+                    if not this_user in self.students:
+                        self.addEcouser(this_user.id)
+        return invalid_ids
+
+        
+
 
 def get_all_courses():
     return list(Course.select(Course.q.instructorID == Ecouser.q.id, orderBy=['name']))
