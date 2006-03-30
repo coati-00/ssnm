@@ -417,11 +417,9 @@ class CourseController(EcoControllerBase,RESTContent):
 
     @cherrypy.expose()
     def index(self):
-        # COURSE LIST
-        uni = get_user()
-        my_courses = []
+        """ course list """
         # retreive the courses in which this user is a student
-        user = Ecouser.select(Ecouser.q.uni == uni)[0]
+        user = Ecouser.select(Ecouser.q.uni == get_user())[0]
         my_courses = user.courses
 
         # retreive the course in which this user is an instructor
@@ -434,7 +432,7 @@ class CourseController(EcoControllerBase,RESTContent):
             raise cherrypy.HTTPRedirect("/course/%s/" % my_courses[0].id)
 
         all_courses = []
-        if is_admin(uni):
+        if is_admin(get_user()):
             all_courses = get_all_courses()
 
         return self.template("list_courses.pt",{'all_courses' : all_courses, 'my_courses' : my_courses, 'instructor_of' : instructor_of})
