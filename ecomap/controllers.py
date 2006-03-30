@@ -143,7 +143,6 @@ class Eco(EcoControllerBase):
         ticketid  = safe_get_element_child(root,"ticket")
         ecoid     = safe_get_element_child(root,"id")
         action    = safe_get_element_child(root,"action")
-        data_node = root.getElementsByTagName("flashData")[0].toxml()
 
         if ticketid != session_ticket:
             print "This in't a valid session you little hacker! ;)"
@@ -158,35 +157,42 @@ class Eco(EcoControllerBase):
         # if this is public or it's yours or Susan, Debbie or I am logged in, allow the data to Flash
         if this_ecomap.public or this_ecomap.owner.uni == session_uni or is_admin(session_uni):
             if action == "load":
-                if this_ecomap.owner.uni == session_uni:
-                    response_data = "<data><response>OK</response><isreadonly>false</isreadonly><name>" + this_ecomap.name + "</name><description>" + this_ecomap.description + "</description>" + this_ecomap.flashData + "</data>"
-                else:
-                    #send it in as read only
-                    response_data = "<data><response>OK</response><isreadonly>true</isreadonly><name>" + this_ecomap.name + "</name><description>" + this_ecomap.description + "</description>" + this_ecomap.flashData + "</data>"
+                return self.load_ecomap(this_ecomap,session_uni)
             elif action == "save":
-                #if this is your ecomap, you can save it, otherwise, youre out of luck
-                if this_ecomap.owner.uni != session_uni:
-                    return "<data><response>This is not your social support network map.</response></data>"
-                
-                ecoName        = safe_get_element_child(root,"name")
-                ecoDescription = safe_get_element_child(root,"description")
-                this_ecomap.flashData = data_node
-                this_ecomap.name = ecoName
-                this_ecomap.description = ecoDescription
-                this_ecomap.modified = DateTime.now()
-                #want to check if this actually saves so i can REALLY return an OK
-                #if it doesn't save, return NOT OK
-                response_data = "<data><response>OK</response></data>"
-
+                return self.save_ecomap(this_ecomap,session_uni,root)
             else:
                 print "unknown data action"
-                response_data = "<data><response>Unknown data action</response></data>"
+                return "<data><response>Unknown data action</response></data>"
             print this_ecomap.description
         else:
-            response_data = "<data><response>This is not your social support network map. Also, it isn't public.</response></data>"
             print "not your ecomap and not public"
-            
-        return response_data
+            return "<data><response>This is not your social support network map. Also, it isn't public.</response></data>"
+
+    def save_ecomap(self,this_ecomap,session_uni,root):
+        #if this is your ecomap, you can save it, otherwise, youre out of luck
+        if this_ecomap.owner.uni != session_uni:
+            return "<data><response>This is not your social support network map.</response></data>"
+
+        ecoName        = safe_get_element_child(root,"name")
+        ecoDescription = safe_get_element_child(root,"description")
+        this_ecomap.flashData = root.getElementsByTagName("flashData")[0].toxml()
+        this_ecomap.name = ecoName
+        this_ecomap.description = ecoDescription
+        this_ecomap.modified = DateTime.now()
+        #want to check if this actually saves so i can REALLY return an OK
+        #if it doesn't save, return NOT OK
+        return "<data><response>OK</response></data>"
+        
+    def load_ecomap(self,this_ecomap,session_uni):
+        if this_ecomap.owner.uni == session_uni:
+            return "<data><response>OK</response><isreadonly>false</isreadonly><name>" + \
+                   this_ecomap.name + "</name><description>" + this_ecomap.description + \
+                   "</description>" + this_ecomap.flashData + "</data>"
+        else:
+            #send it in as read only
+            return "<data><response>OK</response><isreadonly>true</isreadonly><name>" + \
+                   this_ecomap.name + "</name><description>" + this_ecomap.description + \
+                   "</description>" + this_ecomap.flashData + "</data>"
 
 
 
