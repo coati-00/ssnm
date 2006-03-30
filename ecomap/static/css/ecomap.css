@@ -128,8 +128,8 @@ h2
 
 colgroup#coursetablecols col.name { width: 20%; }
 colgroup#coursetablecols col.description { width: 20%; }
-colgroup#coursetablecols col.instructor { width: 20%; }
-colgroup#coursetablecols col.functions { width: 40%; }
+colgroup#coursetablecols col.instructor { width: 10%; }
+colgroup#coursetablecols col.functions { width: 50%; }
 
 colgroup#studenttablecols col.first { width: 30%; }
 colgroup#studenttablecols col.last { width: 30%; }
