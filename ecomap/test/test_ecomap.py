@@ -114,12 +114,21 @@ class TestCourse(unittest.TestCase):
     def tearDown(self):
         teardown_tests()
 
-    def testDelete(self):
+    def test_delete(self):
         r = get_all_courses()
         assert self.course in r
         self.course.delete()
         r = get_all_courses()
         assert self.course not in r
+
+    def test_add_student(self):
+        u = Ecouser(uni="bar",firstname="new",lastname="student")
+        self.course.add_student(u.uni)
+
+        # try adding the instructor
+        self.course.add_student(self.user.uni)
+
+        
 
 
 
