@@ -46,8 +46,7 @@ class Course(SQLObject):
     students    = RelatedJoin('Ecouser', joinColumn='course', otherColumn='student',intermediateTable='student_courses')
 
     def delete(self):
-        for student in self.students:
-            self.removeEcouser(student.id)
+        self.remove_students(self.students)
         self.destroySelf()
 
     def add_students(self,uni_list):
