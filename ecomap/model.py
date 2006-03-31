@@ -69,6 +69,13 @@ class Course(SQLObject):
 
         if not user in self.students:
             self.addEcouser(user.id)
+ 
+    def remove_students(self,students):
+        removed = []
+        for user in students:
+            removed.append(user.fullname())
+            self.removeEcouser(user.id)
+        return removed
 
 def create_user(uni):
     # if the user already exists, we just return that one
