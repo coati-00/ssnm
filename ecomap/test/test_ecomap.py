@@ -19,6 +19,14 @@ class TestEcouser(unittest.TestCase):
         assert self.user.uni == "foo"
         assert self.user.firstname == "regression user"
         assert self.user.lastname == "user"
+        assert self.user.fullname() == "regression user user"
+
+    def test_toggle_admin(self):
+        assert self.user.securityLevel == 2
+        self.user.toggle_admin()
+        assert self.user.securityLevel == 1
+        self.user.toggle_admin()
+        assert self.user.securityLevel == 2
 
     def test_ldap_lookup(self):
         (firstname,lastname) = ldap_lookup('anp8')
@@ -45,6 +53,16 @@ class TestEcouser(unittest.TestCase):
         assert u2.firstname == 'Anders N.'
         assert u2.lastname == 'Pearson'
 
+    def test_delete(self):
+        u = Ecouser(uni="bar",firstname="deleteme",lastname="deleteme")
+        all = list(Ecouser.select())
+        assert u in all
+        u.delete()
+        all = list(Ecouser.select())
+        assert u not in all
+        
+
+
 class TestEcomap(unittest.TestCase):
     def setUp(self):
         setup_for_tests()
@@ -62,6 +80,14 @@ class TestEcomap(unittest.TestCase):
         assert self.map.flashData == "blah blah blah"
         assert self.map.owner.uni == self.user.uni
         assert self.map.public == False
+
+    def testLoad(self):
+        r = self.map.load(readonly="true")
+        assert r == """<data><response>OK</response><isreadonly>true</isreadonly><name>test</name><description>test</description>blah blah blah</data>"""
+
+    def testSave(self):
+        pass # TODO
+
 
 
 class TestCourse(unittest.TestCase):
