@@ -21,7 +21,7 @@ UNI_PARAM = "UNI"
 AUTH_TICKET_PARAM = "auth_ticket"
 #ADMIN_USERS = ("kfe2102","dm2150","ssw12")
 
-def get_user():
+def get_uni():
     return cherrypy.session.get("UNI",None)
 
 def get_auth():
@@ -70,7 +70,7 @@ def ensure_list(self,potential_list):
 
 def admin_only(f):
     def wrapped(*args,**kwargs):
-        if is_admin(get_user()):
+        if is_admin(get_uni()):
             return f(*args,**kwargs)
         else:
             message("You are not authorized to perform that action.  This event will be reported.")            
@@ -114,7 +114,7 @@ class Eco(EcoControllerBase):
     @cherrypy.expose()
     def flashConduit(self,HTMLid="",HTMLticket=""):
         #First, check to make sure there's a session established
-        session_uni = get_user()
+        session_uni = get_uni()
         session_ticket = get_auth()
 
         if not session_uni and session_ticket:
@@ -170,7 +170,7 @@ class Eco(EcoControllerBase):
         return self.template("logout.pt",{})
 
     def course_form(self,name,description,instructor,e=None):
-        uni = get_user()
+        uni = get_uni()
         defaults = {'name' : name, 'description' : description, 'instructor' : instructor}
         if e == None:
             parser = htmlfill.FillingParser(defaults)
@@ -339,7 +339,7 @@ class EcomapController(EcoControllerBase,RESTContent):
 
 def restrict_to_instructor_or_admin(f):
     def decorator(self,course,*args,**kwargs):
-        if admin_or_instructor(get_user(),course):
+        if admin_or_instructor(get_uni(),course):
             return f(self,course,*args,**kwargs)
         else:
             message("You don't have authorization to perform that action.  This event will be reported.")
@@ -357,7 +357,7 @@ class CourseController(EcoControllerBase,RESTContent):
     def index(self):
         """ course list """
         # retreive the courses in which this user is a student
-        user = Ecouser.select(Ecouser.q.uni == get_user())[0]
+        user = Ecouser.select(Ecouser.q.uni == get_uni())[0]
         my_courses = user.courses
 
         # retreive the course in which this user is an instructor
@@ -370,7 +370,7 @@ class CourseController(EcoControllerBase,RESTContent):
             raise cherrypy.HTTPRedirect("/course/%s/" % my_courses[0].id)
 
         all_courses = []
-        if is_admin(get_user()):
+        if is_admin(get_uni()):
             all_courses = get_all_courses()
 
         return self.template("list_courses.pt",{'all_courses' : all_courses, 'my_courses' : my_courses, 'instructor_of' : instructor_of})
@@ -385,7 +385,7 @@ class CourseController(EcoControllerBase,RESTContent):
     @cherrypy.expose()
     def show(self,course,**kwargs):
         # This shows the list of ecomaps
-        uni = get_user()
+        uni = get_uni()
         course_name = course.name
 
         # My ecomaps are the ecomaps I created in this course specifically
@@ -410,7 +410,7 @@ class CourseController(EcoControllerBase,RESTContent):
             parser = htmlfill.FillingParser(defaults,errors=e.unpack_errors())
         else:
             parser = htmlfill.FillingParser(defaults)        
-        parser.feed(self.template("edit_course.pt",{'is_admin': is_admin(get_user()),
+        parser.feed(self.template("edit_course.pt",{'is_admin': is_admin(get_uni()),
                                                     'course_name' : course.name, 'course' : course,
                                                     'all_instructors' : [i for i in Ecouser.select(orderBy=['firstname'])]}))
         parser.close()
@@ -425,7 +425,7 @@ class CourseController(EcoControllerBase,RESTContent):
     @cherrypy.expose()
     @admin_only
     def edit(self,course,name="",description="",instructor=""):
-        uni = get_user()
+        uni = get_uni()
         es = CourseSchema()
 
         try:
@@ -443,7 +443,7 @@ class CourseController(EcoControllerBase,RESTContent):
     @cherrypy.expose()
     @restrict_to_instructor_or_admin
     def students(self,course):
-        uni = get_user()
+        uni = get_uni()
         course_name = course.name
         return self.template("list_students.pt",{'students' : course.students, 'course_name' : course_name,})
 
@@ -452,7 +452,7 @@ class CourseController(EcoControllerBase,RESTContent):
     @cherrypy.expose()
     @restrict_to_instructor_or_admin
     def update_students(self,course,**kwargs):
-        uni = get_user()
+        uni = get_uni()
         action = kwargs['action']
         if action == 'Delete Selected':
             removed = course.remove_students([Ecouser.get(id) for id in ensure_list(kwargs.get('student_id',None))])
@@ -464,7 +464,7 @@ class CourseController(EcoControllerBase,RESTContent):
 
     @cherrypy.expose()
     def create_new(self,course):
-        uni = get_user()
+        uni = get_uni()
 
         d = {
             'name'        : 'Enter Subject Name Here',
