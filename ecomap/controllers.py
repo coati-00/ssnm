@@ -60,7 +60,7 @@ class EcoControllerBase(CherryTAL):
             # Do something else here.
             cherrypy.response.body = ['Error: ' + str(err[0])]
 
-from WindLoginFilter import WindLoginFilter
+from windloginfilter import WindLoginFilter
 
 def ensure_list(self,potential_list):
     if type(potential_list) is str:
