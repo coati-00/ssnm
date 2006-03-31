@@ -61,34 +61,34 @@ class Course(SQLObject):
         return invalid_ids
 
     def add_student(self,student_uni):
+        user = create_user(student_uni)
+
         # don't add the student if he is the instructor of the course
-        if student_uni == self.instructor.uni:
+        if user.uni == self.instructor.uni:
             return
 
-        this_user = Ecouser.select(Ecouser.q.uni == student_uni)
-        # make sure this is a valid, existing user
-        if this_user.count() == 1:
-            if not this_user[0] in self.students:
-                self.addEcouser(this_user[0].id)
-            return
-        
-        # add this user to our list of users
-        # make sure it is a valid UNI
-        (firstname,lastname) = ecomap.helpers.ldap_lookup(student_uni)
-        if firstname == "" and lastname == "":
-            # not in the ldap.  bad uni.  exit
-            raise InvalidUNI
-        
-        eus = EcouserSchema()
-        d = eus.to_python({'uni' : student_uni, 'securityLevel' : 2, 'firstname' : firstname, 'lastname' : lastname})
-        this_user = Ecouser(uni=d['uni'],securityLevel=d['securityLevel'],firstname=d['firstname'],lastname=d['lastname'])
-        if not this_user in self.students:
-            self.addEcouser(this_user.id)
-        return 
+        if not user in self.students:
+            self.addEcouser(user.id)
+
+def create_user(uni):
+    # if the user already exists, we just return that one
+    r = Ecouser.select(Ecouser.q.uni == uni)
+    if r.count() > 0:
+        return r[0]
+
+    # make sure it is a valid UNI
+    (firstname,lastname) = ecomap.helpers.ldap_lookup(uni)
+    if firstname == "" and lastname == "":
+        # not in the ldap.  bad uni.  exit
+        raise InvalidUNI
+
+    eus = EcouserSchema()
+    d = eus.to_python({'uni' : uni, 'securityLevel' : 2, 'firstname' : firstname, 'lastname' : lastname})
+    return Ecouser(uni=d['uni'],securityLevel=d['securityLevel'],firstname=d['firstname'],lastname=d['lastname'])
+
 
 def get_all_courses():
     return list(Course.select(Course.q.instructorID == Ecouser.q.id, orderBy=['name']))
-
 
 class Ecomap(SQLObject):
     name        = UnicodeCol(length=50)
