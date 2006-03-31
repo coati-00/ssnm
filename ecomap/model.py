@@ -47,6 +47,10 @@ class Ecouser(SQLObject):
                                       Ecomap.q.courseID == course.id,
                                       Ecomap.q.public == True),
                                   orderBy=['name']))
+
+    def is_admin(self):
+        return self.securityLevel == 1
+
     
 
 

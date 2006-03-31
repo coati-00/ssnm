@@ -23,15 +23,13 @@ class TestEcouser(unittest.TestCase):
 
     def test_toggle_admin(self):
         assert self.user.securityLevel == 2
-        assert not is_admin(self.user.uni)
+        assert not self.user.is_admin()
         self.user.toggle_admin()
         assert self.user.securityLevel == 1
-        assert is_admin(self.user.uni)
+        assert self.user.is_admin()
         self.user.toggle_admin()
         assert self.user.securityLevel == 2
-        assert not is_admin(self.user.uni)
-
-        assert not is_admin("blah")
+        assert not self.user.is_admin()
 
     def test_ldap_lookup(self):
         (firstname,lastname) = ldap_lookup('anp8')

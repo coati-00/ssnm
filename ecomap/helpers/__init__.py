@@ -104,13 +104,6 @@ def get_user(username):
         return res[0]
     return None
 
-def is_admin(username):
-    res = Ecouser.select(Ecouser.q.uni == username)
-    if res.count() > 0:
-        if res[0].securityLevel == 1:
-            return True
-    return False
-
 def is_instructor(user,course):
     if course.instructor.uni == user.uni:
         return True

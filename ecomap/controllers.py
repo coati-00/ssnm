@@ -73,7 +73,7 @@ def ensure_list(self,potential_list):
 
 def admin_only(f):
     def wrapped(*args,**kwargs):
-        if is_admin(get_uni()):
+        if get_user().is_admin():
             return f(*args,**kwargs)
         else:
             message("You are not authorized to perform that action.  This event will be reported.")            
@@ -151,7 +151,7 @@ class Eco(EcoControllerBase):
             
         this_ecomap = Ecomap.get(ecoid)
         # if this is public or it's yours or Susan, Debbie or I am logged in, allow the data to Flash
-        if not (this_ecomap.public or this_ecomap.owner.uni == session_uni or is_admin(session_uni)):
+        if not (this_ecomap.public or this_ecomap.owner.uni == session_uni or get_user().is_admin()):
             print "not your ecomap and not public"
             return "<data><response>This is not your social support network map. Also, it isn't public.</response></data>"
 
@@ -342,7 +342,7 @@ def restrict_to_instructor_or_admin(f):
     return decorator
 
 def admin_or_instructor(user,course):
-    return is_admin(user.uni) or is_instructor(user,course)
+    return user.is_admin() or is_instructor(user,course)
 
 class CourseController(EcoControllerBase,RESTContent):
     def query(self,id):
@@ -365,7 +365,7 @@ class CourseController(EcoControllerBase,RESTContent):
             raise cherrypy.HTTPRedirect("/course/%s/" % my_courses[0].id)
 
         all_courses = []
-        if is_admin(user.uni):
+        if user.is_admin():
             all_courses = get_all_courses()
 
         return self.template("list_courses.pt",{'all_courses' : all_courses, 'my_courses' : my_courses, 'instructor_of' : instructor_of})
@@ -399,7 +399,7 @@ class CourseController(EcoControllerBase,RESTContent):
             parser = htmlfill.FillingParser(defaults,errors=e.unpack_errors())
         else:
             parser = htmlfill.FillingParser(defaults)        
-        parser.feed(self.template("edit_course.pt",{'is_admin': is_admin(get_uni()),
+        parser.feed(self.template("edit_course.pt",{'is_admin': get_user().is_admin(),
                                                     'course_name' : course.name, 'course' : course,
                                                     'all_instructors' : [i for i in Ecouser.select(orderBy=['firstname'])]}))
         parser.close()
