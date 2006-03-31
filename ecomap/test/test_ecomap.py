@@ -136,5 +136,10 @@ class TestCourse(unittest.TestCase):
 
         assert u in self.course.students
 
+    def test_is_instructor(self):
+        assert is_instructor(self.user.uni, self.course)
+        assert not is_instructor("blah", self.course)
+
+
 
 
