@@ -88,8 +88,11 @@ def uniq(l):
 
 class Eco(EcoControllerBase):
     # enable filtering to disable post filtering on the postTester funcion
+    allowed_paths = ["/","/flashConduit","/css/","/images/","/flash/","/about","/help","/contact",
+                     "favicon.ico"]
+    
     _cpFilterList = [ DisablePostParsingFilter(),
-                      WindLoginFilter(after_login="/course",allowed_paths=["/","/flashConduit"],
+                      WindLoginFilter(after_login="/course",allowed_paths=allowed_paths,
                                       uni_key=UNI_PARAM,ticket_key=AUTH_TICKET_PARAM)]
 
     @cherrypy.expose()

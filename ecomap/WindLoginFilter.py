@@ -44,21 +44,6 @@ class WindLoginFilter(basefilter.BaseFilter):
         self.wind_url_base = wind_url_base
     
     def beforeMain(self):
-        if "/css/" in cherrypy.request.path:
-            return
-        if "/images/" in cherrypy.request.path:
-            return
-        if "/flash/" in cherrypy.request.path:
-            return
-        if "/about" in cherrypy.request.path:
-            return
-        if "/help" in cherrypy.request.path:
-            return
-        if "/contact" in cherrypy.request.path:
-            return
-
-        if "/favicon.ico" in cherrypy.request.path:
-            return
         if "/zerocool" in cherrypy.request.path:
             uni = 'kfe2102'
             ticket_id = "TICKET!!!"
