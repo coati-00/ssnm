@@ -35,7 +35,6 @@ class TestEcouser(unittest.TestCase):
         assert firstname == 'Brian R.'
         assert lastname == "O'Hagan Jr."
 
-
     def test_get_or_create_user(self):
         u = get_or_create_user("foo")
         assert u.firstname == self.user.firstname
@@ -46,7 +45,7 @@ class TestEcouser(unittest.TestCase):
         assert u2.firstname == 'Anders N.'
         assert u2.lastname == 'Pearson'
 
-class TestEcomap:
+class TestEcomap(unittest.TestCase):
     def setUp(self):
         setup_for_tests()
         self.user = Ecouser(uni="foo",firstname="regression test user",lastname="test")
@@ -63,6 +62,24 @@ class TestEcomap:
         assert self.map.flashData == "blah blah blah"
         assert self.map.owner.uni == self.user.uni
         assert self.map.public == False
+
+
+class TestCourse(unittest.TestCase):
+    def setUp(self):
+        setup_for_tests()
+        self.user = Ecouser(uni="foo",firstname="regression test user",lastname="test")
+        self.course = Course(instructor=self.user,description="foo")
+
+    def tearDown(self):
+        teardown_tests()
+
+    def testDelete(self):
+        r = get_all_courses()
+        assert self.course in r
+        self.course.delete()
+        r = get_all_courses()
+        assert self.course not in r
+
 
 
 
