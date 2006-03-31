@@ -258,18 +258,11 @@ class Eco(EcoControllerBase):
         
 
     def add_user(self,uni):
-        if uni == "":
-            return
-        (firstname,lastname) = ldap_lookup(uni)
-        if firstname == "" and lastname == "":
-            # not in the ldap.  bad uni.  exit
-            message("That is not a valid UNI.")
-        else:
-            eus = EcouserSchema()
-            d = eus.to_python({'uni' : uni, 'securityLevel' : 2, 'firstname' : firstname, 'lastname' : lastname})
-            this_user = Ecouser(uni=d['uni'],securityLevel=d['securityLevel'],firstname=d['firstname'],lastname=d['lastname'])
+        try:
+            u = create_user(uni)
             message("'" + d['firstname'] + " " + d['lastname'] + "' has been added")
-
+        except InvalidUNI:
+            message("That is not a valid UNI.")
 
     @cherrypy.expose()
     @admin_only
