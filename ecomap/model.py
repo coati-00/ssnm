@@ -102,12 +102,10 @@ class Ecomap(SQLObject):
     def save(self,root):
         """ updates the ecomap based on a dom tree """
 
-        name        = ecomap.helpers.safe_get_element_child(root,"name")
-        description = ecomap.helpers.safe_get_element_child(root,"description")
-        self.flashData = root.getElementsByTagName("flashData")[0].toxml()
-        self.name = name
-        self.description = description
-        self.modified = DateTime.now()
+        self.flashData   = root.getElementsByTagName("flashData")[0].toxml()
+        self.name        = ecomap.helpers.safe_get_element_child(root,"name")
+        self.description = ecomap.helpers.safe_get_element_child(root,"description")
+        self.modified    = DateTime.now()
         #want to check if this actually saves so i can REALLY return an OK
         #if it doesn't save, return NOT OK
         return "<data><response>OK</response></data>"
