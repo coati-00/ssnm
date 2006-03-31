@@ -91,6 +91,16 @@ class TestAdmin(EcoTest):
         r = GET("/course/")
         assert "newcourse" in r
 
+    def test_admin_users(self):
+        u = Ecouser(uni="deleteme",firstname="deleteme",lastname="deleteme",securityLevel=2)
+        POST("/admin_users",data="action=Change%%20Security%%20Level;user_id=%d" % u.id)
+        assert u.is_admin()
+        POST("/admin_users",data="action=Delete;user_id=%d" % u.id)
+        assert u not in Ecouser.select()
+        POST("/admin_users",data="action=Add%20User;user_uni=invaliduni")
+        POST("/admin_users",data="action=Add%20Guest%20Account")
+
+
 
 class TestCourse(EcoTest):
 
@@ -161,5 +171,11 @@ class TestCourse(EcoTest):
         r = GET("/course/")
         assert c.name not in r
 
+class TestEcomap(EcoTest):
+    def test_root(self):
+        r = GET("/ecomap/")
+        # should just be a redirect
+
+	  
 
 
