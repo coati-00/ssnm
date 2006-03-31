@@ -62,7 +62,7 @@ class EcoControllerBase(CherryTAL):
 
 from windloginfilter import WindLoginFilter
 
-def ensure_list(self,potential_list):
+def ensure_list(potential_list):
     if type(potential_list) is str:
         return [int(potential_list)]
     elif type(potential_list) is list:
@@ -99,17 +99,18 @@ def guest_login():
     """ allow someone without a uni to login """
     uni = cherrypy.request.paramMap.get("uni","")
     password = cherrypy.request.paramMap.get("password")
-    if uni != "":
-        u = get_user(uni)
-        if u == None:
-            cherrypy.session['message'] = "The user %s does not exist." % uni
-            return
-        if u.password == password:
-            # they're good
-            update_session(True,uni,[],"guest ticket",u.fullname())
-            raise cherrypy.HTTPRedirect('/course/')
-        else:
-            message("Login has failed.")
+    if uni == "":
+        return 
+    u = get_user(uni)
+    if u == None:
+        cherrypy.session['message'] = "The user %s does not exist." % uni
+        return
+    if u.password == password:
+        # they're good
+        update_session(True,uni,[],"guest ticket",u.fullname())
+        raise cherrypy.HTTPRedirect('/course/')
+    else:
+        message("Login has failed.")
     # give them the login form
     return        
 
@@ -371,7 +372,6 @@ class EcomapController(EcoControllerBase,RESTContent):
     def show(self,ecomap,**kwargs):
         #import pdb; pdb.set_trace()
         server = '/'.join(cherrypy.request.browserUrl.split('/')[:3]) + '/'
-
         data = {
             'ecomap'     : ecomap,
             'id'         : ecomap.id,
@@ -515,11 +515,9 @@ class CourseController(EcoControllerBase,RESTContent):
     def update(self,course,**kwargs):
         action = kwargs['action']
         item_list = [Ecomap.get(id) for id in uniq(ensure_list(kwargs.get('ecomap_id',None)))]
-
         if action == 'Delete Selected':
             # TODO:
             # if you are the owner or you're the instructor or an admin
-
             self.delete_ecomaps(item_list)
             
         elif action == 'share':

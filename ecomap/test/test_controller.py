@@ -20,10 +20,14 @@ def tearDown():
 
 class EcoTest(unittest.TestCase):
     def setUp(self):
+        setup_for_tests()
         # because create_ecomap hardcodes in a user:
         self.user = Ecouser(uni="foo",firstname="regression test user",lastname="test",securityLevel=1)
         self.course = Course(instructor=self.user,description="")
         self.user.addCourse(self.course)
+    def tearDown(self):
+        teardown_tests()
+
 
 
 def GET(url,headers={}):
@@ -89,6 +93,7 @@ class TestAdmin(EcoTest):
 
 
 class TestCourse(EcoTest):
+
     def test_root(self):
         r = GET("/course/")
         assert '<form action="/update" method="post">' in r
@@ -128,8 +133,9 @@ class TestCourse(EcoTest):
         assert s.firstname not in r
         assert s.lastname not in r
 
+
     def test_create_map(self):
-        r = GET("/course/%d/create_new" % self.course.id) # bad non-idempotent GET !
+        r = POST("/course/%d/create_new" % self.course.id) 
         r = GET("/course/%d/" % self.course.id)
         assert "You have no Social Support Network Maps." not in r
         assert "Enter Subject Name Here" in r
@@ -148,7 +154,6 @@ class TestCourse(EcoTest):
         assert "You have no Social Support Network Maps." in r
         assert "Enter Subject Name Here" not in r
         assert "Enter Description here" not in r
-        assert "regression test user test" not in r
 
     def test_delete_course(self):
         c = Course(name="deletethiscourse",instructor=self.user,description="")
@@ -157,8 +162,4 @@ class TestCourse(EcoTest):
         assert c.name not in r
 
 
-class TestCourse(EcoTest):
-    def test_index(self):
-        # should just redirect to /course
-        r = GET("/ecomap/")
 
