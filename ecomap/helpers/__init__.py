@@ -4,10 +4,10 @@ from formencode import validators
 import cherrypy
 
 def safe_get_element_child(root,name):
+    v = ""
     if root.getElementsByTagName(name)[0].hasChildNodes():
-        return root.getElementsByTagName(name)[0].firstChild.nodeValue
-    else:
-        return ""
+        v = root.getElementsByTagName(name)[0].firstChild.nodeValue
+    return v
 
 
 def createTables():
