@@ -111,7 +111,7 @@ def is_admin(username):
             return True
     return False
 
-def is_instructor(username,course):
-    if course.instructor.uni == username:
+def is_instructor(user,course):
+    if course.instructor.uni == user.uni:
         return True
     return False

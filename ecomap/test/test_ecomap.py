@@ -172,8 +172,9 @@ class TestCourse(unittest.TestCase):
         assert u not in self.course.students
 
     def test_is_instructor(self):
-        assert is_instructor(self.user.uni, self.course)
-        assert not is_instructor("blah", self.course)
+        assert is_instructor(self.user, self.course)
+        u = Ecouser(uni="bar",firstname="new",lastname="student")
+        assert not is_instructor(u, self.course)
 
 
 

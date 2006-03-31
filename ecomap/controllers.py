@@ -342,7 +342,7 @@ def restrict_to_instructor_or_admin(f):
     return decorator
 
 def admin_or_instructor(user,course):
-    return is_admin(user.uni) or is_instructor(user.uni,course)
+    return is_admin(user.uni) or is_instructor(user,course)
 
 class CourseController(EcoControllerBase,RESTContent):
     def query(self,id):
