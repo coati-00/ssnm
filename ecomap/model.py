@@ -9,14 +9,14 @@ soClasses = ["Ecouser","Course","Ecomap"]
 from mx import DateTime
 
 class Ecouser(SQLObject):
-    uni = UnicodeCol(length=50)
-    password = UnicodeCol(length=50,default="")
+    uni           = UnicodeCol(length=50)
+    password      = UnicodeCol(length=50,default="")
     securityLevel = IntCol(default=2)
-    firstname = UnicodeCol(length=50)
-    lastname = UnicodeCol(length=50)
-    ecomaps = MultipleJoin('Ecomap')
-    instructorOf = MultipleJoin('Course')
-    courses = RelatedJoin('Course', joinColumn='student', otherColumn='course',intermediateTable='student_courses')
+    firstname     = UnicodeCol(length=50)
+    lastname      = UnicodeCol(length=50)
+    ecomaps       = MultipleJoin('Ecomap')
+    instructorOf  = MultipleJoin('Course')
+    courses       = RelatedJoin('Course', joinColumn='student', otherColumn='course',intermediateTable='student_courses')
 
     def delete(self):
         for course in self.courses:
@@ -37,11 +37,11 @@ class Ecouser(SQLObject):
         return Course.select(Course.q.instructorID == self.id)
 
 class Course(SQLObject):
-    name = UnicodeCol(length=50,default="")
+    name        = UnicodeCol(length=50,default="")
     description = UnicodeCol(length=50,default="")
-    instructor = ForeignKey('Ecouser',cascade=True)
-    ecomaps = MultipleJoin('Ecomap')
-    students = RelatedJoin('Ecouser', joinColumn='course', otherColumn='student',intermediateTable='student_courses')
+    instructor  = ForeignKey('Ecouser',cascade=True)
+    ecomaps     = MultipleJoin('Ecomap')
+    students    = RelatedJoin('Ecouser', joinColumn='course', otherColumn='student',intermediateTable='student_courses')
 
     def delete(self):
         for student in self.students:
@@ -84,14 +84,14 @@ def get_all_courses():
 
 
 class Ecomap(SQLObject):
-    name = UnicodeCol(length=50)
+    name        = UnicodeCol(length=50)
     description = UnicodeCol(length=100,default='')
-    created = DateTimeCol(default=DateTime.now)
-    modified = DateTimeCol(default=DateTime.now)
-    owner = ForeignKey('Ecouser',cascade=True)
-    course = ForeignKey('Course',cascade=True)
-    public = BoolCol(default=False)
-    flashData = UnicodeCol(default='')
+    created     = DateTimeCol(default=DateTime.now)
+    modified    = DateTimeCol(default=DateTime.now)
+    owner       = ForeignKey('Ecouser',cascade=True)
+    course      = ForeignKey('Course',cascade=True)
+    public      = BoolCol(default=False)
+    flashData   = UnicodeCol(default='')
 
     def formatted_created(self):
         return self.created.strftime("%A, %B %d, %Y")
