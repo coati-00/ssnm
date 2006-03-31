@@ -47,7 +47,7 @@ class Ecouser(SQLObject):
                                       Ecomap.q.courseID == course.id,
                                       Ecomap.q.public == True),
                                   orderBy=['name']))
-
+    
 
 
 class InvalidUNI(Exception): pass
@@ -56,7 +56,7 @@ class Course(SQLObject):
     name        = UnicodeCol(length=50,default="")
     description = UnicodeCol(length=50,default="")
     instructor  = ForeignKey('Ecouser',cascade=True)
-    ecomaps     = MultipleJoin('Ecomap')
+    ecomaps     = MultipleJoin('Ecomap',orderBy='name')
     students    = RelatedJoin('Ecouser', joinColumn='course', otherColumn='student',intermediateTable='student_courses')
 
     def delete(self):

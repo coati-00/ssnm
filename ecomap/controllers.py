@@ -384,9 +384,9 @@ class CourseController(EcoControllerBase,RESTContent):
         user = get_user()
 
         if admin_or_instructor(uni,course):
-            all_ecos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecomap.q.courseID == course.id), orderBy=['name'])]
+            all_ecos = course.ecomaps
         else:
-            all_ecos = None
+            all_ecos = []
         return self.template("list_ecomaps.pt",
                              {'my_ecomaps' : user.course_ecos(course),
                               'public_ecomaps' : user.public_ecos_in_course(course),
