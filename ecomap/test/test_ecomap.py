@@ -138,11 +138,14 @@ class TestCourse(unittest.TestCase):
         # try adding the instructor
         self.course.add_student(self.user.uni)
 
-    def test_add_users(self):
+    def test_add_students(self):
         u = Ecouser(uni="bar",firstname="new",lastname="student")
-        self.course.add_students([u.uni])
 
+        self.course.add_students([u.uni])
         assert u in self.course.students
+
+        self.course.remove_students([u])
+        assert u not in self.course.students
 
     def test_is_instructor(self):
         assert is_instructor(self.user.uni, self.course)
