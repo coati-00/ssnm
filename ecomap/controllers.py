@@ -117,12 +117,10 @@ class Eco(EcoControllerBase):
     @cherrypy.expose()
     def flashConduit(self,HTMLid="",HTMLticket=""):
         #First, check to make sure there's a session established
-        session_uni = get_uni()
-        session_ticket = get_auth()
-
-        if not session_uni and session_ticket:
+        if not get_uni() and get_auth():
             return "<response>Session error</response>"
 
+        user = get_user()
         post_length = int(cherrypy.request.headerMap.get('Content-Length',0))
         post_data = cherrypy.request.rfile.read(post_length)
 
@@ -140,7 +138,7 @@ class Eco(EcoControllerBase):
         ecoid     = safe_get_element_child(root,"id")
         action    = safe_get_element_child(root,"action")
 
-        if ticketid != session_ticket:
+        if ticketid != get_auth():
             print "This in't a valid session you little hacker! ;)"
             return "<data><response>Your session may have timed out.</response></data>"
 
@@ -151,19 +149,19 @@ class Eco(EcoControllerBase):
             
         this_ecomap = Ecomap.get(ecoid)
         # if this is public or it's yours or Susan, Debbie or I am logged in, allow the data to Flash
-        if not (this_ecomap.public or this_ecomap.owner.uni == session_uni or get_user().is_admin()):
+        if not (this_ecomap.public or this_ecomap.owner.uni == user.uni or user.is_admin()):
             print "not your ecomap and not public"
             return "<data><response>This is not your social support network map. Also, it isn't public.</response></data>"
 
         if action == "load":
             readonly = "true"
-            if this_ecomap.owner.uni == session_uni:
+            if this_ecomap.owner.uni == user.uni:
                 readonly = "false"
             return this_ecomap.load_ecomap(readonly)
         elif action == "save":
-            if this_ecomap.owner.uni != session_uni:
+            if this_ecomap.owner.uni != user.uni:
                 return "<data><response>This is not your social support network map.</response></data>"
-            return this_ecomap.save_ecomap(session_uni,root)
+            return this_ecomap.save_ecomap(root)
         else:
             print "unknown data action"
             return "<data><response>Unknown data action</response></data>"
