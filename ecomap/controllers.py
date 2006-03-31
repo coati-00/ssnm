@@ -454,21 +454,19 @@ class CourseController(EcoControllerBase,RESTContent):
     def update_students(self,course,**kwargs):
         uni = get_user()
         action = kwargs['action']
-        if action == 'Delete Selected':
-            #check that some were selected
-            student_list = ensure_list(kwargs.get('student_id',None))
-            if student_list:
-                this_name = ""
-                for item in item_list:
-                    this_item = Ecouser.get(item)
-                    this_name += this_item.firstname + " " + this_item.lastname + ", "
-                    course.removeEcouser(this_item.id)
-                message("'" + this_name + "' has been deleted.")
-                raise cherrypy.HTTPRedirect("/course/%s/students" % course.id)
-            else:
-                return "error - unknown argument type"
-        else:
+        if action != 'Delete Selected':
             raise cherrypy.HTTPRedirect("/course/%s/" % course.id)      
+        #check that some were selected
+        student_list = ensure_list(kwargs.get('student_id',None))
+        if student_list:
+            this_name = ""
+            for item in item_list:
+                this_item = Ecouser.get(item)
+                this_name += this_item.firstname + " " + this_item.lastname + ", "
+                course.removeEcouser(this_item.id)
+            message("'" + this_name + "' has been deleted.")
+            raise cherrypy.HTTPRedirect("/course/%s/students" % course.id)
+        return "error - unknown argument type"
 
     @cherrypy.expose()
     def create_new(self,course):
