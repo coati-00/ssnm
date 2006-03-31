@@ -42,82 +42,78 @@ class WindLoginFilter(basefilter.BaseFilter):
         self.auth_key      = auth_key
         self.groups_key    = groups_key
         self.wind_url_base = wind_url_base
-    
+
+    def backdoor(self):
+        """ allow someone in through a special url for testing/debugging purposes"""
+        u = get_or_create_user('kfe2102')        
+        self.update_session(True,u.uni,[],"TICKET!!!",u.fullname())
+        raise cherrypy.HTTPRedirect(self.after_login)
+
+    def guest_login(self):
+        """ allow someone without a uni to login """
+        uni = cherrypy.request.paramMap.get("uni","")
+        password = cherrypy.request.paramMap.get("password")
+        if uni != "":
+            u = get_user(uni)
+            if u == None:
+                cherrypy.session['message'] = "The user %s does not exist." % uni
+                return
+            if u.password == password:
+                # they're good
+                self.update_session(True,uni,[],"guest ticket",u.fullname())
+                raise cherrypy.HTTPRedirect(self.after_login)
+            else:
+                cherrypy.session['message'] = "Login has failed."
+
+        # give them the login form
+        return        
+
+    def wind_login(self):
+        destination = urllib.quote(cherrypy.request.browserUrl)
+        ticket_id = cherrypy.request.paramMap.get("ticketid","")
+        if ticket_id == "":
+            raise cherrypy.HTTPRedirect("%s?destination=%s&service=cnmtl_full_np" % (self.wind_url_base,destination))
+        else:
+            (success,uni,groups) = validate_wind_ticket(ticket_id)
+            if int(success) == 0:
+                cherrypy.response.body = ["The WIND authentication has failed. Please try again."]
+                return
+            u = get_or_create_user(uni)
+            self.update_session(True,uni,groups,ticket_id,u.fullname())
+            raise cherrypy.HTTPRedirect(self.after_login)
+
+    def logout(self):
+        self.update_session(False,"",[],"","")
+        return
+        
+    def update_session(self,auth=False,uni="",groups=[],ticket="",fullname=""):
+        cherrypy.session[self.auth_key] = auth
+        cherrypy.session[self.uni_key] = uni
+        cherrypy.session[self.groups_key] = groups
+        cherrypy.session[self.ticket_key] = ticket
+        cherrypy.session['fullname'] = fullname
+
     def beforeMain(self):
         if "/zerocool" in cherrypy.request.path:
-            uni = 'kfe2102'
-            ticket_id = "TICKET!!!"
-            cherrypy.session[self.uni_key] = uni
-            cherrypy.session[self.auth_key] = True
-            cherrypy.session[self.ticket_key] = ticket_id
-            u = get_or_create_user(uni)
-            cherrypy.session['fullname'] = u.firstname + " " + u.lastname
-            raise cherrypy.HTTPRedirect(self.after_login)
+            return self.backdoor()
             
         if cherrypy.config.get("TESTMODE",False):
-            cherrypy.session[self.uni_key] = "foo"
-            cherrypy.session[self.auth_key] = True
+            u = get_or_create_user("foo")
+            self.update_session(True,"foo",[],"test ticket",u.fullname())
             return
         if cherrypy.request.path in self.allowed_paths:
-            # skip the allowed ones
             return
+
         # non-WIND login
         if cherrypy.request.path.endswith("/guest_login"):
-            uni = cherrypy.request.paramMap.get("uni","")
-            password = cherrypy.request.paramMap.get("password")
-            if uni != "":
-                u = get_user(uni)
-                if u == None:
-                    cherrypy.session['message'] = "The user %s does not exist." % uni
-                    return
-                if u.password == password:
-                    # they're good
-                    cherrypy.session[self.auth_key] = True
-                    cherrypy.session[self.ticket_key] = "guest ticket"
-                    cherrypy.session[self.uni_key] = uni
-                    cherrypy.session['fullname'] = u.firstname + " " + u.lastname
-                    raise cherrypy.HTTPRedirect(self.after_login)
-                else:
-                    cherrypy.session['message'] = "Login has failed."
-                
-            # give them the login form
-            return
+            return self.guest_login()
 
-        if cherrypy.request.path.endswith("/add_guest_account"):
-            return
-        if cherrypy.request.path.endswith("/add_guest_account_form"):
-            return
-            
-        
         # WIND login
         if cherrypy.request.path.endswith(self.login_url):
-            destination = urllib.quote(cherrypy.request.browserUrl)
-            ticket_id = cherrypy.request.paramMap.get("ticketid","")
-            if ticket_id == "":
-                raise cherrypy.HTTPRedirect("%s?destination=%s&service=cnmtl_full_np" % (self.wind_url_base,destination))
-            else:
-                (success,uni,groups) = validate_wind_ticket(ticket_id)
-                if int(success) == 0:
-                    cherrypy.response.body = ["The WIND authentication has failed. Please try again."]
-                    return
-
-                cherrypy.session[self.auth_key] = True
-                cherrypy.session[self.ticket_key] = ticket_id
-                cherrypy.session[self.uni_key] = uni
-                cherrypy.session[self.groups_key] = groups
-                u = get_or_create_user(uni)
-                cherrypy.session['fullname'] = u.firstname + " " + u.lastname
-                raise cherrypy.HTTPRedirect(self.after_login)
+            return self.wind_login()
 
         if cherrypy.request.path.endswith(self.logout_url):
-            cherrypy.session[self.auth_key] = False
-            cherrypy.session[self.uni_key] = ""
-            cherrypy.session[self.groups_key] = []
-            cherrypy.session[self.ticket_key] = ""
-            cherrypy.session['fullname'] = ""
-            #cherrypy.response.body = ["You are now logged out from the system."]
-            return
-
+            return self.logout()
         if cherrypy.session.get(self.auth_key,False):
             return
         else:

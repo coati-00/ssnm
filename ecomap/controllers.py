@@ -89,7 +89,7 @@ def uniq(l):
 class Eco(EcoControllerBase):
     # enable filtering to disable post filtering on the postTester funcion
     allowed_paths = ["/","/flashConduit","/css/","/images/","/flash/","/about","/help","/contact",
-                     "favicon.ico"]
+                     "favicon.ico","/add_guest_account","/add_guest_account_form"]
     
     _cpFilterList = [ DisablePostParsingFilter(),
                       WindLoginFilter(after_login="/course",allowed_paths=allowed_paths,
