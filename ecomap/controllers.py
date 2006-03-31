@@ -153,8 +153,13 @@ class Eco(EcoControllerBase):
             return "<data><response>This is not your social support network map. Also, it isn't public.</response></data>"
 
         if action == "load":
-            return this_ecomap.load_ecomap(session_uni)
+            readonly = "true"
+            if this_ecomap.owner.uni == session_uni:
+                readonly = "false"
+            return this_ecomap.load_ecomap(readonly)
         elif action == "save":
+            if this_ecomap.owner.uni != session_uni:
+                return "<data><response>This is not your social support network map.</response></data>"
             return this_ecomap.save_ecomap(session_uni,root)
         else:
             print "unknown data action"
