@@ -1,8 +1,6 @@
 from cherrypy.lib.filter import basefilter
 import cherrypy
 import urllib
-from ecomap.model import *
-from ecomap.helpers import get_or_create_user, get_user
 
 def validate_wind_ticket(ticketid):
     """
@@ -29,44 +27,23 @@ def validate_wind_ticket(ticketid):
 
 
 class WindLoginFilter(basefilter.BaseFilter):
-    def __init__(self,after_login="/", login_url = "/login", logout_url = "/logout", allowed_paths=[],
-                 uni_key = "uni", ticket_key = "ticket_id", auth_key = "authenticated", groups_key = "groups",
-                 wind_url_base = "https://wind.columbia.edu/login",
-                 ):
+    def __init__(self,update_session_callback,get_user,testmode,is_authenticated,is_testmode,after_login="/", login_url = "/login",
+                 logout_url = "/logout", allowed_paths=[],strict_allowed_paths=[],
+                 auth_key = "authenticated", wind_url_base = "https://wind.columbia.edu/login",
+                 special_paths = {}):
+        self.update_session = update_session_callback
+        self.get_user      = get_user
+        self.testmode      = testmode
+        self.is_authenticated = is_authenticated
+        self.is_testmode = is_testmode
         self.allowed_paths = allowed_paths
+        self.strict_allowed_paths = strict_allowed_paths
         self.after_login   = after_login
         self.login_url     = login_url
         self.logout_url    = logout_url
-        self.uni_key       = uni_key
-        self.ticket_key    = ticket_key
         self.auth_key      = auth_key
-        self.groups_key    = groups_key
         self.wind_url_base = wind_url_base
-
-    def backdoor(self):
-        """ allow someone in through a special url for testing/debugging purposes"""
-        u = get_or_create_user('kfe2102')        
-        self.update_session(True,u.uni,[],"TICKET!!!",u.fullname())
-        raise cherrypy.HTTPRedirect(self.after_login)
-
-    def guest_login(self):
-        """ allow someone without a uni to login """
-        uni = cherrypy.request.paramMap.get("uni","")
-        password = cherrypy.request.paramMap.get("password")
-        if uni != "":
-            u = get_user(uni)
-            if u == None:
-                cherrypy.session['message'] = "The user %s does not exist." % uni
-                return
-            if u.password == password:
-                # they're good
-                self.update_session(True,uni,[],"guest ticket",u.fullname())
-                raise cherrypy.HTTPRedirect(self.after_login)
-            else:
-                cherrypy.session['message'] = "Login has failed."
-
-        # give them the login form
-        return        
+        self.special_paths = special_paths
 
     def wind_login(self):
         destination = urllib.quote(cherrypy.request.browserUrl)
@@ -78,7 +55,7 @@ class WindLoginFilter(basefilter.BaseFilter):
             if int(success) == 0:
                 cherrypy.response.body = ["The WIND authentication has failed. Please try again."]
                 return
-            u = get_or_create_user(uni)
+            u = self.get_user(uni)
             self.update_session(True,uni,groups,ticket_id,u.fullname())
             raise cherrypy.HTTPRedirect(self.after_login)
 
@@ -86,35 +63,28 @@ class WindLoginFilter(basefilter.BaseFilter):
         self.update_session(False,"",[],"","")
         return
         
-    def update_session(self,auth=False,uni="",groups=[],ticket="",fullname=""):
-        cherrypy.session[self.auth_key] = auth
-        cherrypy.session[self.uni_key] = uni
-        cherrypy.session[self.groups_key] = groups
-        cherrypy.session[self.ticket_key] = ticket
-        cherrypy.session['fullname'] = fullname
-
     def beforeMain(self):
-        if "/zerocool" in cherrypy.request.path:
-            return self.backdoor()
-            
-        if cherrypy.config.get("TESTMODE",False):
-            u = get_or_create_user("foo")
-            self.update_session(True,"foo",[],"test ticket",u.fullname())
-            return
-        if cherrypy.request.path in self.allowed_paths:
-            return
+        if self.is_testmode():
+            return self.testmode()
+        
+        for p in self.strict_allowed_paths:
+            if cherrypy.request.path.endswith == p:
+                return
+        
+        for p in self.allowed_paths:
+            if p in cherrypy.request.path:
+                return
 
-        # non-WIND login
-        if cherrypy.request.path.endswith("/guest_login"):
-            return self.guest_login()
+        for p in self.special_paths.keys():
+            if cherrypy.request.path.endswith(p):
+                return self.special_paths[p]()
 
-        # WIND login
         if cherrypy.request.path.endswith(self.login_url):
             return self.wind_login()
 
         if cherrypy.request.path.endswith(self.logout_url):
             return self.logout()
-        if cherrypy.session.get(self.auth_key,False):
+        if self.is_authenticated():
             return
         else:
             raise cherrypy.HTTPRedirect(self.login_url)

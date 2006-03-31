@@ -1,5 +1,6 @@
 from turbogears.tests import util
 from ecomap.helpers import *
+from ecomap.model import *
 import unittest
 from xml.dom.minidom import parseString
 from turbogears import database

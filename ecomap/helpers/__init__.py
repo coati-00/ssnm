@@ -1,4 +1,4 @@
-from ecomap.model import *
+import ecomap.model
 import formencode
 from formencode import validators
 import cherrypy
@@ -11,14 +11,14 @@ def safe_get_element_child(root,name):
 
 
 def createTables():
-    Ecouser.createTable(ifNotExists=True)
-    Course.createTable(ifNotExists=True)
-    Ecomap.createTable(ifNotExists=True)
+    ecomap.model.Ecouser.createTable(ifNotExists=True)
+    ecomap.model.Course.createTable(ifNotExists=True)
+    ecomap.model.Ecomap.createTable(ifNotExists=True)
 
 def dropTables():
-    Ecomap.dropTable(ifExists=True)
-    Course.dropTable(ifExists=True)
-    Ecouser.dropTable(ifExists=True)
+    ecomap.model.Ecomap.dropTable(ifExists=True)
+    ecomap.model.Course.dropTable(ifExists=True)
+    ecomap.model.Ecouser.dropTable(ifExists=True)
 
 class EcomapSchema(formencode.Schema):
     name         = validators.String(not_empty=True)
@@ -81,7 +81,7 @@ def get_or_create_user(username,firstname="",lastname=""):
     side effect of putting the user into any class that wind says they
     should be a part of if they aren't already in it. """
     
-    res = Ecouser.select(Ecouser.q.uni == username)
+    res = ecomap.model.Ecouser.select(ecomap.model.Ecouser.q.uni == username)
     u = None
     if res.count() > 0:
         # found the user. 
@@ -95,11 +95,11 @@ def get_or_create_user(username,firstname="",lastname=""):
  	
         eus = EcouserSchema()
         d = eus.to_python({'uni' : username, 'securityLevel' : 2, 'firstname' : firstname, 'lastname' : lastname})
-        u = Ecouser(uni=d['uni'],securityLevel=d['securityLevel'],firstname=d['firstname'],lastname=d['lastname'])
+        u = ecomap.model.Ecouser(uni=d['uni'],securityLevel=d['securityLevel'],firstname=d['firstname'],lastname=d['lastname'])
     return u
 
 def get_user(username):
-    res = Ecouser.select(Ecouser.q.uni == username)
+    res = ecomap.model.Ecouser.select(ecomap.model.Ecouser.q.uni == username)
     if res.count() > 0:
         return res[0]
     return None

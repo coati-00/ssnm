@@ -86,14 +86,64 @@ def uniq(l):
         u[x] = 1
     return u.keys()    
 
+### callbacks for WindLoginFilter ###
+
+def update_session(auth=False,uni="",groups=[],ticket="",fullname=""):
+    cherrypy.session["authenticated"] = auth
+    cherrypy.session[UNI_PARAM] = uni
+    cherrypy.session["groups"] = groups
+    cherrypy.session[AUTH_TICKET_PARAM] = ticket
+    cherrypy.session['fullname'] = fullname
+
+def guest_login():
+    """ allow someone without a uni to login """
+    uni = cherrypy.request.paramMap.get("uni","")
+    password = cherrypy.request.paramMap.get("password")
+    if uni != "":
+        u = get_user(uni)
+        if u == None:
+            cherrypy.session['message'] = "The user %s does not exist." % uni
+            return
+        if u.password == password:
+            # they're good
+            update_session(True,uni,[],"guest ticket",u.fullname())
+            raise cherrypy.HTTPRedirect('/course/')
+        else:
+            message("Login has failed.")
+    # give them the login form
+    return        
+
+def backdoor():
+    """ allow someone in through a special url for testing/debugging purposes"""
+    u = get_or_create_user('kfe2102')        
+    update_session(True,u.uni,[],"TICKET!!!",u.fullname())
+    raise cherrypy.HTTPRedirect('/course/')
+
+def testmode():
+    u = get_or_create_user("foo")
+    update_session(True,"foo",[],"test ticket",u.fullname())
+    return
+
+def is_authenticated():
+    return cherrypy.session.get("authenticated",False)
+
+def is_testmode():
+    return cherrypy.config.get("TESTMODE",False)    
+
+
+### end callbacks ###
+
 class Eco(EcoControllerBase):
-    # enable filtering to disable post filtering on the postTester funcion
-    allowed_paths = ["/","/flashConduit","/css/","/images/","/flash/","/about","/help","/contact",
-                     "favicon.ico","/add_guest_account","/add_guest_account_form"]
+    strict_allowed_paths = ["/","flashConduit","/help","/contact","favicon.ico","/add_guest_account",
+                            "/add_guest_account_form"]
+    allowed_paths = ["/css/","/images/","/flash/"]
     
     _cpFilterList = [ DisablePostParsingFilter(),
-                      WindLoginFilter(after_login="/course",allowed_paths=allowed_paths,
-                                      uni_key=UNI_PARAM,ticket_key=AUTH_TICKET_PARAM)]
+                      WindLoginFilter(update_session,get_or_create_user,testmode,is_authenticated,is_testmode,
+                                      after_login="/course/",allowed_paths=allowed_paths,
+                                      strict_allowed_paths=strict_allowed_paths,
+                                      special_paths={'/guest_login' : guest_login,
+                                                     '/zerocool' : backdoor})]
 
     @cherrypy.expose()
     def index(self):
