@@ -383,11 +383,6 @@ class CourseController(EcoControllerBase,RESTContent):
         uni = get_uni()
         user = get_user()
 
-        if uni == course.instructor.uni:
-            students = course.students
-        else:
-            students = None
-
         if admin_or_instructor(uni,course):
             all_ecos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecomap.q.courseID == course.id), orderBy=['name'])]
         else:
