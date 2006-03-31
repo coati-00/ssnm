@@ -53,6 +53,21 @@ class TestEcouser(unittest.TestCase):
         assert u2.firstname == 'Anders N.'
         assert u2.lastname == 'Pearson'
 
+    def test_create_user(self):
+        u = create_user('mbo2004')
+        assert u.firstname == 'Melvyn Boon King'
+        assert u.lastname == 'Ooi'
+
+        u2 = create_user('foo')
+        assert u2.firstname == self.user.firstname
+        assert u2.lastname == self.user.lastname
+
+        try:
+            u3 = create_user('iamaninvaliduni')
+            assert 1 == 0
+        except InvalidUNI:
+            assert 1 == 1
+
     def test_delete(self):
         u = Ecouser(uni="bar",firstname="deleteme",lastname="deleteme")
         all = list(Ecouser.select())
