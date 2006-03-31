@@ -379,11 +379,10 @@ class CourseController(EcoControllerBase,RESTContent):
         
     @cherrypy.expose()
     def show(self,course,**kwargs):
-        # This shows the list of ecomaps
-        uni = get_uni()
+        """ This shows the list of ecomaps """
         user = get_user()
 
-        if admin_or_instructor(uni,course):
+        if admin_or_instructor(user.uni,course):
             all_ecos = course.ecomaps
         else:
             all_ecos = []
