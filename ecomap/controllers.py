@@ -86,6 +86,13 @@ def uniq(l):
         u[x] = 1
     return u.keys()    
 
+def make_filling_parser(defaults,e=None):
+    if e == None:
+        return htmlfill.FillingParser(defaults)
+    else:
+        return htmlfill.FillingParser(defaults,errors=e.unpack_errors())    
+
+
 ### callbacks for WindLoginFilter ###
 
 def update_session(auth=False,uni="",groups=[],ticket="",fullname=""):
@@ -226,10 +233,7 @@ class Eco(EcoControllerBase):
 
     def course_form(self,name,description,instructor,e=None):
         defaults = {'name' : name, 'description' : description, 'instructor' : instructor}
-        if e == None:
-            parser = htmlfill.FillingParser(defaults)
-        else:
-            parser = htmlfill.FillingParser(defaults,errors=e.unpack_errors())
+        parser = make_filling_parser(defaults,e)
         parser.feed(self.template("create_course.pt",{'all_instructors' : list(Ecouser.select(orderBy=['firstname']))}))
         parser.close()
         return parser.text()
@@ -446,10 +450,7 @@ class CourseController(EcoControllerBase,RESTContent):
 
     def course_form(self,course, e=None):
         defaults = {'name' : course.name, 'description' : course.description, 'instructor' : course.instructor.id}
-        if e != None:
-            parser = htmlfill.FillingParser(defaults,errors=e.unpack_errors())
-        else:
-            parser = htmlfill.FillingParser(defaults)        
+        parser = make_filling_parser(defaults,e)
         parser.feed(self.template("edit_course.pt",{'is_admin': get_user().is_admin(),
                                                     'course_name' : course.name, 'course' : course,
                                                     'all_instructors' : [i for i in Ecouser.select(orderBy=['firstname'])]}))
