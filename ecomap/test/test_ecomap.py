@@ -125,11 +125,16 @@ class TestCourse(unittest.TestCase):
         u = Ecouser(uni="bar",firstname="new",lastname="student")
         self.course.add_student(u.uni)
 
+        assert u in self.course.students
+
         # try adding the instructor
         self.course.add_student(self.user.uni)
 
-        
+    def test_add_users(self):
+        u = Ecouser(uni="bar",firstname="new",lastname="student")
+        self.course.add_students([u.uni])
 
+        assert u in self.course.students
 
 
 
