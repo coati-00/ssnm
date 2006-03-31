@@ -1,7 +1,7 @@
 from turbogears.tests import util
 from ecomap.helpers import *
 import unittest
-
+from xml.dom.minidom import parseString
 from turbogears import database
 database.set_db_uri("sqlite:///:memory:")
 
@@ -109,7 +109,31 @@ class TestEcomap(unittest.TestCase):
         assert r == """<data><response>OK</response><isreadonly>true</isreadonly><name>test</name><description>test</description>blah blah blah</data>"""
 
     def testSave(self):
-        pass # TODO
+        new_name = "new name"
+        new_desc = "new description"
+        new_data = "this is some new flash data"
+        ticket = "blah blah blah"
+        id = "blah"
+        action = "save"
+        
+        xml = """<?xml version="1.0"?>
+        <data>
+        <ticket>%s</ticket>
+        <id>%s</id>
+        <action>%s</action>
+        <name>%s</name>
+        <description>%s</description>
+        <flashData>%s</flashData></data>""" % (ticket, id, action, new_name, new_desc, new_data)
+
+        doc = parseString(xml)
+        root = doc.getElementsByTagName("data")[0]
+
+        r = self.map.save(root)
+        assert r == "<data><response>OK</response></data>"
+
+        assert self.map.name        == new_name
+        assert self.map.description == new_desc
+        assert self.map.flashData   == "<flashData>" + new_data + "</flashData>"
 
 
 
