@@ -144,24 +144,21 @@ class Eco(EcoControllerBase):
         #tickets match, so the session is valid
         if ecoid == "":
             print "not a valid ecomap id"
-            return "<data><response>That social support network map ID does'nt exist.</response></data>"
+            return "<data><response>That social support network map ID doesn't exist.</response></data>"
             
         this_ecomap = Ecomap.get(ecoid)
         # if this is public or it's yours or Susan, Debbie or I am logged in, allow the data to Flash
-        if this_ecomap.public or this_ecomap.owner.uni == session_uni or is_admin(session_uni):
-            if action == "load":
-                return this_ecomap.load_ecomap(session_uni)
-            elif action == "save":
-                return this_ecomap.save_ecomap(session_uni,root)
-            else:
-                print "unknown data action"
-                return "<data><response>Unknown data action</response></data>"
-            print this_ecomap.description
-        else:
+        if not (this_ecomap.public or this_ecomap.owner.uni == session_uni or is_admin(session_uni)):
             print "not your ecomap and not public"
             return "<data><response>This is not your social support network map. Also, it isn't public.</response></data>"
 
-
+        if action == "load":
+            return this_ecomap.load_ecomap(session_uni)
+        elif action == "save":
+            return this_ecomap.save_ecomap(session_uni,root)
+        else:
+            print "unknown data action"
+            return "<data><response>Unknown data action</response></data>"
 
     @cherrypy.expose()
     def logout(self,**kwargs):
