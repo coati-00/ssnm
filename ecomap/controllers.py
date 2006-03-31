@@ -334,15 +334,15 @@ class EcomapController(EcoControllerBase,RESTContent):
 
 def restrict_to_instructor_or_admin(f):
     def decorator(self,course,*args,**kwargs):
-        if admin_or_instructor(get_uni(),course):
+        if admin_or_instructor(get_user(),course):
             return f(self,course,*args,**kwargs)
         else:
             message("You don't have authorization to perform that action.  This event will be reported.")
             raise cherrypy.HTTPRedirect("/course")
     return decorator
 
-def admin_or_instructor(uni,course):
-    return is_admin(uni) or is_instructor(uni,course)
+def admin_or_instructor(user,course):
+    return is_admin(user.uni) or is_instructor(user.uni,course)
 
 class CourseController(EcoControllerBase,RESTContent):
     def query(self,id):
@@ -382,7 +382,7 @@ class CourseController(EcoControllerBase,RESTContent):
         """ This shows the list of ecomaps """
         user = get_user()
 
-        if admin_or_instructor(user.uni,course):
+        if admin_or_instructor(user,course):
             all_ecos = course.ecomaps
         else:
             all_ecos = []
