@@ -36,6 +36,20 @@ class Ecouser(SQLObject):
         """ returns courses that this user is the instructor of """
         return Course.select(Course.q.instructorID == self.id)
 
+    def course_ecos(self, course):
+        return list(Ecomap.select(AND(Ecomap.q.ownerID == self.id,
+                                      Ecomap.q.courseID == course.id),
+                                  orderBy=['name']))
+
+    def public_ecos_in_course(self,course):
+        """ returns list of public ecos in course that aren't owned by the user """
+        return list(Ecomap.select(AND(Ecomap.q.ownerID != self.id,
+                                      Ecomap.q.courseID == course.id,
+                                      Ecomap.q.public == True),
+                                  orderBy=['name']))
+
+
+
 class InvalidUNI(Exception): pass
 
 class Course(SQLObject):

@@ -381,11 +381,7 @@ class CourseController(EcoControllerBase,RESTContent):
     def show(self,course,**kwargs):
         # This shows the list of ecomaps
         uni = get_uni()
-        course_name = course.name
-
-        # My ecomaps are the ecomaps I created in this course specifically
-        my_ecos = list(Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecouser.q.uni == uni, Ecomap.q.courseID == course.id), orderBy=['name']))
-        public_ecos = list(Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecouser.q.uni != uni, Ecomap.q.courseID == course.id, Ecomap.q.public == True), orderBy=['name']))
+        user = get_user()
 
         if uni == course.instructor.uni:
             students = course.students
@@ -396,7 +392,11 @@ class CourseController(EcoControllerBase,RESTContent):
             all_ecos = [e for e in Ecomap.select(AND(Ecomap.q.ownerID == Ecouser.q.id, Ecomap.q.courseID == course.id), orderBy=['name'])]
         else:
             all_ecos = None
-        return self.template("list_ecomaps.pt",{'my_ecomaps' : my_ecos, 'public_ecomaps' : public_ecos, 'all_ecomaps' : all_ecos, 'course_name' : course_name,})
+        return self.template("list_ecomaps.pt",
+                             {'my_ecomaps' : user.course_ecos(course),
+                              'public_ecomaps' : user.public_ecos_in_course(course),
+                              'all_ecomaps' : all_ecos,
+                              'course_name' : course.name,})
 
 
     def course_form(self,course, e=None):
