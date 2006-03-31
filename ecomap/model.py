@@ -36,6 +36,8 @@ class Ecouser(SQLObject):
         """ returns courses that this user is the instructor of """
         return Course.select(Course.q.instructorID == self.id)
 
+class InvalidUNI(Exception): pass
+
 class Course(SQLObject):
     name        = UnicodeCol(length=50,default="")
     description = UnicodeCol(length=50,default="")
@@ -52,32 +54,37 @@ class Course(SQLObject):
         invalid_ids = []
         # scan through user list to get users.  make sure they exist, then add to course
         for student_uni in uni_list:
-            # don't add the student if he is the instructor of the course
-            if student_uni == self.instructor.uni:
-                continue
-            
-            this_user = Ecouser.select(Ecouser.q.uni == student_uni)
-            # make sure this is a valid, existing user
-            if this_user.count() == 1:
-                if not this_user[0] in self.students:
-                    self.addEcouser(this_user[0].id)
-            else:
-                # add this user to our list of users
-                # make sure it is a valid UNI
-                (firstname,lastname) = ecomap.helpers.ldap_lookup(student_uni)
-                if firstname == "" and lastname == "":
-                    # not in the ldap.  bad uni.  exit
-                    invalid_ids.append(student_uni)
-                else:
-                    eus = EcouserSchema()
-                    d = eus.to_python({'uni' : student_uni, 'securityLevel' : 2, 'firstname' : firstname, 'lastname' : lastname})
-                    this_user = Ecouser(uni=d['uni'],securityLevel=d['securityLevel'],firstname=d['firstname'],lastname=d['lastname'])
-                    if not this_user in self.students:
-                        self.addEcouser(this_user.id)
+            try:
+                self.add_student(student_uni)
+            except InvalidUNI:
+                invalid_ids.append(student_uni)
         return invalid_ids
 
-        
+    def add_student(self,student_uni):
+        # don't add the student if he is the instructor of the course
+        if student_uni == self.instructor.uni:
+            return
 
+        this_user = Ecouser.select(Ecouser.q.uni == student_uni)
+        # make sure this is a valid, existing user
+        if this_user.count() == 1:
+            if not this_user[0] in self.students:
+                self.addEcouser(this_user[0].id)
+            return
+        
+        # add this user to our list of users
+        # make sure it is a valid UNI
+        (firstname,lastname) = ecomap.helpers.ldap_lookup(student_uni)
+        if firstname == "" and lastname == "":
+            # not in the ldap.  bad uni.  exit
+            raise InvalidUNI
+        
+        eus = EcouserSchema()
+        d = eus.to_python({'uni' : student_uni, 'securityLevel' : 2, 'firstname' : firstname, 'lastname' : lastname})
+        this_user = Ecouser(uni=d['uni'],securityLevel=d['securityLevel'],firstname=d['firstname'],lastname=d['lastname'])
+        if not this_user in self.students:
+            self.addEcouser(this_user.id)
+        return 
 
 def get_all_courses():
     return list(Course.select(Course.q.instructorID == Ecouser.q.id, orderBy=['name']))
