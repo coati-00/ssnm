@@ -25,7 +25,7 @@ def get_uni():
     return cherrypy.session.get("UNI",None)
 
 def get_user():
-    return Ecouser.select(Ecouser.q.uni == get_uni())[0]
+    return Ecouser.select(Ecouser.q.uni == get_uni().encode('utf8'))[0]
 
 def get_auth():
     return cherrypy.session.get("auth_ticket",None)
