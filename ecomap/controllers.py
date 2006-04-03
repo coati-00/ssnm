@@ -496,6 +496,12 @@ class CourseController(EcoControllerBase,RESTContent):
             removed = course.remove_students([Ecouser.get(id) for id in ensure_list(kwargs.get('student_id',None))])
             message("'" + ", ".join(removed) + "' has been deleted.")
             raise cherrypy.HTTPRedirect("/course/%s/students" % course.id)
+        elif action == 'Add Student':
+            student_uni = kwargs.get('student_uni',None)
+            u = get_or_create_user(student_uni.encode('utf8'))
+            course.add_students([u.uni])
+            message("'" + u.fullname() + "' has been added")
+            raise cherrypy.HTTPRedirect("/course/%s/students" % course.id)
         else:
             # unknown action
             raise cherrypy.HTTPRedirect("/course/%s/" % course.id)      

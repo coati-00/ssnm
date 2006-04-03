@@ -74,13 +74,14 @@
 								</td>
 							</tr>
 						</tal:block>
-						<tal:block repeat="course myCourses" tal:condition="myCourses">
+						<tal:block repeat="course my_courses" tal:condition="my_courses">
 							<tr>
 								<td tal:content="course/name" />
 								<td tal:content="course/description" />
 								<td tal:content="string:${course/instructor/firstname} ${course/instructor/lastname}">
 								</td>
-								<td class="centered">
+								<td
+								class="centered">
 									<a tal:attributes="href string:/course/${course/id}/">View Maps</a>
 								</td>
 							</tr>

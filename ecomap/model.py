@@ -96,7 +96,7 @@ class Course(SQLObject):
 
 def create_user(uni):
     # if the user already exists, we just return that one
-    r = Ecouser.select(Ecouser.q.uni == uni)
+    r = Ecouser.select(Ecouser.q.uni == uni.encode('utf8'))
     if r.count() > 0:
         return r[0]
 
