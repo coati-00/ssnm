@@ -326,7 +326,7 @@ class Eco(EcoControllerBase):
         person_list = ensure_list(kwargs.get('user_id',None))
         action = kwargs['action']
 
-        if action == 'Delete':
+        if action == 'Delete Selected':
             return self.delete_users(person_list)
         
         if action == 'Change Security Level':
