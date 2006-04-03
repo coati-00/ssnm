@@ -57,8 +57,8 @@ class TestEcouser(unittest.TestCase):
         assert u2.firstname == 'Anders N.'
         assert u2.lastname == 'Pearson'
 
-        assert get_user(u.uni) == u
-        assert get_user("blah") == None
+        assert get_user_or_fail(u.uni) == u
+        assert get_user_or_fail("blah") == None
 
     def test_create_user(self):
         u = create_user('mbo2004')

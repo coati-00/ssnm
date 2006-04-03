@@ -108,7 +108,7 @@ def guest_login():
     password = cherrypy.request.paramMap.get("password")
     if uni == "":
         return 
-    u = get_user(uni)
+    u = get_user_or_fail(uni)
     if u == None:
         cherrypy.session['message'] = "The user %s does not exist." % uni
         return

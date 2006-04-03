@@ -98,7 +98,7 @@ def get_or_create_user(username,firstname="",lastname=""):
         u = ecomap.model.Ecouser(uni=d['uni'],securityLevel=d['securityLevel'],firstname=d['firstname'],lastname=d['lastname'])
     return u
 
-def get_user(username):
+def get_user_or_fail(username):
     res = ecomap.model.Ecouser.select(ecomap.model.Ecouser.q.uni == username)
     if res.count() > 0:
         return res[0]
