@@ -316,7 +316,7 @@ class Eco(EcoControllerBase):
     def add_user(self,uni):
         try:
             u = create_user(uni)
-            message("'" + d['firstname'] + " " + d['lastname'] + "' has been added")
+            message("'" + u.fullname() + "' has been added")
         except InvalidUNI:
             message("That is not a valid UNI.")
 
