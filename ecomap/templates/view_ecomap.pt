@@ -6,7 +6,7 @@
 		
 		<div id="breadcrumbbar">
 		<span class="here">You are Here:</span>  
-			<a href="/course" onclick="return confirm('Leave this page without saving changes?')">
+			<a href="/course/" onclick="return confirm('Leave this page without saving changes?')">
 				My Courses
 			</a>
 			&gt;

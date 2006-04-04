@@ -367,7 +367,7 @@ class EcomapController(EcoControllerBase,RESTContent):
     # convenience redirect to the RIGHT place
     @cherrypy.expose()
     def index(self):
-        raise cherrypy.HTTPRedirect("/course")
+        raise cherrypy.HTTPRedirect("/course/")
 
     def query(self,id):
         return Ecomap.get(int(id))
@@ -382,7 +382,7 @@ class EcomapController(EcoControllerBase,RESTContent):
             'ticket'     : get_auth(),
             'myName'     : get_fullname(),
             'server'     : server,
-            'returnPath' : "course/%s" % ecomap.course.id,
+            'returnPath' : "course/%s/" % ecomap.course.id,
             }
         return self.template("view_ecomap.pt",data)
 
@@ -393,7 +393,7 @@ def restrict_to_instructor_or_admin(f):
             return f(self,course,*args,**kwargs)
         else:
             message("You don't have authorization to perform that action.  This event will be reported.")
-            raise cherrypy.HTTPRedirect("/course")
+            raise cherrypy.HTTPRedirect("/course/")
     return decorator
 
 def admin_or_instructor(user,course):
@@ -430,7 +430,7 @@ class CourseController(EcoControllerBase,RESTContent):
     def delete(self,course,confirm=""):
         course.delete()
         message("deleted")
-        raise cherrypy.HTTPRedirect("/course")
+        raise cherrypy.HTTPRedirect("/course/")
         
     @cherrypy.expose()
     def show(self,course,**kwargs):

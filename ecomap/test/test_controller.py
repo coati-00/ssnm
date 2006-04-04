@@ -145,6 +145,8 @@ class TestCourse(EcoTest):
 
 
     def test_create_map(self):
+        for map in Ecomap.select():
+            map.destroySelf()
         r = POST("/course/%d/create_new" % self.course.id) 
         r = GET("/course/%d/" % self.course.id)
         assert "You have no Social Support Network Maps." not in r

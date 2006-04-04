@@ -23,7 +23,7 @@
 	<body metal:define-slot="body">
 	
 		<h1 metal:define-slot="header">
-		<a href="/course" title="">Social Support Network Map</a>
+		<a href="/course/" title="">Social Support Network Map</a>
 		</h1>
 		
 		<div id="ccnmtl">

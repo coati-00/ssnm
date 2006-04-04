@@ -6,7 +6,7 @@
 	
 		<div id="breadcrumbbar">
 		<span class="here">You are Here:</span> 
-			<a href="/course">
+			<a href="/course/">
 			My Courses
 			</a>
 			&gt; 
