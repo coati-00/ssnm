@@ -121,8 +121,8 @@ h2
 
 #container
 {
-	padding: 20px;
-	margin: 0px;
+	padding: 0px;
+	margin: 20px;
 }
 
 #text { margin-right: 35%; }
@@ -160,7 +160,7 @@ colgroup#allmaptablecols col.delete { width: 10%; }
 table.infotable
 {
 	margin-bottom: 20px;
-	width: auto;
+	width: 100%;
 }
 
 table.infotable th
@@ -180,7 +180,7 @@ table.infotable td
 	background-color: #fff;
 	color: #000;
 	font-size: 11px;
-	padding: 10px 5px 10px 5px;
+	padding: 5px;
 	margin: 0;
 	vertical-align: top;
 	border-bottom: 1px solid #bddfde;
@@ -223,7 +223,7 @@ p
 
 fieldset
 {
-	border: 0px solid #348eae;
+	border: 1px solid #348eae;
 	margin: 0;
 	padding: 10px;
 	width: 400px;
@@ -232,18 +232,16 @@ fieldset
 legend
 {
 	border: 1px solid #348eae;
-	margin: 0;
+	margin-bottom: 10px;
 	padding: 5px;
 	font-size: 12px;
 	background-color: #bddfde;
 	color: #369;
 	font-weight: bold;
-	display: none;
 }
 
 label
 {
-	margin: 0;
 	padding: 5px;
 	font-size: 12px;
 	color: #000;

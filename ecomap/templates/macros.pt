@@ -12,11 +12,21 @@
 		
 		<link rel="icon" href="http://ccnmtl.columbia.edu/web/images/favicon.ico" type="image/x-icon" />
 		
-		<metal:block define-slot="js_slot">
-		</metal:block>
+		<metal:block define-slot="js_slot"></metal:block>
 		
-		<metal:block define-slot="css_slot">
-		</metal:block>
+		<metal:block define-slot="css_slot"></metal:block>
+		
+		<!--[if IE]>
+		<style type="text/css">
+
+		table.infotable
+		{
+			margin-bottom: 20px;
+			width: 96%;
+		}
+		
+		</style>
+		<![endif]-->	
 		
 	</head>
 	
