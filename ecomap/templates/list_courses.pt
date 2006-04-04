@@ -59,7 +59,7 @@
 					</thead>
 					
 					<tbody>
-						<tal:block repeat="course instructor_of" tal:condition="instructorOf">
+						<tal:block repeat="course instructor_of" tal:condition="instructor_of">
 							<tr>
 								<td tal:content="course/name" />
 								<td tal:content="course/description" />

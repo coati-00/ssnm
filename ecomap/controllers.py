@@ -414,7 +414,7 @@ class CourseController(EcoControllerBase,RESTContent):
         instructor_of = user.instructor_courses()
         if instructor_of.count() == 0:
             instructor_of = None
-
+        
         if len(my_courses) == 1 and not instructor_of:
             # This is a student with only one course.  Redirect to that course
             raise cherrypy.HTTPRedirect("/course/%s/" % my_courses[0].id)
