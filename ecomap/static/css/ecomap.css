@@ -123,7 +123,6 @@ h2
 {
 	padding: 20px;
 	margin: 0px;
-	width: 100%;
 }
 
 #text { margin-right: 35%; }
@@ -161,7 +160,7 @@ colgroup#allmaptablecols col.delete { width: 10%; }
 table.infotable
 {
 	margin-bottom: 20px;
-	width: 100%;
+	width: auto;
 }
 
 table.infotable th
