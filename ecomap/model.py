@@ -19,8 +19,13 @@ class Ecouser(SQLObject):
     courses       = RelatedJoin('Course', joinColumn='student', otherColumn='course',intermediateTable='student_courses')
 
     def delete(self):
+        #import pdb; pdb.set_trace()
         for course in self.courses:
             course.removeEcouser(self.id)
+        # we need to detach this person from courses he's teaching so they don't get deleted
+        courses_i_teach = self.instructor_courses()
+        for course in courses_i_teach:
+            course.instructor = None
         self.destroySelf()
 
     def toggle_admin(self):
@@ -50,7 +55,6 @@ class Ecouser(SQLObject):
 
     def is_admin(self):
         return self.securityLevel == 1
-
     
 
 
@@ -59,7 +63,7 @@ class InvalidUNI(Exception): pass
 class Course(SQLObject):
     name        = UnicodeCol(length=50,default="")
     description = UnicodeCol(length=50,default="")
-    instructor  = ForeignKey('Ecouser',cascade=True)
+    instructor  = ForeignKey('Ecouser',cascade=False)
     ecomaps     = MultipleJoin('Ecomap',orderBy='name')
     students    = RelatedJoin('Ecouser', joinColumn='course', otherColumn='student',intermediateTable='student_courses')
 
@@ -112,7 +116,7 @@ def create_user(uni):
 
 
 def get_all_courses():
-    return list(Course.select(Course.q.instructorID == Ecouser.q.id, orderBy=['name']))
+    return list(Course.select(orderBy=['name']))
 
 class Ecomap(SQLObject):
     name        = UnicodeCol(length=50)

@@ -300,7 +300,14 @@ class Eco(EcoControllerBase):
             user = Ecouser.get(id)
             names.append(user.fullname())
             user.delete()
-        message("'" + ', '.join(names) + "' has been deleted.")
+
+        the_verb = "has"
+        if len(names) > 1:
+            the_verb = "have"
+        message("'" + ", ".join(names) + "' " + the_verb + " been deleted.")
+
+
+        #message("'" + ', '.join(names) + "' has been deleted.")
         raise cherrypy.HTTPRedirect("/admin_users_form")
 
     def toggle_admin(self,users):
@@ -313,12 +320,23 @@ class Eco(EcoControllerBase):
         raise cherrypy.HTTPRedirect("/admin_users_form")
         
 
-    def add_user(self,uni):
-        try:
-            u = create_user(uni)
-            message("'" + u.fullname() + "' has been added")
-        except InvalidUNI:
-            message("That is not a valid UNI.")
+    def add_users(self,uni_list):
+        invalid_ids = []
+        valid_names = []
+        for uni in uni_list:
+            try:
+                u = create_user(uni)
+                valid_names.append(u.fullname())
+            except InvalidUNI:
+                invalid_ids.append(uni)
+        the_verb = "has"
+        if len(valid_names) > 1:
+            the_verb = "have"
+        m = "'" + ", ".join(valid_names) + "' " + the_verb + " been created"
+        if len(invalid_ids) > 0:
+            m += " but the following UNIs were not valid: '%s'" % ", ".join(invalid_ids)
+        message(m + ".")
+
 
     @cherrypy.expose()
     @admin_only
@@ -329,12 +347,14 @@ class Eco(EcoControllerBase):
         if action == 'Delete Selected':
             return self.delete_users(person_list)
         
-        if action == 'Change Security Level':
+        if action == 'Change Security Level of Selected':
             return self.toggle_admin(person_list)
 
-        elif action == 'Add User':
-            self.add_user(kwargs.get('user_uni',None))
+        elif action == 'Add User(s)':
+            uni_list = uniq(kwargs.get('user_uni',None).split(","))
+            self.add_users(uni_list)
             raise cherrypy.HTTPRedirect("/admin_users_form")
+
         elif action == 'Add Guest Account':
             raise cherrypy.HTTPRedirect("/add_guest_account_form")
         
@@ -449,7 +469,10 @@ class CourseController(EcoControllerBase,RESTContent):
 
 
     def course_form(self,course, e=None):
-        defaults = {'name' : course.name, 'description' : course.description, 'instructor' : course.instructor.id}
+        if course.instructor == None:
+            defaults =  {'name' : course.name, 'description' : course.description}
+        else:
+            defaults = {'name' : course.name, 'description' : course.description, 'instructor' : course.instructor.id}
         parser = make_filling_parser(defaults,e)
         parser.feed(self.template("edit_course.pt",{'is_admin': get_user().is_admin(),
                                                     'course_name' : course.name, 'course' : course,
@@ -474,7 +497,7 @@ class CourseController(EcoControllerBase,RESTContent):
             course.description = d['description']
             course.instructor = d['instructor']
             message("changes saved")
-            raise cherrypy.HTTPRedirect("/course/" + str(course.id) + "/")
+            raise cherrypy.HTTPRedirect("/course/" + str(course.id) + "/edit_form")
 
         except formencode.Invalid, e:
             return self.course_form(course,e)
@@ -494,7 +517,10 @@ class CourseController(EcoControllerBase,RESTContent):
         action = kwargs['action']
         if action == 'Delete Selected':
             removed = course.remove_students([Ecouser.get(id) for id in ensure_list(kwargs.get('student_id',None))])
-            message("'" + ", ".join(removed) + "' has been deleted.")
+            the_verb = "has"
+            if len(removed) > 1:
+                the_verb = "have"
+            message("'" + ", ".join(removed) + "' " + the_verb + " been deleted.")
             raise cherrypy.HTTPRedirect("/course/%s/students" % course.id)
         elif action == 'Add Student':
             student_uni = kwargs.get('student_uni',None)

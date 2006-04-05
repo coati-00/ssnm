@@ -105,6 +105,7 @@ def get_user_or_fail(username):
     return None
 
 def is_instructor(user,course):
-    if course.instructor.uni == user.uni:
-        return True
+    if not course.instructor == None:
+        if course.instructor.uni == user.uni:
+            return True
     return False

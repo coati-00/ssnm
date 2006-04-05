@@ -22,10 +22,9 @@
 			<form action="admin_users" method="post">
 
 			<div class="addbar">
-				Add user by UNI:
+				Add user(s) by UNI:
 				<input type="text" name="user_uni" width="10" />
-				<input type="submit" name="action" value="Add User" />
-				&nbsp;&nbsp;
+				<input style="margin-right:20px;" type="submit" name="action" value="Add User(s)" />
 				<input type="submit" name="action" value="Add Guest Account" />
 			</div>
 			
@@ -96,7 +95,7 @@
 				</table>
 				
 				<div class="deletebar">
-					<input tal:condition="allUsers" type="submit" name="action" value="Change Level of Selected" />
+					<input tal:condition="allUsers" type="submit" name="action" value="Change Security Level of Selected" />
 					<input tal:condition="allUsers" type="submit" name="action" value="Delete Selected" onclick="return confirm('Are you sure you want to completely erase these users?');" />
 				</div>
 				
