@@ -163,7 +163,12 @@ class Eco(EcoControllerBase):
 
     @cherrypy.expose()
     def help(self):
-        return self.template("help.pt",{})
+        return self.template("help.pt",{"server" : '/'.join(cherrypy.request.browserUrl.split('/')[:3]) + '/feedback_received'})
+
+    @cherrypy.expose()
+    def feedback_received(self):
+        message("Thank you for your feedback")
+        raise cherrypy.HTTPRedirect("/help")
 
     @cherrypy.expose()
     def contact(self):
