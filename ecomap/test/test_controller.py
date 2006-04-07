@@ -93,12 +93,12 @@ class TestAdmin(EcoTest):
 
     def test_admin_users(self):
         u = Ecouser(uni="deleteme",firstname="deleteme",lastname="deleteme",securityLevel=2)
-        POST("/admin_users",data="action=Change%%20Security%%20Level;user_id=%d" % u.id)
+        POST("/admin_users",data="action_change=Change%%20Security%%20Level;user_id=%d" % u.id)
         assert u.is_admin()
-        POST("/admin_users",data="action=Delete%%20Selected;user_id=%d" % u.id)
+        POST("/admin_users",data="action_delete=Delete%%20Selected;user_id=%d" % u.id)
         assert u not in Ecouser.select()
-        POST("/admin_users",data="action=Add%20User;user_uni=invaliduni")
-        POST("/admin_users",data="action=Add%20Guest%20Account")
+        POST("/admin_users",data="action_add_users=Add%20User;user_uni=invaliduni")
+        POST("/admin_users",data="action_add_guest=Add%20Guest%20Account")
 
 
 
@@ -138,7 +138,7 @@ class TestCourse(EcoTest):
         assert s.firstname in r
         assert s.lastname in r
         POST("/course/%d/update_students" % self.course.id,
-             data="action=Delete%%20Selected;student_id=%d" % s.id)
+             data="action_delete=Delete%%20Selected;student_id=%d" % s.id)
         r = GET("/course/%d/students" % self.course.id)
         assert s.firstname not in r
         assert s.lastname not in r
@@ -159,9 +159,9 @@ class TestCourse(EcoTest):
         assert str(ecomap_id) in r
         assert "<embed" in r
         
-        POST("/course/%d/update" % self.course.id,data="ecomap_id=%d;action=share" % ecomap_id)
+        POST("/course/%d/update" % self.course.id,data="ecomap_id=%d;action_share=share" % ecomap_id)
 
-        POST("/course/%d/update" % self.course.id,data="ecomap_id=%d;action=Delete%%20Selected" % ecomap_id)
+        POST("/course/%d/update" % self.course.id,data="ecomap_id=%d;action_delete=Delete%%20Selected" % ecomap_id)
         r = GET("/course/%d/" % self.course.id)
         assert "You have no Social Support Network Maps." in r
         assert "Enter Subject Name Here" not in r

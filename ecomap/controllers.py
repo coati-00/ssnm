@@ -342,20 +342,20 @@ class Eco(EcoControllerBase):
     @admin_only
     def admin_users(self,**kwargs):
         person_list = ensure_list(kwargs.get('user_id',None))
-        action = kwargs['action']
 
-        if action == 'Delete Selected':
+        if kwargs.get('action_delete',None):
             return self.delete_users(person_list)
         
-        if action == 'Change Security Level of Selected':
+        if kwargs.get('action_change',None):
+            print "changing"
             return self.toggle_admin(person_list)
 
-        elif action == 'Add User(s)':
+        elif kwargs.get('action_add_users'):
             uni_list = uniq(kwargs.get('user_uni',None).split(","))
             self.add_users(uni_list)
             raise cherrypy.HTTPRedirect("/admin_users_form")
 
-        elif action == 'Add Guest Account':
+        elif kwargs.get('action_add_guest'):
             raise cherrypy.HTTPRedirect("/add_guest_account_form")
         
 
@@ -514,15 +514,14 @@ class CourseController(EcoControllerBase,RESTContent):
     @cherrypy.expose()
     @restrict_to_instructor_or_admin
     def update_students(self,course,**kwargs):
-        action = kwargs['action']
-        if action == 'Delete Selected':
+        if kwargs.get('action_delete',False):
             removed = course.remove_students([Ecouser.get(id) for id in ensure_list(kwargs.get('student_id',None))])
             the_verb = "has"
             if len(removed) > 1:
                 the_verb = "have"
             message("'" + ", ".join(removed) + "' " + the_verb + " been deleted.")
             raise cherrypy.HTTPRedirect("/course/%s/students" % course.id)
-        elif action == 'Add Student':
+        elif kwargs.get('action_add',False):
             student_uni = kwargs.get('student_uni',None)
             u = get_or_create_user(student_uni.encode('utf8'))
             course.add_students([u.uni])
@@ -546,14 +545,13 @@ class CourseController(EcoControllerBase,RESTContent):
 
     @cherrypy.expose()
     def update(self,course,**kwargs):
-        action = kwargs['action']
         item_list = [Ecomap.get(id) for id in uniq(ensure_list(kwargs.get('ecomap_id',None)))]
-        if action == 'Delete Selected':
+        if kwargs.get('action_delete',False):
             # TODO:
             # if you are the owner or you're the instructor or an admin
             self.delete_ecomaps(item_list)
             
-        elif action == 'share':
+        elif kwargs.get('action_share',False):
             for item in item_list:
                 item.public = not item.public
             message("shared")
