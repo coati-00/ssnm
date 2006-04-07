@@ -106,7 +106,7 @@ def create_user(uni):
 
     # make sure it is a valid UNI
     (firstname,lastname) = ecomap.helpers.ldap_lookup(uni)
-    if firstname == "" and lastname == "":
+    if firstname == "":
         # not in the ldap.  bad uni.  exit
         raise InvalidUNI
 

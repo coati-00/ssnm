@@ -2,6 +2,8 @@ import ecomap.model
 import formencode
 from formencode import validators
 import cherrypy
+from restclient import GET
+from json import read as json_to_py
 
 def safe_get_element_child(root,name):
     v = ""
@@ -45,35 +47,8 @@ def teardown_tests():
     dropTables()
 
 def ldap_lookup(username):
-    (lastname,firstname) = ("","")
-    try:
-        import ldap
-        LDAP_SERVER = "ldap.columbia.edu"
-        BASE_DN = "o=Columbia University, c=us"
-        l = ldap.open(LDAP_SERVER)
-        baseDN = BASE_DN
-        searchScope = ldap.SCOPE_SUBTREE
-        retrieveAttributes = None
-        searchFilter = "uni=%s" % username
-        ldap_result_id = l.search(baseDN, searchScope, searchFilter,
-                                  retrieveAttributes)
-        result_set = []
-        while 1:
-            result_type, result_data = l.result(ldap_result_id, 0)
-            if result_data == []:
-                break
-            else:
-                if result_type == ldap.RES_SEARCH_ENTRY:
-                    values = result_data[0][1]
-                    for k, v in values.items():
-                        if k == 'sn':
-                            lastname = v[0]
-                        if k == 'givenname':
-                            firstname = v[0]
-    except ImportError:
-        # no ldap library
-        pass
-    return (firstname,lastname)
+    r = json_to_py(GET("http://cdap.ccnmtl.columbia.edu/?uni=%s" % username))
+    return (r['firstname'],r['lastname'])
 
 def get_or_create_user(username,firstname="",lastname=""):
     """ if the user is already in the system, it returns the user object.
