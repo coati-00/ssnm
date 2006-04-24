@@ -144,7 +144,7 @@ def is_testmode():
 class Eco(EcoControllerBase):
     strict_allowed_paths = ["/","flashConduit","/help","/contact","favicon.ico","/add_guest_account",
                             "/add_guest_account_form"]
-    allowed_paths = ["/css/","/images/","/flash/"]
+    allowed_paths = ["/css/","/images/","/flash/","/js/"]
     
     _cpFilterList = [ DisablePostParsingFilter(),
                       WindLoginFilter(update_session,get_or_create_user,testmode,is_authenticated,is_testmode,
@@ -163,16 +163,16 @@ class Eco(EcoControllerBase):
 
     @cherrypy.expose()
     def help(self):
-        return self.template("help.pt",{"server" : '/'.join(cherrypy.request.browserUrl.split('/')[:3]) + '/feedback_received'})
+        return self.template("help.pt",{})
 
     @cherrypy.expose()
     def feedback_received(self):
         message("Thank you for your feedback")
-        raise cherrypy.HTTPRedirect("/help")
+        raise cherrypy.HTTPRedirect("/contact")
 
     @cherrypy.expose()
     def contact(self):
-        return self.template("contact.pt",{})
+        return self.template("contact.pt",{"server" : '/'.join(cherrypy.request.browserUrl.split('/')[:3]) + '/feedback_received'})
 
 
     #legacy redirect for flash
@@ -487,12 +487,12 @@ class CourseController(EcoControllerBase,RESTContent):
 
 
     @cherrypy.expose()
-    @admin_only
+    @restrict_to_instructor_or_admin
     def edit_form(self,course):
         return self.course_form(course)
 
     @cherrypy.expose()
-    @admin_only
+    @restrict_to_instructor_or_admin
     def edit(self,course,name="",description="",instructor=""):
         es = CourseSchema()
 
