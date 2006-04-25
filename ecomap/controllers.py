@@ -142,7 +142,7 @@ def is_testmode():
 ### end callbacks ###
 
 class Eco(EcoControllerBase):
-    strict_allowed_paths = ["/","flashConduit","/help","/contact","favicon.ico","/add_guest_account",
+    strict_allowed_paths = ["/","flashConduit","/about","/help","/contact","favicon.ico","/add_guest_account",
                             "/add_guest_account_form"]
     allowed_paths = ["/css/","/images/","/flash/","/js/"]
     

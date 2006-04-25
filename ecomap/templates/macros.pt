@@ -52,7 +52,7 @@
 				<tal:block condition="login_name">
 				Logged in as <span tal:content="login_name" /> | <a href="/logout">Logout</a>
 				</tal:block>
-				<tal:block condition="python:login_name==''">
+				<tal:block condition="not:login_name">
 				<a href="/login">Log In</a>
 				</tal:block>
 			</div>
