@@ -25,7 +25,10 @@ def get_uni():
     return cherrypy.session.get("UNI",None)
 
 def get_user():
+    #if get_uni():
     return Ecouser.select(Ecouser.q.uni == get_uni().encode('utf8'))[0]
+    #else:
+    #    return False
 
 def get_auth():
     return cherrypy.session.get("auth_ticket",None)
@@ -133,6 +136,7 @@ def testmode():
     return
 
 def is_authenticated():
+    #import pdb; pdb.set_trace()
     return cherrypy.session.get("authenticated",False)
 
 def is_testmode():
@@ -142,8 +146,11 @@ def is_testmode():
 ### end callbacks ###
 
 class Eco(EcoControllerBase):
-    strict_allowed_paths = ["/","flashConduit","/about","/help","/contact","favicon.ico","/add_guest_account",
-                            "/add_guest_account_form"]
+    # I'm pretty sure strict paths need to not include "/" or it will not check is_authenticated() and
+    # if the session times out, it will bomb other things like get_user()
+    # it also needs to not include add_guest_account_form or add_guest_account
+    # the ONLY things in strict_allowed_paths should be non auth-needed or self-authing pages
+    strict_allowed_paths = ["flashConduit","/about","/help","/contact","favicon.ico"]
     allowed_paths = ["/css/","/images/","/flash/","/js/"]
     
     _cpFilterList = [ DisablePostParsingFilter(),
