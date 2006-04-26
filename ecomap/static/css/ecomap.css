@@ -258,3 +258,9 @@ textarea
 }
 
 .here { color: #369; }
+
+.small_message
+{
+    font-size: 10px;
+    color: #666;
+}

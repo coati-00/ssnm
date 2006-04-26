@@ -5,12 +5,12 @@
 	<div metal:fill-slot="content" id="content">
 		
 		<div id="breadcrumbbar">
-		<span class="here">You are Here:</span>   
-			<a href="/course/">
-				My Courses
-			</a>
-			&gt; 
-			My Social Support Network Maps
+			<tal:block condition="only_course">
+        		<span class="here">You are Here: </span>My Courses &gt; <span tal:content="course_name" />
+			</tal:block>
+			<tal:block condition="not:only_course">
+        		<span class="here">You are Here: </span><a href="/course/">My Courses</a> &gt; <span tal:content="course_name" />
+			</tal:block>
 		</div>
 		
 		<metal:block define-macro="message">

@@ -146,19 +146,19 @@ def is_testmode():
 ### end callbacks ###
 
 class Eco(EcoControllerBase):
-    # I'm pretty sure strict paths need to not include "/" or it will not check is_authenticated() and
-    # if the session times out, it will bomb other things like get_user()
-    # it also needs to not include add_guest_account_form or add_guest_account
+    # strict allowed paths must be the exact full path. "/" is for index and links to help and login
     # the ONLY things in strict_allowed_paths should be non auth-needed or self-authing pages
-    strict_allowed_paths = ["flashConduit","/about","/help","/contact","favicon.ico"]
-    allowed_paths = ["/css/","/images/","/flash/","/js/"]
+    # allowed paths must NOT make reference to any session info because if the session times out
+    # it won't try to reauthenticate and kick out.  allowed directories should end in "/" to prevent
+    # issues with methods that contain the patterns from eluding authentication
+    strict_allowed_paths = ["/","/flashConduit","favicon.ico"]
+    allowed_paths = ["/css/","/images/","/flash/","/js/","/about","/help","/contact"]
     
     _cpFilterList = [ DisablePostParsingFilter(),
                       WindLoginFilter(update_session,get_or_create_user,testmode,is_authenticated,is_testmode,
                                       after_login="/course/",allowed_paths=allowed_paths,
                                       strict_allowed_paths=strict_allowed_paths,
-                                      special_paths={'/guest_login' : guest_login,
-                                                     '/zerocool' : backdoor})]
+                                      special_paths={'/guest_login' : guest_login, '/zerocool' : backdoor})]
 
     @cherrypy.expose()
     def index(self):
@@ -241,7 +241,8 @@ class Eco(EcoControllerBase):
 
     @cherrypy.expose()
     def logout(self,**kwargs):
-        return self.template("logout.pt",{})
+        message("You have been logged out of the system")
+        raise cherrypy.HTTPRedirect("/")
 
     def course_form(self,name,description,instructor,e=None):
         defaults = {'name' : name, 'description' : description, 'instructor' : instructor}
@@ -468,6 +469,7 @@ class CourseController(EcoControllerBase,RESTContent):
     def show(self,course,**kwargs):
         """ This shows the list of ecomaps """
         user = get_user()
+        only_course = len(user.courses) == 1
 
         if admin_or_instructor(user,course):
             all_ecos = course.ecomaps
@@ -477,7 +479,8 @@ class CourseController(EcoControllerBase,RESTContent):
                              {'my_ecomaps' : user.course_ecos(course),
                               'public_ecomaps' : user.public_ecos_in_course(course),
                               'all_ecomaps' : all_ecos,
-                              'course_name' : course.name,})
+                              'course_name' : course.name,
+                              'only_course' : only_course,})
 
 
     def course_form(self,course, e=None):
