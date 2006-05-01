@@ -456,7 +456,7 @@ class CourseController(EcoControllerBase,RESTContent):
         if user.is_admin():
             all_courses = get_all_courses()
 
-        return self.template("list_courses.pt",{'all_courses' : all_courses, 'my_courses' : my_courses, 'instructor_of' : instructor_of})
+        return self.template("list_courses.pt",{'is_admin' : user.is_admin(), 'all_courses' : all_courses, 'my_courses' : my_courses, 'instructor_of' : instructor_of})
 
     @cherrypy.expose()
     @admin_only

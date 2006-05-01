@@ -15,7 +15,7 @@
 		
 		<div id="container">
 		
-			<div class="addbar" tal:condition="all_courses">
+			<div class="addbar" tal:condition="is_admin">
 				<form style="display: inline;" method="link" action="/create_course_form">
 					<input type="submit" value="Create Course" />
 				</form>
