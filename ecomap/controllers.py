@@ -442,21 +442,22 @@ class CourseController(EcoControllerBase,RESTContent):
         # retreive the courses in which this user is a student
         user = get_user()
         my_courses = user.courses
+        is_admin = user.is_admin()
 
         # retreive the course in which this user is an instructor
         instructor_of = user.instructor_courses()
         if instructor_of.count() == 0:
             instructor_of = None
         
-        if len(my_courses) == 1 and not instructor_of:
-            # This is a student with only one course.  Redirect to that course
+        if len(my_courses) == 1 and not instructor_of and not is_admin:
+            # This is a student with only one course.  Convenience redirect to that course
             raise cherrypy.HTTPRedirect("/course/%s/" % my_courses[0].id)
 
         all_courses = []
-        if user.is_admin():
+        if is_admin:
             all_courses = get_all_courses()
 
-        return self.template("list_courses.pt",{'is_admin' : user.is_admin(), 'all_courses' : all_courses, 'my_courses' : my_courses, 'instructor_of' : instructor_of})
+        return self.template("list_courses.pt",{'is_admin' : is_admin, 'all_courses' : all_courses, 'my_courses' : my_courses, 'instructor_of' : instructor_of})
 
     @cherrypy.expose()
     @admin_only
