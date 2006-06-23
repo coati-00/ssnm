@@ -6,7 +6,7 @@ __connection__ = hub
 
 soClasses = ["Ecouser","Course","Ecomap"]
 
-from mx import DateTime
+from datetime import datetime as DateTime
 
 class Ecouser(SQLObject):
     uni           = UnicodeCol(length=50)

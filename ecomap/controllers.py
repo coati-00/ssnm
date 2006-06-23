@@ -8,7 +8,7 @@ from ecomap.helpers import EcomapSchema
 from DisablePostParsingFilter import DisablePostParsingFilter
 
 #from cherrypy.lib import httptools
-from mx import DateTime
+from datetime import datetime as DateTime
 import sys, os.path
 import StringIO
 import cgitb
@@ -53,14 +53,23 @@ class EcoControllerBase(CherryTAL):
 
     def _cpOnError(self):
         err = sys.exc_info()
+        sio = StringIO.StringIO()
+        hook = cgitb.Hook(file=sio,format="text")
+        hook.handle(info=err)
+        tb = sio.getvalue()
         if cherrypy.config.get('DEBUG',False):
-            sio = StringIO.StringIO()
-            hook = cgitb.Hook(file=sio)
-            hook.handle(info=err)
-            cherrypy.response.headerMap['Content-Type'] = 'text/html'
-            cherrypy.response.body = [sio.getvalue()]
+            cherrypy.response.headerMap['Content-Type'] = 'text/plain'
+            cherrypy.response.body = [tb]
         else:
-            # Do something else here.
+            body = "URL: %s\nReferer: %s\ncookies: %s\nheaders: %s\ntraceback: %s" % (cherrypy.request.requestLine,
+                                                                                      self.referer(),
+                                                                                      str(cherrypy.request.simpleCookie),
+                                                                                      str(cherrypy.request.headerMap),
+                                                                                      tb)
+            POST("http://hormel.ccnmtl.columbia.edu/",params={'to_address' : 'anders@columbia.edu',
+                                                              'from_address' : 'anders@columbia.edu',
+                                                              'subject' : "Ecomap server error: %s" % str(err[0]),
+                                                              'body' : body})
             cherrypy.response.body = ['Error: ' + str(err[0])]
 
 from windloginfilter import WindLoginFilter
