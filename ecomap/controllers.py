@@ -228,13 +228,13 @@ class Eco(EcoControllerBase):
         #tickets match, so the session is valid
         if ecoid == "":
             print "not a valid ecomap id"
-            return "<data><response>That social support network map ID doesn't exist.</response></data>"
+            return "<data><response>That HOPE-NY Community Map ID doesn't exist.</response></data>"
             
         this_ecomap = Ecomap.get(ecoid)
         # if this is public or it's yours or Susan, Debbie or I am logged in, allow the data to Flash
         if not (this_ecomap.public or this_ecomap.owner.uni == user.uni or user.is_admin()):
             print "not your ecomap and not public"
-            return "<data><response>This is not your social support network map. Also, it isn't public.</response></data>"
+            return "<data><response>This is not your HOPE-NY Community Map. Also, it isn't public.</response></data>"
 
         if action == "load":
             readonly = "true"
@@ -243,7 +243,7 @@ class Eco(EcoControllerBase):
             return this_ecomap.load(readonly)
         elif action == "save":
             if this_ecomap.owner.uni != user.uni:
-                return "<data><response>This is not your social support network map.</response></data>"
+                return "<data><response>This is not your HOPE-NY Community Map.</response></data>"
             return this_ecomap.save(root)
         else:
             print "unknown data action"

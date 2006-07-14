@@ -2,8 +2,10 @@ body
 {
 	margin: 0;
 	padding: 0;
-	background-color: #fff;
-	font-family: arial, helvetica, sans-serif;
+	background-color: #FFF;
+	font-family: verdana, arial, helvetica, sans-serif;
+	background-image: url(../images/logo_back.gif);
+	background-repeat: repeat-x;
 }
 
 a:link, a:visited
@@ -22,7 +24,6 @@ h1
 {
 	margin: 0;
 	padding: 0;
-	background-color: #348eae;
 	height: 80px;
 	background-image: url(../images/logo_ssnm.gif);
 	background-repeat: no-repeat;
@@ -32,7 +33,7 @@ h1 a
 {
 	text-indent: -2000px;
 	display: block;
-	width: 650px;
+	width: 420px;
 	height: 80px;
 }
 
@@ -40,7 +41,7 @@ h2
 {
 	margin: 0px 0px 20px 0px;
 	padding: 0;
-	color: #348eae;
+	color: #f60;
 	font-size: 18px;
 }
 
@@ -49,10 +50,10 @@ h2
 	margin: 0;
 	padding: 0;
 	position: absolute;
-	top: 10px;
+	top: 0px;
 	right: 10px;
-	width: 105px;
-	height: 23px;
+	width: 107px;
+	height: 80px;
 	background-image: url(../images/logo_ccnmtl.gif);
 	background-repeat: no-repeat;
 }
@@ -61,30 +62,30 @@ h2
 {
 	text-indent: -2000px;
 	display: block;
-	width: 105px;
-	height: 23px;
+	width: 107px;
+	height: 80px;
 }
 
 #toolbar
 {
-	background-color: #bddfde;
+	background-color: #fc6;
 	margin: 0;
 	padding: 10px;
 	font-size: 12px;
 	font-weight: bold;
 	color: #369;
-	border-bottom: 1px solid #348eae;
+	border-bottom: 1px solid #f93;
 }
 
 #toolbar a:link, #toolbar a:visited
 {
-	color: #369;
+	color: #000;
 	text-decoration: underline;
 }
 
 #toolbar a:hover, #toolbar a:active
 {
-	color: #369;
+	color: #000;
 	text-decoration: none;
 }
 
@@ -93,12 +94,12 @@ h2
 
 #breadcrumbbar
 {
-	background-color: #eee;
+	background-color: #b8e7ff;
 	padding: 5px 0px 5px 10px;
 	font-size: 12px;
 	font-weight: bold;
-	border-bottom: 1px solid #348eae;
-	color: #666;
+	border-bottom: 1px solid #f93;
+	color: #000;
 }
 
 #breadcrumbbar a:link, #breadcrumbbar a:visited
@@ -166,8 +167,8 @@ table.infotable
 table.infotable th
 {
 	text-align: left;
-	background-color: #bddfde;
-	color: #369;
+	background-color: #fc6;
+	color: #000;
 	font-size: 12px;
 	padding: 5px;
 	margin: 0;
@@ -183,7 +184,7 @@ table.infotable td
 	padding: 5px;
 	margin: 0;
 	vertical-align: top;
-	border-bottom: 1px solid #bddfde;
+	border-bottom: 1px solid #fc6;
 }
 
 table.infotable td.centered { text-align: center; }
@@ -209,6 +210,7 @@ table.infotable td.centered { text-align: center; }
 p
 {
 	font-size: 12px;
+	line-height: 18px;
 	color: #000;
 }
 
@@ -223,7 +225,7 @@ p
 
 fieldset
 {
-	border: 1px solid #348eae;
+	border: 1px solid #f93;
 	margin: 0;
 	padding: 10px;
 	width: 400px;
@@ -231,12 +233,12 @@ fieldset
 
 legend
 {
-	border: 1px solid #348eae;
+	border: 1px solid #f93;
 	margin-bottom: 10px;
 	padding: 5px;
 	font-size: 12px;
-	background-color: #bddfde;
-	color: #369;
+	background-color: #fc6;
+	color: #000;
 	font-weight: bold;
 }
 
@@ -257,7 +259,7 @@ textarea
 	width: 200px;
 }
 
-.here { color: #369; }
+#log, .here { color: #000; }
 
 .small_message
 {

@@ -47,7 +47,7 @@ class TestRoot(EcoTest):
     def test_root(self):
         r = GET("/")
         assert "<title>" in r
-        assert "Social Support Network Map" in r
+        assert "HOPE-NY Community Map" in r
 
     def test_create_ecomap(self):
         r = GET("/course/%d/create_new" % self.course.id)
@@ -56,15 +56,15 @@ class TestRoot(EcoTest):
 
     def test_about(self):
         r = GET("/about")
-        assert "Social Support Network Map" in r
+        assert "HOPE-NY Community Map" in r
 
     def test_help(self):
         r = GET("/help")
-        assert "Social Support Network Map" in r
+        assert "HOPE-NY Community Map" in r
 
     def test_contact(self):
         r = GET("/contact")
-        assert "Social Support Network Map" in r
+        assert "HOPE-NY Community Map" in r
 
     def test_mylist(self):
         r = GET("/myList")
@@ -123,7 +123,7 @@ class TestCourse(EcoTest):
 
     def test_maps(self):
         r = GET("/course/%d/" % self.course.id)
-        assert "You have no Social Support Network Maps." in r
+        assert "You have no HOPE-NY Community Maps." in r
         assert """<a href="create_new">""" in r
 
     def test_students(self):
@@ -149,7 +149,7 @@ class TestCourse(EcoTest):
             map.destroySelf()
         r = POST("/course/%d/create_new" % self.course.id) 
         r = GET("/course/%d/" % self.course.id)
-        assert "You have no Social Support Network Maps." not in r
+        assert "You have no HOPE-NY Community Maps." not in r
         assert "Enter Subject Name Here" in r
         assert "Enter Description here" in r
         assert "regression test user test" in r
@@ -163,7 +163,7 @@ class TestCourse(EcoTest):
 
         POST("/course/%d/update" % self.course.id,data="ecomap_id=%d;action_delete=Delete%%20Selected" % ecomap_id)
         r = GET("/course/%d/" % self.course.id)
-        assert "You have no Social Support Network Maps." in r
+        assert "You have no HOPE-NY Community Maps." in r
         assert "Enter Subject Name Here" not in r
         assert "Enter Description here" not in r
 

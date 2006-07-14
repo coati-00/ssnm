@@ -5,7 +5,7 @@
 	<head>
 	
 		<title metal:define-slot="page_title">
-			Social Support Network Map
+			HOPE-NY Community Map
 		</title>
 		
 		<link rel="stylesheet" href="/css/ecomap.css" type="text/css" />
@@ -33,7 +33,7 @@
 	<body metal:define-slot="body">
 	
 		<h1 metal:define-slot="header">
-		<a href="/course/" title="">Social Support Network Map</a>
+		<a href="/course/" title="">HOPE-NY Community Map</a>
 		</h1>
 		
 		<div id="ccnmtl">
