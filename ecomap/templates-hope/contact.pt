@@ -11,7 +11,7 @@
         		<span class="here">You are Here: </span><a href="/course/">My Courses</a> &gt; About
 			</tal:block>
 			<tal:block condition="not:login_name">
-        		<span class="here">You are Here: </span><a href="/">Home</a> &gt; About
+        		<span class="here">You are Here: </span><a href="/">Home</a> &gt; Contact
 			</tal:block>
 		</div>
 		
@@ -38,8 +38,8 @@
                     <label for="name">Your Name:</label><input type="text" id="name" name="name" value=""/><br/><br/>
                     <label for="email">Your Email address:</label><input type="text" id="email" name="email" value=""/><br/><br/>
                     <label for="description">Comment or Problem:</label><textarea id="description" name="description" rows="5" cols="50"></textarea><br/><br/>
-                    <input type="submit" name="add item" value="Send Feedback"/>
-                    <input type="hidden" name="title" value="Error report from SSNM web user" />
+                    <label for="send"></label><input type="submit" id="send" name="add item" value="Send Feedback"/>
+                    <input type="hidden" name="title" value="Error report from HOPE-NY web user" />
                     <input type="hidden" name="pid" value="318"/>
                     <input type="hidden" name="mid" value="1389"/>
                     <input type="hidden" name="type" value="bug"/>

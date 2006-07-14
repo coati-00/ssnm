@@ -9,7 +9,7 @@
         		<span class="here">You are Here: </span><a href="/course/">My Courses</a> &gt; About
 			</tal:block>
 			<tal:block condition="not:login_name">
-        		<span class="here">You are Here: </span><a href="/">Home</a> &gt; About
+        		<span class="here">You are Here: </span><a href="/">Home</a> &gt; Help
 			</tal:block>
 		</div>
 		

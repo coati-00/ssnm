@@ -11,7 +11,7 @@
 			</a>
 			&gt;
 			<a tal:attributes="href string:/${returnPath}" onclick="return confirm('Leave this page without saving changes?')">
-				My Social Support Network Maps
+				My HOPE-NY Community Maps
 				</a>
 			&gt;
 			<span tal:content="ecomap/name" />
