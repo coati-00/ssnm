@@ -15,7 +15,9 @@ def mp_setup():
     '''
     mpcp.py looks for this method for CherryPy configs but our *.cfg files handle that.
     '''
-    cherrypy.config.update(file=join(dirname(__file__),"prod.cfg"))
+    # we can only run hope or ssnm, not both
+    #cherrypy.config.update(file=join(dirname(__file__),"prod.cfg"))
+    cherrypy.config.update(file=join(dirname(__file__),"prod-hope.cfg"))
 
 
 

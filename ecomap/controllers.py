@@ -45,7 +45,7 @@ def build_controllers():
     cherrypy.root.course      = CourseController()
 
 class EcoControllerBase(CherryTAL):
-    # _template_dir = "ecomap/templates-hope"
+    # _template_dir = "ecomap/templates"
     _template_dir = "ecomap/templates-hope"
     _globals = {'login_name' : lambda: get_fullname()}
 
