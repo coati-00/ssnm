@@ -29,5 +29,7 @@ def mp_setup():
     '''
     mpcp.py looks for this method for CherryPy configs but our *.cfg files handle that.
     '''
-    cherrypy.config.update(file=join(dirname(__file__),"prod.cfg"))
+    # switch over to use the hope skins
+    #cherrypy.config.update(file=join(dirname(__file__),"prod.cfg"))
+    cherrypy.config.update(file=join(dirname(__file__),"prod-hope.cfg"))
 
