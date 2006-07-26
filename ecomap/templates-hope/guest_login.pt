@@ -7,7 +7,7 @@
 		<div id="breadcrumbbar">
 		<span class="here">You are Here:</span>
 		&gt;
-		Guest Login
+		Login
 		</div>
 		
 		<metal:block define-macro="message">
@@ -17,7 +17,7 @@
 		<div id="container">
 		
 			<h2>
-				Guest Login
+				Login
 			</h2>
 			
 			<form action="/guest_login" method="post">
