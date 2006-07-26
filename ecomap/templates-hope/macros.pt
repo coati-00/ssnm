@@ -33,7 +33,7 @@
 	<body metal:define-slot="body">
 	
 		<h1 metal:define-slot="header">
-		<a href="/course/" title="">HOPE-NY Community Map</a>
+		<a href="/" title="">HOPE-NY Community Map</a>
 		</h1>
 		
 		<div id="ccnmtl">
