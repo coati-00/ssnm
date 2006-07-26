@@ -25,48 +25,231 @@
 			
 			<div id="text">
 			    
-			    <p><b>Navigating your courses and maps</b></p>
-
-                <p>To use the HOPE-NY Community Map tool, you will need to log in with your UNI and password or a username and password given to you by your professor.</p>
-                <p>Once you have logged in, you will be taken to your list of courses, or, if you are only in one course you will be taken directly to that course.</p>
-                <p>To view your Social Support Network Maps for a course, click the "View Maps" link next to the course.  To return to your list of courses, click the "My Courses" link in the top navigation bar or click on the logo at the top of the page.</p>
-                <p>In a course, you may create as many maps as you would like.  To create your first map, click the link to create one.  If you have already created a map, click the "Create New" button in the upper right of the page.</p>
-                <p>To view a map you have created, click on the Subject Name.</p>
-                <p>To delete a map, click the checkbox next to the map or maps you wish to delete and click the "Delete Selected" button.  You will be warned that your map(s) will be deleted.</p>
-                <p><br/></p>
-
-                <p><b>Working with a HOPE-NY Community Map</b></p>
-
-                <p>When you create a new HOPE-NY Community Map, it will be a blank canvas for you to work with.</p>
-                <p>You can change the description by clicking on the text "Enter Description here" and replacing it with your description.  There will be a box around the description to let you know you are editing it.</p>
-                <p>To change the subject name, click on the text "Enter Subject Name Here" and replace it the same way.</p>
-                <p><br/></p>
-
-                <p><b>Working with People</b></p>
-
-                <p>To add a person to the map, click and drag a support level icon from the step 1 area to a location on the map and release the mouse button.  You can change the position of the person by dragging the person to another location.</p>
-                <p>To change the name of a person, click on the text of the name and replace it.  If you are having trouble, you may need to click toward the top of the person box when the cursor looks like an I beam.</p>
-                <p>To change the support level of a person, move the mouse over the left side of the person box.  Icons for the other levels will appear.  Click on the icon of the level you want.</p>
-                <p>To delete a person, drag the person to the Trash icon.</p>
-                <p><br/></p>
-
-                <p><b>Working with Support Types</b></p>
-
-                <p>You can add multiple support types to a person.  To add a support type, click and drag the letter icon next to the support type you wish to add and drop it on the person.  If you are having trouble, you may need to drop it near the middle of the person box.</p>
-                <p>To remove a support type, click and drag the letter icon from the person to an empty area of the map.  The other support type icons will rearrange themselves.</p>
-                <p><br/></p>
-
-                <p><b>Saving your map</b></p>
-
-                <p>You can save your map at any time by clicking the "Save Changes" button.  You will see a message at the top of your map indicating that your changes have been saved.</p>
-                <p>To return to your list of maps, click the "&lt;&lt; Back to List" button.  If you haven't saved your changes, you will be prompted to save or discard your changes.</p>
-                <p><br/></p>
-
-                <p><b>Customizing your map</b></p>
-
-                <p>You can customize some of the aspects of your map.  To increase the size of a circle, click and drag the right side of the circle to the right.  To decrease the size, drag to the left.</p>
-                <p>You can rename the support levels and support types by clicking on the text and replacing it.  There will be a box around the text to let you know you are editing it.</p>
-                <p><br/></p>
+				<h3>
+				About the Help Section
+				</h3>
+				
+				<p>
+				This page is provided to assist you in using the
+				Community Map tool as part of the Hope-NY project. The Community Map tool helps
+				you prepare for unforeseen events by charting the people, groups, and resources
+				available to you in times of crisis. 
+				</p>
+				
+				<p>
+				Follow these instructions for accessing, creating, and using
+				the Community Map tool. 
+				</p>
+				
+				<h3>
+				Technical Requirements
+				</h3>
+				
+				<p>
+				To use the online Community Map tool, you will need the
+				following: 
+				</p>
+				
+				<ul>
+				<li>Access to a Macintosh or PC computer</li>
+				<li>Access to the internet through a web browser
+					<ul>
+					<li>PC browsers: Internet Explorer 6, Firefox 1.5</li>
+					<li>Mac browsers: Safari, Firefox 1.5</li>
+					</ul>
+				</li>
+				<li>Adobe Flash Player, which can be downloaded for free from here</li>
+				<li>A minimum of 800x600 screen resolution</li> 
+				<li>Javascript enabled</li>
+				</ul>
+				
+				<h3>
+				Account Help
+				</h3>
+				
+				<p>
+				Should you need technical assistance using the Community
+				Map, contact the CCNMTL at
+				<b>(212) 854-9058</b> and <a href="mailto:ccnmtl@columbia.edu">ccnmtl@columbia.edu</a>.
+				</p>
+				
+				<h3>
+				Logging into the Community Map Tool
+				</h3>
+				
+				<p>
+				Click the second "Click here" link on the page to login. 
+				</p>
+				
+				<div align="center">
+				<img class="help" src="images/help/image003.jpg" border="0" />
+				</div>
+				
+				<h3>
+				Entering Your User Name and Password
+				</h3>
+				
+				<p>
+				You will need to log in with your User Name and Password, which were provided to you during the Hope-NY training. 
+				</p>
+				
+				<div align="center">
+				<img class="help" src="images/help/image005.jpg" border="0" />
+				</div>
+				
+				<h3>
+				Creating a Community Map
+				</h3>
+				
+				<p>
+				Once you have logged in, you can create a map. Click the "Click here" link to create a map.
+				</p>
+				
+				<div align="center">
+				<img class="help" src="images/help/image007.jpg" border="0" />
+				</div>
+				
+				<h3>
+				Customizing Your Community Map
+				</h3>
+				
+				<p>
+				The new Community Map you create is a blank canvas to use
+				in customizing your map.
+				</p>
+				
+				<p>
+				You can change the description by clicking on the text Enter Description
+				here and replacing it with your description. There will be a box around
+				the description to let you know you are editing it.
+				</p>
+				
+				<p>
+				To change the subject name, click on the text Enter Subject Name Here and replace
+				it the same way.
+				</p>
+				
+				<div align="center">
+				<img class="help" src="images/help/image009.jpg" border="0" />
+				</div>
+				
+				<p>
+				To add a person, group, or resource to the map, click and
+				drag a support level icon from the
+				step 1 area to a location on the map and release the mouse button. You can
+				change the position of the person by dragging the person to another location.
+				</p>
+				
+				<p>
+				You can add multiple support types to a person. To add a support type, click and
+				drag the letter icon next to the support type you wish to add and drop it on
+				the person. If you are having trouble, you may need to drop it near the
+				middle of the person box.
+				</p>
+				
+				<p>
+				To delete a person, drag the person to the Trash icon.
+				</p>
+				
+				<div align="center">
+				<img class="help" src="images/help/image011.jpg" border="0" />
+				</div>
+				
+				<h3>
+				Working with Levels and Types of Support
+				</h3>
+				
+				<p>
+				To custom name a support level (Step 1), click in the
+				support level box and type the name of the person, group, or resource. 
+				</p>
+				
+				<p>
+				To remove a support type (Step 2) from a person or
+				resource you added, click and drag the letter icon from the person to an
+				empty area of the map. The other support type icons will rearrange
+				themselves.
+				</p>
+				
+				<p>
+				To change the support level of a person, move the mouse
+				over the left side of the person box. Icons for the other levels will appear.
+				Click on the icon of the level you want.
+				</p>
+				
+				<div align="center">
+				<img class="help" src="images/help/image013.jpg" border="0" />
+				</div>
+				
+				<h3>
+				Saving Your Community Map
+				</h3>
+				
+				<p>
+				You can save your map at any time by clicking the
+				Save Changes button. You will see a message at the top of your
+				map indicating that your changes have been saved.
+				</p>
+				
+				<p>
+				To return to your list of maps, click the &lt;&lt;
+				Back to List button. If you haven't saved your changes, you will be
+				prompted to save or discard your changes.
+				</p>
+				
+				<div align="center">
+				<img class="help" src="images/help/image015.jpg" border="0" />
+				</div>
+				
+				<h3>
+				Printing Your Community Map
+				</h3>
+				
+				<p>
+				The community map you create can be printed in color or
+				black and white, depending on your printer settings. For best results, make
+				sure to print the map in landscape layout rather than page layout. 
+				</p>
+				
+				<p>
+				To print the map, click the print icon on the map page and
+				follow the instructions in the print dialog box.
+				</p>
+				
+				<div align="center">
+				<img class="help" src="images/help/image017.jpg" border="0" />
+				</div>
+				
+				<h3>
+				Managing Your Existing Community Map(s)
+				</h3>
+				
+				
+				<p>
+				You may create as many maps as you like. Note that you
+				will see only maps you create. You will not see other people's maps, and they
+				will not see your maps. 
+				</p>
+				
+				<p>
+				To view a map you have created, click on the Subject Name.
+				</p>
+				
+				<p>
+				If you have already created a map, click the Create
+				New button in the upper right of the page.
+				</p>
+				
+				<p>
+				To delete a map, click the checkbox next to the map or
+				maps you wish to delete and click the Delete Selected button. You
+				will be warned that your map(s) will be deleted.
+				</p>
+				
+				<div align="center">
+				<img class="help" src="images/help/image019.jpg" border="0" />
+				</div>
+				
 			    
 			</div>
 			

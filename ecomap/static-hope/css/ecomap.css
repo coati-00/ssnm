@@ -207,7 +207,7 @@ table.infotable td.centered { text-align: center; }
 
 .toggle { border: 0; }
 
-p
+p, ul, ol
 {
 	font-size: 12px;
 	line-height: 18px;
@@ -265,4 +265,11 @@ textarea
 {
     font-size: 10px;
     color: #666;
+}
+
+img.help {
+	border-top: 1px solid #eee;
+	border-right: 1px solid #ccc;
+	border-bottom: 1px solid #000;
+	border-left: 1px solid #ccc;
 }
