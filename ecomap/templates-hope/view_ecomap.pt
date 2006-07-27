@@ -23,7 +23,7 @@
 		
 		<div id="flash">
 		
-			<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" width="80%" height="80%" id="ecomap" align="middle">
+			<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" width="99%" height="425" id="ecomap" align="middle">
 				<param name="allowScriptAccess" value="sameDomain" />
 				<param name="movie" value="/flash/ecomap.swf" />
 				<param name="loop" value="false" />
@@ -33,11 +33,11 @@
 				<param name="salign" value="lt" />
 				<param name="bgcolor" value="#ffffff" />
 				<param name="flashVars" tal:attributes="value string:HTMLticket=${ticket}&amp;HTMLid=${id}&amp;myName=${myName}&amp;server=${server}&amp;returnPath=${returnPath}" />
-				<embed src="/flash/ecomap.swf" loop="false" menu="false" quality="high" scale="noscale" salign="lt" bgcolor="#ffffff" width="80%" height="80%" name="iat" align="middle" allowscriptaccess="sameDomain" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" tal:attributes="flashvars string:HTMLticket=${ticket}&amp;HTMLid=${id}&amp;myName=${myName}&amp;server=${server}&amp;returnPath=${returnPath}" />
+				<embed src="/flash/ecomap.swf" loop="false" menu="false" quality="high" scale="noscale" salign="lt" bgcolor="#ffffff" width="99%" height="425" name="iat" align="middle" allowscriptaccess="sameDomain" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" tal:attributes="flashvars string:HTMLticket=${ticket}&amp;HTMLid=${id}&amp;myName=${myName}&amp;server=${server}&amp;returnPath=${returnPath}" />
 			</object>
 			
 		</div>
-		
+				
 	</div>
 	
 </html>
