@@ -25,11 +25,7 @@ if __name__ == "__main__":
     cherrypy.config.update(file=join(dirname(__file__),options.mode + ".cfg"))
     cherrypy.server.start()
 
-def mp_setup():
-    '''
-    mpcp.py looks for this method for CherryPy configs but our *.cfg files handle that.
-    '''
-    cherrypy.config.update(file=join(dirname(__file__),"prod.cfg"))
+
 
 
 
