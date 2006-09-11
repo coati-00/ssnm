@@ -163,7 +163,7 @@ class Eco(EcoControllerBase):
     # allowed paths must NOT make reference to any session info because if the session times out
     # it won't try to reauthenticate and kick out.  allowed directories should end in "/" to prevent
     # issues with methods that contain the patterns from eluding authentication
-    strict_allowed_paths = ["/","/flashConduit","favicon.ico"]
+    strict_allowed_paths = ["/","/flashConduit","favicon.ico","/hosttest"]
     allowed_paths = ["/css/","/images/","/flash/","/js/","/about","/help","/contact"]
     
     _cpFilterList = [ DisablePostParsingFilter(),
