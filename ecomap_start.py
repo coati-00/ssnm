@@ -22,24 +22,15 @@ from ecomap.controllers import build_controllers
 build_controllers()
 
 if __name__ == "__main__":
-    host = os.environ.get('ECOMAP_HOST',"ssnm")
     cherrypy.config.update(file=join(dirname(__file__),options.mode + ".cfg"))
-    static = ["css","images","flash","js"]
-    for s in static:
-        cherrypy.config.update({"/%s" % s : {"staticFilter.on" : True, "staticFilter.dir" : "static-%s/%s" % (host,s)}})
     cherrypy.server.start()
-
-
 
 def mp_setup():
     '''
     mpcp.py looks for this method for CherryPy configs but our *.cfg files handle that.
     '''
     cherrypy.config.update(file=join(dirname(__file__),"prod.cfg"))
-    host = os.environ.get('ECOMAP_HOST',"ssnm")
-    static = ["css","images","flash","js"]
-    for s in static:
-        cherrypy.config.update({"/%s" % s : {"staticFilter.on" : True, "staticFilter.dir" : "static-%s/%s" % (host,s)}})
+
 
 
 

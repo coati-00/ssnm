@@ -46,7 +46,7 @@ def build_controllers():
 
 class EcoControllerBase(CherryTAL):
     # _template_dir = "ecomap/templates"
-    host = os.environ.get('ECOMAP_HOST',"ssnm")
+    host = cherrypy.config.get("ecomap_host","ssnm")
     _template_dir = "ecomap/templates-%s" % host
     _globals = {'login_name' : lambda: get_fullname()}
 
@@ -163,7 +163,7 @@ class Eco(EcoControllerBase):
     # allowed paths must NOT make reference to any session info because if the session times out
     # it won't try to reauthenticate and kick out.  allowed directories should end in "/" to prevent
     # issues with methods that contain the patterns from eluding authentication
-    strict_allowed_paths = ["/","/flashConduit","favicon.ico","/hosttest"]
+    strict_allowed_paths = ["/","/flashConduit","favicon.ico"]
     allowed_paths = ["/css/","/images/","/flash/","/js/","/about","/help","/contact"]
     
     _cpFilterList = [ DisablePostParsingFilter(),
@@ -175,12 +175,6 @@ class Eco(EcoControllerBase):
     @cherrypy.expose()
     def index(self):
         return self.template("index.pt",{})
-
-    @cherrypy.expose()
-    def hosttest(self):
-        host = os.environ.get('ECOMAP_HOST',"not set")
-        return str(host)
-
 
     @cherrypy.expose()
     def about(self):
