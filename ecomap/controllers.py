@@ -9,7 +9,7 @@ from DisablePostParsingFilter import DisablePostParsingFilter
 
 #from cherrypy.lib import httptools
 from datetime import datetime as DateTime
-import sys, os.path
+import sys, os.path, os
 import StringIO
 import cgitb
 import formencode
@@ -46,8 +46,10 @@ def build_controllers():
 
 class EcoControllerBase(CherryTAL):
     # _template_dir = "ecomap/templates"
-    _template_dir = "ecomap/templates-hope"
+    host = os.environ.get('ECOMAP_HOST',"ssnm")
+    _template_dir = "ecomap/templates-%s" % host
     _globals = {'login_name' : lambda: get_fullname()}
+
 
     def referer(self):
         return cherrypy.request.headerMap.get('Referer','/')
