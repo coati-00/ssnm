@@ -177,6 +177,12 @@ class Eco(EcoControllerBase):
         return self.template("index.pt",{})
 
     @cherrypy.expose()
+    def hosttest(self):
+        host = os.environ.get('ECOMAP_HOST',"not set")
+        return str(host)
+
+
+    @cherrypy.expose()
     def about(self):
         return self.template("about.pt",{})
 
