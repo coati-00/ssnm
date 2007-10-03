@@ -106,10 +106,6 @@ def create_user(uni):
 
     # make sure it is a valid UNI
     (firstname,lastname) = ecomap.helpers.ldap_lookup(uni)
-    if firstname == "":
-        # not in the ldap.  bad uni.  exit
-        raise InvalidUNI
-
     eus = ecomap.helpers.EcouserSchema()
     d = eus.to_python({'uni' : uni, 'securityLevel' : 2, 'firstname' : firstname, 'lastname' : lastname})
     return Ecouser(uni=d['uni'],securityLevel=d['securityLevel'],firstname=d['firstname'],lastname=d['lastname'])
