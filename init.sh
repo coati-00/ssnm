@@ -1,3 +1,7 @@
 #!/bin/bash
 cd $1
-python workingenv.py -r requirements.txt working-env
+rm -rf working-env
+python workingenv.py working-env
+source working-env/bin/activate
+easy_install -H None -f eggs eggs/*.egg
+

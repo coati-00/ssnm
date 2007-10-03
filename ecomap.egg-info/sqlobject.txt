@@ -1,2 +1,2 @@
 db_module=ecomap.model
-history_dir=$base/test/sqlobject-history
+history_dir=$base/ecomap/sqlobject-history

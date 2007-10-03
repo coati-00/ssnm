@@ -43,6 +43,7 @@ def build_controllers():
     cherrypy.root             = Eco()
     cherrypy.root.ecomap      = EcomapController()
     cherrypy.root.course      = CourseController()
+    return cherrypy.root
 
 class EcoControllerBase(CherryTAL):
     # _template_dir = "ecomap/templates"
@@ -457,8 +458,8 @@ class CourseController(EcoControllerBase,RESTContent):
         is_admin = user.is_admin()
 
         # retreive the course in which this user is an instructor
-        instructor_of = user.instructor_courses()
-        if instructor_of.count() == 0:
+        instructor_of = list(user.instructor_courses())
+        if len(instructor_of) == 0:
             instructor_of = None
         
         if len(my_courses) == 1 and not instructor_of and not is_admin:

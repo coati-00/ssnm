@@ -1,6 +1,5 @@
 #!/bin/bash
+export PYTHON_EGG_CACHE=/var/www/iat/.python-eggs
 cd $1
 source working-env/bin/activate
-./ecomap_start.py -m $2 &
-echo $! > /tmp/ecomap/$2.pid
-wait $!
+exec python ecomap_start.py $2
