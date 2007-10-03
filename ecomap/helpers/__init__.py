@@ -48,7 +48,7 @@ def teardown_tests():
 
 def ldap_lookup(username):
     r = json_to_py(GET("http://cdap.ccnmtl.columbia.edu/?uni=%s" % username))
-    return (r.get('firstname',r.get('givenName','')),r.get('lastname'))
+    return (r.get('givenName',r.get('firstname','')),r.get('lastname'))
 
 def get_or_create_user(username,firstname="",lastname=""):
     """ if the user is already in the system, it returns the user object.
