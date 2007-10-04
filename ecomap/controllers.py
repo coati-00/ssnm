@@ -276,7 +276,7 @@ class Eco(EcoControllerBase):
         es = CourseSchema()
 
         # MUST sanitize this comma delimited list
-        uni_list = uniq(students.split(","))
+        uni_list = uniq([s.strip() for s in students.split(",")])
 
         try:
             d = es.to_python({'name' : name, 'description' : description, 'instructor' : instructor})
@@ -377,7 +377,7 @@ class Eco(EcoControllerBase):
             return self.toggle_admin(person_list)
 
         elif kwargs.get('action_add_users'):
-            uni_list = uniq(kwargs.get('user_uni',None).split(","))
+            uni_list = uniq([s.strip() for s in kwargs.get('user_uni',None).split(",")])
             self.add_users(uni_list)
             raise cherrypy.HTTPRedirect("/admin_users_form")
 
