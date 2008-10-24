@@ -27,7 +27,7 @@ class BadCommand(Exception):
     pass
 
 
-ez_setup_url = 'http://kang.ccnmtl.columbia.edu/eggs/ez_setup.py'
+ez_setup_url = 'http://blargh.ccnmtl.columbia.edu/eggs/ez_setup.py'
 python_version = '%s.%s' % (sys.version_info[0], sys.version_info[1])
 
 help = """\
@@ -543,7 +543,7 @@ def make_working_environment(
     writer, logger, find_links, always_unzip,
     include_site_packages, install_extra,
     # Deprecated but allowed in signature:
-    force_install_setuptools=True,
+    force_install_setuptools=False,
     cross_platform_activate=False,
     install_as_home=False,
     envs=()):
@@ -649,7 +649,7 @@ def install_setuptools(writer, logger):
         return
     logger.start_progress('Installing local setuptools...')
     logger.indent += 2
-    f_in = urllib2.urlopen(ez_setup_url)
+    f_in = open("ez_setup.py")
     tmp_dir = os.path.join(writer.path('tmp'))
     tmp_exists = os.path.exists(tmp_dir)
     if not tmp_exists:
@@ -663,14 +663,15 @@ def install_setuptools(writer, logger):
     # Make sure there's no leftover site.py's:
     site_py = writer.path(os.path.join(writer.python_dir, 'site.py'))
     if os.path.exists(site_py):
+        print "unlinking leftover site.py"
         os.unlink(site_py)
     call_subprocess(
         [sys.executable, ez_setup_path,
          '--always-unzip',
          '--install-dir', writer.path(writer.python_dir),
          '--script-dir', writer.path('bin'),
-         '--always-copy', '--upgrade', 'setuptools'],
-        writer, show_stdout=False, filter_stdout=filter_ez_setup)
+         '--always-copy','--upgrade','setuptools'],
+        writer, show_stdout=True, filter_stdout=filter_ez_setup)
     os.unlink(ez_setup_path)
     if not tmp_exists:
         os.rmdir(tmp_dir)
@@ -684,12 +685,12 @@ def install_setuptools(writer, logger):
                 os.path.join(easy_install_dir, fn), logger)
     fix_easy_install_pth(writer, logger)
     logger.indent -= 2
-    logger.end_progress()
+    logger.end_progress() 
 
 def filter_ez_setup(line):
     if not line.strip():
         return Logger.DEBUG
-    for prefix in ['Reading ', 'Best match', 'Processing setuptools',
+    for prefix in ['Reading ', 'Best match', 'Processing setuptools', 
                    'Copying setuptools', 'Adding setuptools',
                    'Installing ', 'Installed ']:
         if line.startswith(prefix):
