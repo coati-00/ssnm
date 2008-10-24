@@ -758,6 +758,7 @@ def fix_easy_install_pth(writer, logger):
     """
     easy_install_pth = os.path.join(
         writer.python_dir, 'easy-install.pth')
+    print easy_install_pth
     f = open(writer.path(easy_install_pth))
     lines = f.readlines(True)
     f.close()
