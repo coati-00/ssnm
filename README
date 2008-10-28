@@ -5,6 +5,30 @@ A turbogears application that provides auth and persistence for the ecomap (now 
 
 This codebase now also powers hope-ny, which is ssnm w/ an alternative skin
 
+SWITCHING SKINS
+================
+
+$APPNAME = [hope|ssnm] 
+
+[globals]
+ecomap_host="$APPNAME"
+
+[/css]
+static_filter.on = True
+static_filter.dir = "%(top_level_dir)s/static-$APPNAME/css"
+
+[/images]
+static_filter.on = True
+static_filter.dir = "%(top_level_dir)s/static-$APPNAME/images"
+
+[/flash]
+static_filter.on = True
+static_filter.dir = "%(top_level_dir)s/static-$APPNAME/flash"
+
+[/js]
+static_filter.on = True
+static_filter.dir = "%(top_level_dir)s/static-$APPNAME/js"
+
 
 TESTING
 =======
