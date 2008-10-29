@@ -79,13 +79,12 @@ class EcoControllerBase(CherryTAL):
 from windloginfilter import WindLoginFilter
 
 def ensure_list(potential_list):
-    if type(potential_list) is str:
-        return [int(potential_list)]
-    elif type(potential_list) is list:
+    if type(potential_list) is list:
         return potential_list
+    elif potential_list is not None:
+        return [int(potential_list)]
     else:
         return []
-
 
 def admin_only(f):
     def wrapped(*args,**kwargs):
@@ -149,7 +148,6 @@ def testmode():
     return
 
 def is_authenticated():
-    #import pdb; pdb.set_trace()
     return cherrypy.session.get("authenticated",False)
 
 def is_testmode():
@@ -175,6 +173,7 @@ class Eco(EcoControllerBase):
 
     @cherrypy.expose()
     def index(self):
+        # import pdb; pdb.set_trace()
         return self.template("index.pt",{})
 
     @cherrypy.expose()
@@ -230,14 +229,12 @@ class Eco(EcoControllerBase):
 
         #tickets match, so the session is valid
         if ecoid == "":
-            print "not a valid ecomap id"
-            return "<data><response>That HOPE-NY Community Map ID doesn't exist.</response></data>"
+            return "<data><response>That Map ID doesn't exist.</response></data>"
             
         this_ecomap = Ecomap.get(ecoid)
         # if this is public or it's yours or Susan, Debbie or I am logged in, allow the data to Flash
         if not (this_ecomap.public or this_ecomap.owner.uni == user.uni or user.is_admin()):
-            print "not your ecomap and not public"
-            return "<data><response>This is not your HOPE-NY Community Map. Also, it isn't public.</response></data>"
+            return "<data><response>This is not your map. Also, it isn't public.</response></data>"
 
         if action == "load":
             readonly = "true"
@@ -246,10 +243,10 @@ class Eco(EcoControllerBase):
             return this_ecomap.load(readonly)
         elif action == "save":
             if this_ecomap.owner.uni != user.uni:
-                return "<data><response>This is not your HOPE-NY Community Map.</response></data>"
+                return "<data><response>This is not your map.</response></data>"
             return this_ecomap.save(root)
         else:
-            print "unknown data action"
+            print "unknown data action: [", action, "]"
             return "<data><response>Unknown data action</response></data>"
 
     @cherrypy.expose()
@@ -263,7 +260,6 @@ class Eco(EcoControllerBase):
         parser.feed(self.template("create_course.pt",{'all_instructors' : list(Ecouser.select(orderBy=['firstname']))}))
         parser.close()
         return parser.text()
-
 
     @cherrypy.expose()
     @admin_only
@@ -320,31 +316,36 @@ class Eco(EcoControllerBase):
         return self.template("admin_users.pt",{'allUsers' : list(Ecouser.select(orderBy=['securityLevel','firstname']))})
 
     def delete_users(self,users):
-        names = []
-        for id in users:
-            # get the user, remove him from all his courses and delete him
-            user = Ecouser.get(id)
-            names.append(user.fullname())
-            user.delete()
-
-        the_verb = "has"
-        if len(names) > 1:
-            the_verb = "have"
-        message("'" + ", ".join(names) + "' " + the_verb + " been deleted.")
-
+        if len(users) < 1:
+            message("No Users selected.")
+        else:
+            names = []
+            for id in users:
+                # get the user, remove him from all his courses and delete him
+                user = Ecouser.get(id)
+                names.append(user.fullname())
+                user.delete()
+    
+            the_verb = "has"
+            if len(names) > 1:
+                the_verb = "have"
+            message("'" + ", ".join(names) + "' " + the_verb + " been deleted.")
 
         #message("'" + ', '.join(names) + "' has been deleted.")
         raise cherrypy.HTTPRedirect("/admin_users_form")
 
     def toggle_admin(self,users):
-        for id in users:
-            # get the user and toggle his admin status
-            user = Ecouser.get(id)
-            user.toggle_admin()
+        if len(users) < 1:
+            message("No Users selected.")
+        else:
+            for id in users:
+                # get the user and toggle his admin status
+                user = Ecouser.get(id)
+                user.toggle_admin()
 
-        message("Users have had their status changed.")
+                message("Users have had their status changed.")
+                
         raise cherrypy.HTTPRedirect("/admin_users_form")
-        
 
     def add_users(self,uni_list):
         invalid_ids = []
@@ -355,13 +356,15 @@ class Eco(EcoControllerBase):
                 valid_names.append(u.fullname())
             except InvalidUNI:
                 invalid_ids.append(uni)
-        the_verb = "has"
-        if len(valid_names) > 1:
-            the_verb = "have"
-        m = "'" + ", ".join(valid_names) + "' " + the_verb + " been created"
+        m = ""
+        if len(valid_names) > 0:
+            the_verb = "has"
+            if len(valid_names) > 1:
+                the_verb = "have"
+            m = "'" + ", ".join(valid_names) + "' " + the_verb + " been created."
         if len(invalid_ids) > 0:
-            m += " but the following UNIs were not valid: '%s'" % ", ".join(invalid_ids)
-        message(m + ".")
+            m += " The following UNIs were not valid: %s" % ", ".join(invalid_ids)
+        message(m)
 
 
     @cherrypy.expose()
@@ -373,7 +376,6 @@ class Eco(EcoControllerBase):
             return self.delete_users(person_list)
         
         if kwargs.get('action_change',None):
-            print "changing"
             return self.toggle_admin(person_list)
 
         elif kwargs.get('action_add_users'):
@@ -552,10 +554,14 @@ class CourseController(EcoControllerBase,RESTContent):
             raise cherrypy.HTTPRedirect("/course/%s/students" % course.id)
         elif kwargs.get('action_add',False):
             student_uni = kwargs.get('student_uni',None)
-            u = get_or_create_user(student_uni.encode('utf8'))
-            course.add_students([u.uni])
-            message("'" + u.fullname() + "' has been added")
-            raise cherrypy.HTTPRedirect("/course/%s/students" % course.id)
+            try:
+                u = get_or_create_user(student_uni.encode('utf8'))
+                course.add_students([u.uni])
+                message("'" + u.fullname() + "' has been added")
+            except InvalidUNI:
+                message("The provided UNI is empty or invalid.")
+                
+            raise cherrypy.HTTPRedirect("/course/%s/students" % course.id)                
         else:
             # unknown action
             raise cherrypy.HTTPRedirect("/course/%s/" % course.id)      
