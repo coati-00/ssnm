@@ -99,18 +99,20 @@ class Course(SQLObject):
         return removed
 
 def create_user(uni):
-    # if the user already exists, we just return that one
-    r = Ecouser.select(Ecouser.q.uni == uni.encode('utf8'))
-    if r.count() > 0:
-        return r[0]
-
-    # make sure it is a valid UNI
-    (firstname,lastname) = ecomap.helpers.ldap_lookup(uni)
-    eus = ecomap.helpers.EcouserSchema()
-    d = eus.to_python({'uni' : uni, 'securityLevel' : 2, 'firstname' : firstname, 'lastname' : lastname})
-    return Ecouser(uni=d['uni'],securityLevel=d['securityLevel'],firstname=d['firstname'],lastname=d['lastname'])
-
-
+    try:
+        # if the user already exists, we just return that one
+        r = Ecouser.select(Ecouser.q.uni == uni.encode('utf8'))
+        if r.count() > 0:
+            return r[0]
+    
+        # make sure it is a valid UNI
+        (firstname,lastname) = ecomap.helpers.ldap_lookup(uni)
+        eus = ecomap.helpers.EcouserSchema()
+        d = eus.to_python({'uni' : uni, 'securityLevel' : 2, 'firstname' : firstname, 'lastname' : lastname})
+        return Ecouser(uni=d['uni'],securityLevel=d['securityLevel'],firstname=d['firstname'],lastname=d['lastname'])
+    except Exception, exc:
+        raise InvalidUNI()
+    
 def get_all_courses():
     return list(Course.select(orderBy=['name']))
 
