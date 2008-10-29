@@ -56,23 +56,27 @@ def get_or_create_user(username,firstname="",lastname=""):
     side effect of putting the user into any class that wind says they
     should be a part of if they aren't already in it. """
     
-    res = ecomap.model.Ecouser.select(ecomap.model.Ecouser.q.uni == username)
-    u = None
-    if res.count() > 0:
-        # found the user. 
-        u = res[0]
-    else:
-        #this user doesn't exist in our DB yet.  Get details from LDAP if possible
-        (firstname,lastname) = ldap_lookup(username)
- 	               
-        if lastname == "":
-            lastname = username
- 	
-        eus = EcouserSchema()
-        d = eus.to_python({'uni' : username, 'securityLevel' : 2, 'firstname' : firstname, 'lastname' : lastname})
-        u = ecomap.model.Ecouser(uni=d['uni'],securityLevel=d['securityLevel'],firstname=d['firstname'],lastname=d['lastname'])
-    return u
-
+    try: 
+        res = ecomap.model.Ecouser.select(ecomap.model.Ecouser.q.uni == username)
+        u = None
+        if res.count() > 0:
+            # found the user. 
+            u = res[0]
+        else:
+            
+            #this user doesn't exist in our DB yet.  Get details from LDAP if possible
+            (firstname,lastname) = ldap_lookup(username)
+     	               
+            if lastname == "":
+                lastname = username
+     	
+            eus = EcouserSchema()
+            d = eus.to_python({'uni' : username, 'securityLevel' : 2, 'firstname' : firstname, 'lastname' : lastname})
+            u = ecomap.model.Ecouser(uni=d['uni'],securityLevel=d['securityLevel'],firstname=d['firstname'],lastname=d['lastname'])
+        return u
+    except Exception, exc:
+        raise ecomap.model.InvalidUNI()
+    
 def get_user_or_fail(username):
     res = ecomap.model.Ecouser.select(ecomap.model.Ecouser.q.uni == username)
     if res.count() > 0:
