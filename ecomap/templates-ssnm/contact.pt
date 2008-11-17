@@ -43,13 +43,12 @@
                     <input type="hidden" name="pid" value="318"/>
                     <input type="hidden" name="mid" value="1389"/>
                     <input type="hidden" name="type" value="bug"/>
-                    <input type="hidden" name="assigned_to"  value="keldridge"/>
+                    <input type="hidden" name="assigned_to"  value="jrowe"/>
                     <input type="hidden" name="estimated_time" value="1h" />
                     <input type="hidden" name="redirect_url" tal:attributes="value server" />
                 </fieldset>
                 
                 </form>
-    			    
                 
             </div>
 
