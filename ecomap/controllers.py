@@ -163,7 +163,7 @@ class Eco(EcoControllerBase):
     # it won't try to reauthenticate and kick out.  allowed directories should end in "/" to prevent
     # issues with methods that contain the patterns from eluding authentication
     strict_allowed_paths = ["/","/flashConduit","favicon.ico"]
-    allowed_paths = ["/css/","/images/","/flash/","/js/","/about","/help","/contact"]
+    allowed_paths = ["/css/","/images/","/flash/","/js/","/about","/help"]
     
     _cpFilterList = [ DisablePostParsingFilter(),
                       WindLoginFilter(update_session,get_or_create_user,testmode,is_authenticated,is_testmode,
