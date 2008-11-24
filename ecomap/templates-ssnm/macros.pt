@@ -45,7 +45,9 @@
 			<div id="standard">
 				<a href="/about">About</a>
 				<a href="/help">Help</a>
-				<a href="/contact">Contact</a>
+				<tal:block condition="login_name">
+					<a href="/contact">Feedback</a>
+				</tal:block>
 			</div>
 			
 			<div id="log">

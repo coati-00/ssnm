@@ -35,13 +35,14 @@
                 
                 <fieldset>
     			    <legend>Send Feedback</legend>
-                    <label for="name">Your Name:</label><input type="text" id="name" name="name" value=""/><br/><br/>
+                    <label for="name">Your Name:</label><input type="text" id="name" name="name" tal:attributes="value login_name" /><br/><br/>
                     <label for="email">Your Email address:</label><input type="text" id="email" name="email" value=""/><br/><br/>
-                    <label for="description">Comment or Problem:</label><textarea id="description" name="description" rows="5" cols="50"></textarea><br/><br/>
+                    <label for="title">Title:</label><input type="text" id="title" name="title" value="" style="width: 300px"/><br/><br/>
+                    <label for="description">Comment or Problem:</label><textarea id="description" name="description"></textarea><br/><br/>
                     <input type="submit" name="add item" value="Send Feedback"/>
                     <input type="hidden" name="title" value="Error report from SSNM web user" />
-                    <input type="hidden" name="pid" value="318"/>
-                    <input type="hidden" name="mid" value="1389"/>
+                    <input type="hidden" name="pid" value="449"/>
+                    <input type="hidden" name="mid" value="2173"/>
                     <input type="hidden" name="type" value="bug"/>
                     <input type="hidden" name="assigned_to"  value="jrowe"/>
                     <input type="hidden" name="estimated_time" value="1h" />
