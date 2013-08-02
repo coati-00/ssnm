@@ -1,0 +1,10 @@
+#!/usr/bin/env python2.7
+import os; activate_this=os.path.join(os.path.dirname(__file__), 'activate_this.py'); execfile(activate_this, dict(__file__=activate_this)); del os, activate_this
+# EASY-INSTALL-ENTRY-SCRIPT: 'flake8==1.7.0','console_scripts','flake8'
+__requires__ = 'flake8==1.7.0'
+import sys
+from pkg_resources import load_entry_point
+
+sys.exit(
+   load_entry_point('flake8==1.7.0', 'console_scripts', 'flake8')()
+)
