@@ -5,10 +5,12 @@ import subprocess
 import shutil
 
 pwd = os.path.abspath(os.path.dirname(__file__))
+
 vedir = os.path.abspath(os.path.join(pwd, "ve"))
 
 if os.path.exists(vedir):
     shutil.rmtree(vedir)
+
 
 virtualenv_support_dir = os.path.abspath(
     os.path.join(
@@ -32,3 +34,4 @@ if ret:
 ret = subprocess.call(["python", "virtualenv.py", "--relocatable", vedir])
 # --relocatable always complains about activate.csh, which we don't really
 # care about. but it means we need to ignore its error messages
+

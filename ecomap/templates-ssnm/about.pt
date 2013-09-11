@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+
+<html metal:use-macro="sitemacros/macros/ecomap">
+
+	<div metal:fill-slot="content" id="content">
+		
+		<div id="breadcrumbbar">
+			<tal:block condition="login_name">
+        		<span class="here">You are Here: </span><a href="/course/">My Courses</a> &gt; About
+			</tal:block>
+			<tal:block condition="not:login_name">
+        		<span class="here">You are Here: </span><a href="/">Home</a> &gt; About
+			</tal:block>
+		</div>
+		
+		<metal:block define-macro="message">
+			<div tal:condition="message" tal:content="message" class="message" />
+		</metal:block>
+		
+		<div id="container">
+			
+			<h2>
+				About the Social Support Network Map
+			</h2>
+			
+			<div id="text">
+			<p>The Social Support Network Map was created in 2005 as a collaboration with Professor Susan Witte at the School of Social Work as an interactive learning tool for classroom instruction.</p>
+
+            <h3>Credits</h3>
+            <p><b>Project Manager</b><br/>Debbie Marcus</p>
+            <p><b>Programming</b><br/>Kurt Eldridge<br/>Anders Pearson</p>
+            <p><b>Interface Design</b><br/>Marc Raymond</p>
+            <p><b>Quality Assurance</b><br/>Brian O'Hagan</p>
+            <p><b>Executive Producers</b><br/>Frank Moretti<br/>Maurice Matiz</p>
+            <p>The Social Support Network Map is a production of the <a href="http://ccnmtl.columbia.edu" target="_blank">Columbia Center for New Media Teaching and Learning</a>.</p>
+            <p>&#0169; 2006 by the Trustees of Columbia University in the City of New York.</p>
+
+			</div>
+			
+		</div>
+		
+	</div>
+	
+</html>

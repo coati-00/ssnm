@@ -1,0 +1,6 @@
+deploy_specific
+._*
+.#*
+*~
+*.pyc
+ve

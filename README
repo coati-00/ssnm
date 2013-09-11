@@ -1,0 +1,46 @@
+ecomap
+======
+
+A turbogears application that provides auth and persistence for the ecomap (now known as social network map (ssnm)).
+
+This codebase now also powers hope-ny, which is ssnm w/ an alternative skin
+
+SWITCHING SKINS
+================
+
+$APPNAME = [hope|ssnm] 
+
+[globals]
+ecomap_host="$APPNAME"
+
+[/css]
+static_filter.on = True
+static_filter.dir = "%(top_level_dir)s/static-$APPNAME/css"
+
+[/images]
+static_filter.on = True
+static_filter.dir = "%(top_level_dir)s/static-$APPNAME/images"
+
+[/flash]
+static_filter.on = True
+static_filter.dir = "%(top_level_dir)s/static-$APPNAME/flash"
+
+[/js]
+static_filter.on = True
+static_filter.dir = "%(top_level_dir)s/static-$APPNAME/js"
+
+
+TESTING
+=======
+
+to run the unit tests, do:
+
+   % nosetests
+   
+to start the server, in development:
+
+* the very first time run start.sh to initialize the working env
+* after that, for each session
+  % source ./working-env/bin/activate
+* then
+  % python ./ecomap_start --mode <config file, w/out the .cfg extension> 

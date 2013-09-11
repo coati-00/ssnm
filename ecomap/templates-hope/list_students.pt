@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+
+<html metal:use-macro="sitemacros/macros/ecomap">
+
+	<div metal:fill-slot="content" id="content">
+	
+		<div id="breadcrumbbar">
+		<span class="here">You are Here:</span>   
+			<a href="/course/">
+				My Courses
+			</a>
+			&gt;
+			Students
+		</div>
+		
+		<metal:block define-macro="message">
+			<div tal:condition="message" tal:content="message" class="message" />
+		</metal:block>
+		
+		<div id="container">
+
+			<form action="update_students" method="post">
+		
+			<div class="addbar">
+				Add student by UNI:<input type="text" name="student_uni" width="10" /><input type="submit" name="action_add" value="Add Student" />
+			</div>
+			
+			<h2>
+				Students
+			</h2>
+			
+				<table tal:condition="students" class="infotable" cellspacing="0" summary="Network Map Table">
+				
+					<colgroup id="studenttablecols" span="4">
+						<col class="first" />
+						<col class="last" />
+						<col class="uni" />
+						<col class="delete" />
+					</colgroup>
+					
+					<thead>
+						<tr>
+							<th>
+								First Name
+							</th>
+							<th>
+								Last Name
+							</th>
+							<th>
+								UNI
+							</th>
+							<th class="centered">
+								Delete
+							</th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						<tal:block repeat="student students">
+							<tr>
+								<td tal:content="student/firstname" />
+								<td tal:content="student/lastname" />
+								<td tal:content="student/uni" />
+								<td class="centered">
+									<input type="checkbox" name="student_id" tal:attributes="value string:${student/id}" />
+								</td>
+							</tr>
+						</tal:block>
+					</tbody>
+					
+				</table>
+				
+				<div class="deletebar">
+					<input tal:condition="students" type="submit" name="action_delete" value="Delete Selected" onclick="return confirm('Are you sure you want to delete the selected items?');" />
+				</div>
+				
+			</form>
+			
+		</div>
+		
+	</div>
+	
+</html>
