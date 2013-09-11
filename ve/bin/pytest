@@ -1,8 +1,0 @@
-#!/usr/bin/env python2.7
-import os; activate_this=os.path.join(os.path.dirname(__file__), 'activate_this.py'); execfile(activate_this, dict(__file__=activate_this)); del os, activate_this
-
-import warnings
-warnings.simplefilter('default', DeprecationWarning)
-
-from logilab.common.pytest import run
-run()

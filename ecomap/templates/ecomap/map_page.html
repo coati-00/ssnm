@@ -36,7 +36,7 @@
 
 			<tbody>
 			{% for map in maps %}
-				    <tr><td>{{ map.title }}</td><td>{{ ecomap.ecouser.owner }}</td><td class="centered"><a href="/ecomap/game/{{ map.pk }}">View Map</a> | <a href="/ecomap/show_maps/">Delete</a></td></tr>
+				    <tr><td>{{ map.title }}</td><td>{{ ecomap.ecouser.owner }}</td><td class="centered"><a href="/ecomap/ecomap/{{ map.pk }}">View Map</a> | <a href="/ecomap/show_maps/">Delete</a></td></tr>
 			{% endfor %}
 			</tbody>
 

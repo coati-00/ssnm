@@ -1,0 +1,40 @@
+{% extends "intervention/game.html" %}
+{% load smartif %}
+{% block game_css %}
+    <link href="{{INTERVENTION_MEDIA}}ssnm_game/css/ssnm.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+<div id="game_content">
+{% block game_content %}
+<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+  codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0"
+   width="685px" height="470px" align="middle" >
+        <param name="allowScriptAccess" value="sameDomain" />
+        <param name="movie" value="{{relative_root}}site_media/ssnm_game/flash/ecomap.swf?{{random_value}}" />
+        <param name="loop" value="false" />
+        <param name="menu" value="false" />
+        <param name="quality" value="high" />
+        <param name="scale" value="noscale" />
+        <param name="salign" value="lt" />
+        <param name="bgcolor" value="#ffffff" />
+        <param  name="server=http://{{request_host}}/ssnm/{{ssnm_map_type}}/{{user.id}}/&amp;returnPath=back_to_list_button_clicked" />
+            <embed
+            src="{{relative_root}}site_media/ssnm_game/flash/ecomap.swf?{{random_value}}"
+            loop="false" menu="false"
+            quality="high" 
+            scale="noscale" 
+            salign="lt" 
+            bgcolor="#ffffff"
+            width="685px" 
+            height="470px"
+            align="middle" 
+            allowscriptaccess="sameDomain"
+            type="application/x-shockwave-flash" 
+            pluginspage="http://www.macromedia.com/go/getflashplayer"
+            flashVars="server=http://{{request_host}}/ssnm/{{ssnm_map_type}}/{{user.id}}/&amp;returnPath=back_to_list_button_clicked" 
+            />
+    </object>
+    {% endblock %}
+</div>
+
+{% block back_url %}/activity_complete/{{game.activity.id}}/{% endblock %}
+{% block next_url %}/activity_complete/{{game.activity.id}}/{% endblock %}

@@ -37,7 +37,7 @@ SOUTH_TESTS_MIGRATE = False
 
 NOSE_ARGS = [
     '--with-coverage',
-    '--cover-package=ssnm',
+    '--cover-package=ssnm.ecomap',
 ]
 
 JENKINS_TASKS = (
@@ -85,6 +85,7 @@ MIDDLEWARE_CLASSES = (
     'impersonate.middleware.ImpersonateMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'waffle.middleware.WaffleMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
 )
 
 ROOT_URLCONF = 'ssnm.urls'
@@ -120,6 +121,10 @@ INSTALLED_APPS = [
     'django_extensions',
     'impersonate',
     'ssnm.main',
+    'ecomap',
+    #'flash',
+    #'interface',
+    #'auth',
 ]
 
 LETTUCE_APPS = (
@@ -160,6 +165,9 @@ COMPRESS_URL = "/site_media/"
 COMPRESS_ROOT = "media/"
 
 # WIND settings
+#added this after reading about user profiles on django site - still not really clear to me
+AUTH_PROFILE_MODULE = 'ecomap.Ecouser'
+
 
 AUTHENTICATION_BACKENDS = ('djangowind.auth.WindAuthBackend',
                            'django.contrib.auth.backends.ModelBackend', )
@@ -171,7 +179,7 @@ WIND_AFFIL_HANDLERS = ['djangowind.auth.AffilGroupMapper',
                        'djangowind.auth.SuperuserMapper']
 WIND_STAFF_MAPPER_GROUPS = ['tlc.cunix.local:columbia.edu']
 WIND_SUPERUSER_MAPPER_GROUPS = ['anp8', 'jb2410', 'zm4', 'egr2107',
-                                'sld2131', 'amm8', 'mar227', 'jed2161']
+                                'sld2131', 'amm8', 'mar227', 'jed2161', 'cld2156']
 
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 SESSION_COOKIE_HTTPONLY = True

@@ -96,10 +96,10 @@ from django.template import RequestContext, loader
 
 
 
-@login_required
+#@login_required
 def display(request, map_id=""):
-    import pdb
-    pdb.set_trace()
+    #import pdb
+    #pdb.set_trace()
     new_xml = """<data>
         <response>OK</response>
         <isreadonly>false</isreadonly>
@@ -157,20 +157,18 @@ def display(request, map_id=""):
         return HttpResponse ("<data><response>OK</response></data>")
 
 
-
+#@login_required
 def ecomap(request):
     return render_to_response('ecomap/game_test.html')
 
-
+#@login_required
 def get_map(request, map_id=""):
-    #import pdb
-    #pdb.set_trace()
-    #print "game map id view"
     print map_id
     ecomap = Ecomap.objects.get(pk=map_id)
     print ecomap
     return render_to_response('ecomap/game_test.html', {'map': ecomap})
 
+#@login_required
 def show_maps(request):
     user = request.user
     ecouser = request.user.get_profile()
@@ -235,31 +233,6 @@ def contact(request):
     return render(request, 'ecomap/contact.html', {
         'form': form,
     })
-
-
-#Homepage should be login or overview screen no a list of courses
-# def student_home(request):
-#     '''Home page for students. Students only see their courses and maps.'''
-#     ecouser_info = first + " " + last + " " + uni
-#     courses = request.user.ecouser.course_set.all()
-#     return render_to_response("ecomap/home_page.html", {'current': courses})
-    
-
-# def staff_home(request):
-#     '''Home page for staff. Staff see all of their students and their courses. May also have admin abilities.'''
-#     ecouser_info = first + " " + last + " " + uni
-#     courses = request.user.ecouser.course_set.all()
-#     return render_to_response("ecomap/home_page.html", {'current': courses})
-#     #all_courses = Course.objects.all() #do they need to see other courses?
-
-
-# def admin_home(request):
-#     '''Home page for admins - they see all courses students and maps.'''
-#     user_uni = request.user.ecouser.uni
-#     current = ecouser.course_set.all()
-#     all_courses = Course.objects.all()
-#     return render_to_response("ecomap/home_page.html", {'current': current, 'all_courses': all_courses})
-
 
 
 

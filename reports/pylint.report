@@ -1,0 +1,137 @@
+ssnm/main/tests/test_views.py:7: [C0103, BasicTest.setUp] Invalid name "c" for type attribute (should match [a-z_][a-z0-9_]{2,30}$)
+ssnm/main/tests/test_views.py:11: [E1103, BasicTest.test_root] Instance of 'WSGIRequest' has no 'status_code' member (but some types could not be inferred)
+ssnm/main/tests/test_views.py:15: [E1103, BasicTest.test_smoketest] Instance of 'WSGIRequest' has no 'status_code' member (but some types could not be inferred)
+ssnm/main/tests/test_views.py:16: [E1103, BasicTest.test_smoketest] Instance of 'WSGIRequest' has no 'content' member (but some types could not be inferred)
+ssnm/main/tests/test_views.py:5: [R0904, BasicTest] Too many public methods (62/50)
+ssnm/main/tests/__init__.py:2: [W0403] Relative import 'test_models', should be 'ssnm.main.tests.test_models'
+ssnm/main/tests/__init__.py:2: [W0401] Wildcard import test_models
+ssnm/main/tests/__init__.py:3: [W0403] Relative import 'test_views', should be 'ssnm.main.tests.test_views'
+ssnm/main/tests/__init__.py:3: [W0401] Wildcard import test_views
+ssnm/main/tests/test_models.py:4: [R0904, BasicTest] Too many public methods (61/50)
+
+
+Report
+======
+28 statements analysed.
+
+Statistics by type
+------------------
+
++---------+-------+-----------+-----------+------------+---------+
+|type     |number |old number |difference |%documented |%badname |
++=========+=======+===========+===========+============+=========+
+|module   |7      |7          |=          |0.00        |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|class    |3      |3          |=          |0.00        |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|method   |5      |5          |=          |20.00       |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|function |1      |1          |=          |0.00        |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+
+
+
+External dependencies
+---------------------
+::
+
+    annoying 
+      \-decorators 
+        \-render_to (ssnm.main.views)
+    django 
+      \-contrib 
+      | \-auth 
+      |   \-models 
+      |     \-User (ssnm.main.smoke)
+      \-test 
+        \-TestCase (ssnm.main.tests.test_models,ssnm.main.tests.test_views)
+        \-client 
+          \-Client (ssnm.main.tests.test_views)
+    smoketest 
+      \-SmokeTest (ssnm.main.smoke)
+
+
+
+Duplication
+-----------
+
++-------------------------+------+---------+-----------+
+|                         |now   |previous |difference |
++=========================+======+=========+===========+
+|nb duplicated lines      |0     |0        |=          |
++-------------------------+------+---------+-----------+
+|percent duplicated lines |0.000 |0.000    |=          |
++-------------------------+------+---------+-----------+
+
+
+
+Messages by category
+--------------------
+
++-----------+-------+---------+-----------+
+|type       |number |previous |difference |
++===========+=======+=========+===========+
+|convention |1      |1        |=          |
++-----------+-------+---------+-----------+
+|refactor   |2      |2        |=          |
++-----------+-------+---------+-----------+
+|warning    |4      |4        |=          |
++-----------+-------+---------+-----------+
+|error      |3      |3        |=          |
++-----------+-------+---------+-----------+
+
+
+
+% errors / warnings by module
+-----------------------------
+
++---------------------------+-------+--------+---------+-----------+
+|module                     |error  |warning |refactor |convention |
++===========================+=======+========+=========+===========+
+|ssnm.main.tests.test_views |100.00 |0.00    |50.00    |100.00     |
++---------------------------+-------+--------+---------+-----------+
+|ssnm.main.tests.__init__   |0.00   |100.00  |0.00     |0.00       |
++---------------------------+-------+--------+---------+-----------+
+
+
+
+Messages
+--------
+
++-----------+------------+
+|message id |occurrences |
++===========+============+
+|E1103      |3           |
++-----------+------------+
+|W0403      |2           |
++-----------+------------+
+|W0401      |2           |
++-----------+------------+
+|R0904      |2           |
++-----------+------------+
+|C0103      |1           |
++-----------+------------+
+
+
+
+Global evaluation
+-----------------
+Your code has been rated at 2.14/10 (previous run: 2.14/10)
+
+Raw metrics
+-----------
+
++----------+-------+------+---------+-----------+
+|type      |number |%     |previous |difference |
++==========+=======+======+=========+===========+
+|code      |30     |69.77 |30       |=          |
++----------+-------+------+---------+-----------+
+|docstring |1      |2.33  |1        |=          |
++----------+-------+------+---------+-----------+
+|comment   |3      |6.98  |3        |=          |
++----------+-------+------+---------+-----------+
+|empty     |9      |20.93 |9        |=          |
++----------+-------+------+---------+-----------+
+
+
+
