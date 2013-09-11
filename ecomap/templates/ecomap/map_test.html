@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+	<title>[ SSNM ]{% block title %}{% endblock %}</title>
+    <link href="/site_media/ecomap.css" rel="stylesheet" type="text/css" />
+</head>
+
+
+
+<body class="{% block bodyclass %}{% endblock %}">
+	<a name="top"></a>
+	<div id="container-main">
+		<div id="masthead">
+			<div id="logo">
+			<img src="/site_media/logo_ccnmtl.gif" alt="SSNM Logo" />
+		</div>
+
+
+
+
+
+    <div id="game_content">
+        <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" width="685px" height="470px" align="middle" >
+            <param name="allowScriptAccess" value="sameDomain" />
+            <param name="movie" value="media/flash/ecomap.swf?{{random_value}}" />
+            <param name="loop" value="false" />
+            <param name="menu" value="false" />
+            <param name="quality" value="high" />
+            <param name="scale" value="noscale" />
+            <param name="salign" value="lt" />
+            <param name="bgcolor" value="#ffffff" />
+            <param  name="server=http://{{request_host}}/ssnm/{{ssnm_map_type}}/{{user.id}}/&amp;returnPath=back_to_list_button_clicked" />
+            <embed
+                src="media/flash/ecomap.swf?{{random_value}}"
+                loop="false" menu="false"
+                quality="high" 
+                scale="noscale" 
+                salign="lt" 
+                bgcolor="#ffffff"
+                width="685px" 
+                height="470px"
+                align="middle" 
+                allowscriptaccess="sameDomain"
+                type="application/x-shockwave-flash" 
+                pluginspage="http://www.macromedia.com/go/getflashplayer"
+                flashVars="server=http://{{request_host}}/ssnm/{{ssnm_map_type}}/{{user.id}}/&amp;returnPath=back_to_list_button_clicked" 
+            />
+        </object>
+    </div>
+
+
+</div>
+
+</body>
+</html>

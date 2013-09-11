@@ -1,0 +1,44 @@
+{% extends "ecobase.html" %}
+{% block content %}
+		<div id="breadcrumbbar">
+		<span class="here">You are Here:</span>
+		&gt;
+		Guest Login
+		</div>
+		
+		<div id="container">
+		
+			<h2>
+				Guest Login
+			</h2>
+			
+			<form action="/ecomap/guest_login" method="post">
+			
+				<fieldset>
+				
+					<legend>
+						Account Information
+					</legend>
+					
+					<label for="username">
+						User Name:</label>
+					<input id="username" type="text" name="uni" />
+					<br />
+					<br />
+					<label for="pass">
+						Password:</label>
+					<input id="pass" type="password" name="password" />
+					<br />
+					<br />
+					<label for="login">
+					</label>
+					<input id="login" type="submit" value="Log In" />
+					
+				</fieldset>
+				
+			</form>
+			
+		</div>
+		
+	</div>
+{% endblock %}

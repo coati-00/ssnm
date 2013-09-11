@@ -1,0 +1,77 @@
+{% extends "ecobase.html" %}
+{% block content %}
+
+<div id="breadcrumbbar">
+	<span class="here">You are Here:</span> 
+	My Courses
+</div>
+
+<div id="container">
+	<div class="addbar">
+		<form action="/ecomap/add_course" style="display: inline;" method="link">
+			<input type="submit" value="Create Course" />
+		</form>
+		<form action="/ecomap/manage_users" style="display: inline;" method="link">
+			<input type="submit" value="Manage Users" />
+		</form>
+	</div>
+		
+	<h2>	My Courses	</h2>
+
+		<table cellspacing="0" class="infotable" summary="Network Map Table">
+			<colgroup span="4" id="coursetablecols">
+				<col class="name" />
+				<col class="description" />
+				<col class="instructor" />
+				<col class="functions" />
+			</colgroup>
+					
+			<thead>
+						<tr>
+							<th>	Name	</th>	<th>	Description		</th>	<th>	Instructor	</th>
+							<th class="centered">	Functions	</th>
+						</tr>
+			</thead>
+
+
+			<tbody>
+			{% for course in current %}
+				    <tr><td>{{ course.name }}</td><td>{{ course.description }}</td><td>{{ course.course_id }}</td><td class="centered"><a href="/course/{{course.course_id}}/">View Maps</a> | <a href="/course/{{course.course_id}}/student">View Students</a> | <a href="/course/{{course.course_id}}/edit_course">Edit Course Information</a> | <a href="/course/{{course.course_id}}/delete">Delete</a></td></tr>
+			{% endfor %}
+			</tbody>
+
+			</table>			
+
+
+				
+	<h2 style="cursor:pointer" onclick="document.getElementById('allcourses').style.display = (document.getElementById('allcourses').style.display == 'none') ? 'block' : 'none'; document.getElementById('imgToggle').src = (document.getElementById('allcourses').style.display == 'none') ? '/images/closed.gif' : '/images/open.gif'">
+	<a href="#"><img src="/images/open.gif" alt="" id="imgToggle" class="toggle"></img></a> All Courses
+	</h2>
+				
+	<div style="display:block" id="allcourses">
+		<table cellspacing="0" class="infotable" summary="Network Map Table">
+			<colgroup span="4" id="coursetablecols">
+				<col class="name" />
+				<col class="description" />
+				<col class="instructor" />
+				<col class="functions" />
+			</colgroup>
+					
+			<thead>
+						<tr>
+							<th>	Name	</th>	<th>	Description		</th>	<th>	Instructor	</th>
+							<th class="centered">	Functions	</th>
+						</tr>
+			</thead>
+			<tbody>
+			{% for c_all in all_courses %}
+			<tr><td>{{ c_all.name }}</td><td>{{ c_all.description }}</td><td>{{ c_all.course_id }}</td><td class="centered"><a href="/course/{{c_all.course_id}}/">View Maps</a> | <a href="/course/{{course.course_id}}/student">View Students</a> | <a href="/course/{{c_all.course_id}}/edit_course">Edit Course Information</a> | <a href="/course/{{c_all.course_id}}/delete">Delete</a></td></tr>
+			{% endfor %}
+			</tbody>
+			</table>			
+	</div>
+
+
+
+
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "ecobase.html" %}
+{% block content %}
+
+<div id="breadcrumbbar">
+	<span class="here">You are Here:</span> 
+	My Maps
+</div>
+
+<div id="container">
+	<div class="addbar">
+		<form action="/ecomap/add_course" style="display: inline;" method="link">
+			<input type="submit" value="Create Course" />
+		</form>
+		<form action="/ecomap/manage_users" style="display: inline;" method="link">
+			<input type="submit" value="Manage Users" />
+		</form>
+	</div>
+		
+	<h2>	My Maps	{{ map.title }}</h2>
+
+		<table cellspacing="0" class="infotable" summary="Network Map Table">
+			<colgroup span="4" id="coursetablecols">
+				<col class="name" />
+				<col class="description" />
+				<col class="instructor" />
+				<col class="functions" />
+			</colgroup>
+					
+			<thead>
+						<tr>
+							<th>	Name	</th>	<th>	Description		</th>	<th>	Instructor	</th>
+							<th class="centered">	Functions	</th>
+						</tr>
+			</thead>
+
+
+			<tbody>
+			{% for map in maps %}
+				    <tr><td>{{ map.title }}</td><td>{{ ecomap.ecouser.owner }}</td><td class="centered"><a href="/ecomap/game/{{ map.pk }}">View Map</a> | <a href="/ecomap/show_maps/">Delete</a></td></tr>
+			{% endfor %}
+			</tbody>
+
+			</table>			
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+
+<html metal:use-macro="sitemacros/macros/ecomap">
+
+	<div metal:fill-slot="content" id="content">
+	
+		<div id="breadcrumbbar">
+		<span class="here">You are Here:</span>  
+			<a href="/course/">
+				My Courses
+			</a>
+			&gt; 
+			Manage Users
+		</div>
+		
+		<metal:block define-macro="message">
+			<div tal:condition="message" tal:content="message" class="message" />
+		</metal:block>
+		
+		<div id="container">
+		
+			<form action="admin_users" method="post">
+
+			<div class="addbar">
+				Add user(s) by UNI:
+				<input type="text" name="user_uni" width="10" />
+				<input style="margin-right:20px;" type="submit" name="action_add_users" value="Add User(s)" />
+				<input type="submit" name="action_add_guest" value="Add Guest Account" />
+			</div>
+			
+			<h2>
+				Manage Users
+			</h2>
+			
+			
+				<table tal:condition="allUsers" class="infotable" cellspacing="0" summary="Network Map Table">
+				
+					<colgroup id="alluserstablecols" span="6">
+						<col class="first" />
+						<col class="last" />
+						<col class="id" />
+						<col class="account" />
+						<col class="security" />
+						<col class="delete" />
+					</colgroup>
+					
+					<thead>
+						<tr>
+							<th>
+								First Name
+							</th>
+							<th>
+								Last Name
+							</th>
+							<th>
+								User ID
+							</th>
+							<th>
+								Account type
+							</th>
+							<th>
+								Security Level
+							</th>
+							<th class="centered">
+								Select
+							</th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						<tal:block repeat="thisUser allUsers">
+						<tr>
+							<td tal:content="thisUser/firstname" />
+							<td tal:content="thisUser/lastname" />
+							<td tal:content="thisUser/uni" />
+							<td tal:condition="python:thisUser.password == ''">
+								UNI
+							</td>
+							<td tal:condition="python:thisUser.password != ''">
+								Guest
+							</td>
+							<td tal:condition="python:thisUser.securityLevel == 1">
+								Admin
+							</td>
+							<td tal:condition="python:thisUser.securityLevel == 2">
+								User
+							</td>
+							<td class="centered">
+								<input type="checkbox" name="user_id" tal:attributes="value string:${thisUser/id}" />
+							</td>
+						</tr>
+						</tal:block>
+					</tbody>
+					
+				</table>
+				
+				<div class="deletebar">
+					<input tal:condition="allUsers" type="submit" name="action_change" value="Change Security Level of Selected" />
+					<input tal:condition="allUsers" type="submit" name="action_delete" value="Delete Selected" onclick="return confirm('Are you sure you want to completely erase these users?');" />
+				</div>
+				
+			</form>
+			
+		</div>
+		
+	</div>
+	
+</html>

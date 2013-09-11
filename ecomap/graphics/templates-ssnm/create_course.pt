@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+
+<html metal:use-macro="sitemacros/macros/ecomap">
+
+	<div metal:fill-slot="content" id="content">
+		
+		<div id="breadcrumbbar">
+		<span class="here">You are Here:</span>  
+			<a href="/course/">
+				My Courses
+			</a>
+			&gt; 
+			Create Course
+		</div>
+		
+		<metal:block define-macro="message">
+			<div tal:condition="message" tal:content="message" class="message" />
+		</metal:block>
+		
+		<div id="container">
+		
+			<h2>
+				Create Course
+			</h2>
+			
+			<form action="/create_course" method="post">
+			
+				<fieldset>
+				
+					<legend>
+						Course Information
+					</legend>
+					
+					<label for="coursename">
+						Name:</label>
+					<input id="coursename" type="text" name="name" />
+					
+					<form:iferror name="name">
+						<span class="errormessage">
+							<form:error name="name" />
+						</span>
+					</form:iferror>
+					<br />
+					<br />
+					<label for="coursedesc">
+						Description:</label>
+					<textarea id="coursedesc" type="text" name="description"></textarea>
+					<form:iferror name="description">
+						<span class="errormessage">
+							<form:error name="description" />
+						</span>
+					</form:iferror>
+					<br />
+					<br />
+					<label for="instid">
+						Instructor ID:
+					</label>
+					<select id="instid" name="instructor">
+						<option tal:repeat="i all_instructors" tal:attributes="value i/id" tal:content="string:${i/firstname} ${i/lastname}" />
+					</select>
+					<br />
+					<br />
+					<label for="addstudents">
+						Add Students:
+					</label>
+					<textarea id="addstudents" name="students" rows="5" cols="30">
+					</textarea>
+					<br />
+					<br />
+					<label for="createcourse">
+					</label>
+					<input id="createcourse" type="submit" value="Create Course" />
+					
+				</fieldset>
+				
+			</form>
+			
+		</div>
+		
+	</div>
+	
+</html>
