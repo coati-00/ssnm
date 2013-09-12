@@ -7,7 +7,6 @@ from django.contrib import admin
 from django.conf import settings
 
 
-
 class Ecouser(models.Model):
 
     class Meta:
@@ -21,7 +20,7 @@ class Ecouser(models.Model):
         ('AD', 'Administrator'),
     )
     status = models.CharField(max_length=2, choices=USER_STATUS_CHOICES, default='ST')
-    uni = models.CharField(max_length=50) 
+    uni = models.CharField(max_length=50)
 
 
     def __unicode__(self):
@@ -30,10 +29,8 @@ class Ecouser(models.Model):
 
 def create_user_profile(sender, instance, created, **kwargs):  
     if created:  
-       profile, created = Ecouser.objects.get_or_create(user=instance)  
-    post_save.connect(create_user_profile, sender=User) 
-
-
+       profile, created = Ecouser.objects.get_or_create(user=instance)
+    post_save.connect(create_user_profile, sender=User)
 
 
 
@@ -41,5 +38,3 @@ class Ecomap(models.Model):
     name = models.CharField(max_length=50)
     ecomap_xml = models.TextField()
     owner = models.ForeignKey('Ecouser') # an ecomap must have an owner or creator
-
-
