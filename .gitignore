@@ -5,4 +5,4 @@ deploy_specific
 *.pyc
 ve
 reports
-
+media/CACHE
