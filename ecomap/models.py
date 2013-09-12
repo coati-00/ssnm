@@ -31,9 +31,8 @@ def create_user_profile(sender, instance, created, **kwargs):
     post_save.connect(create_user_profile, sender=User)
 
 
-
 class Ecomap(models.Model):
     '''Store Ecomap and associated information'''
     name = models.CharField(max_length=50)
     ecomap_xml = models.TextField()
-    owner = models.ForeignKey('Ecouser') # an ecomap must have an owner or creator
+    owner = models.ForeignKey('Ecouser')  # an ecomap must have an owner or creator

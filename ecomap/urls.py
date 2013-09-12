@@ -19,13 +19,10 @@ urlpatterns = patterns(
     url(r'^ecomap/display/flashConduit$', views.display, name='display'),
     url(r'^show_maps/$', views.show_maps, name='show_maps'),
     #url(r'^home/$', views.home, name='home'),
-    #url(r'^show_all_students', views.show_all_students, name='show_all_students'),    
-    #url(r'^show_all_maps', views.show_all_students, name='show_all_students'),  
+    #url(r'^show_all_students', views.show_all_students, name='show_all_students'),
+    #url(r'^show_all_maps', views.show_all_students, name='show_all_students'),
 
     (r'^site_media/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': '/ecomap/media'}),
 
-
 ) + staticmedia.serve()
-
-
