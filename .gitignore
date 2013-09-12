@@ -6,3 +6,4 @@ deploy_specific
 ve
 reports
 media/CACHE
+.coverage
