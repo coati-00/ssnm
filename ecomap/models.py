@@ -20,7 +20,6 @@ class Ecouser(models.Model):
     status = models.CharField(max_length=2, choices=USER_STATUS_CHOICES, default='ST')
     uni = models.CharField(max_length=50)
 
-
     def __unicode__(self):
         return self.user.first_name + " " + self.user.last_name
 
