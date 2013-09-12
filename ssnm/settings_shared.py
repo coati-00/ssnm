@@ -48,7 +48,7 @@ JENKINS_TASKS = (
     'django_jenkins.tasks.run_pyflakes',
 )
 PROJECT_APPS = [
-    'ssnm.main',
+    'ssnm.main', 'ecomap', 'flash', 'ssnm_app', 'interface',
 ]
 
 ALLOWED_HOSTS = ['localhost', '.ccnmtl.columbia.edu']

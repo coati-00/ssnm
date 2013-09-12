@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<testsuites><testsuite name="ssnm.main.tests.test_views.BasicTest"><testcase classname="ssnm.main.tests.test_views.BasicTest" name="test_root" time="0.377834"></testcase><testcase classname="ssnm.main.tests.test_views.BasicTest" name="test_smoketest" time="0.018823"></testcase></testsuite></testsuites>

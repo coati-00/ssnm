@@ -1,2 +1,0 @@
-db_module=ecomap.model
-history_dir=$base/ecomap/sqlobject-history
