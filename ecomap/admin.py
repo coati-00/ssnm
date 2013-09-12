@@ -7,6 +7,7 @@ from django.contrib.admin import StackedInline
 
 
 class EcouserInline(admin.StackedInline):
+    '''Associating Ecouser with User object.'''
     model = Ecouser
 UserAdmin.inlines = [EcouserInline, ]
 

@@ -1,4 +1,4 @@
-#views based on @expose meta tags from controllers.py from original ecomap program
+'''Each view renders page of site with the excection of display - that method deals with the flash in the web page.'''
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, render_to_response, get_object_or_404, redirect
 from django.contrib.auth.models import User
@@ -6,7 +6,6 @@ from django.template import RequestContext, Context, loader
 from django import forms
 from django.views.generic.edit import FormView
 from ecomap.models import Ecouser, Ecomap
-from django.forms import ModelForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout
 from django.forms.models import model_to_dict
@@ -15,11 +14,10 @@ from xml.dom.minidom import parse, parseString
 #this code taken from nynja
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.sites.models import RequestSite, Site
 from django.views.decorators.csrf import csrf_protect
-from django.db import transaction
-import pdb
-from django.template import RequestContext, loader
+
+
+
 
         
 # This works but user can only create one map
@@ -98,8 +96,7 @@ from django.template import RequestContext, loader
 
 #@login_required
 def display(request, map_id=""):
-    #import pdb
-    #pdb.set_trace()
+    '''This method deals with the flash inside the web page, it passes it the needed data as xml in a large string'''
     new_xml = """<data>
         <response>OK</response>
         <isreadonly>false</isreadonly>
@@ -157,19 +154,22 @@ def display(request, map_id=""):
         return HttpResponse ("<data><response>OK</response></data>")
 
 
-#@login_required
+@login_required
 def ecomap(request):
+    '''User would like to create an ecomap - redirect them to a blank one.'''
     return render_to_response('ecomap/game_test.html')
 
-#@login_required
+@login_required
 def get_map(request, map_id=""):
+    '''User has requested a save ecomap - retrieve it.'''
     print map_id
     ecomap = Ecomap.objects.get(pk=map_id)
     print ecomap
     return render_to_response('ecomap/game_test.html', {'map': ecomap})
 
-#@login_required
+@login_required
 def show_maps(request):
+    '''Show the user all of their saved maps. Allow user to click on one and have it retrieved.'''
     user = request.user
     ecouser = request.user.get_profile()
     maps = ecouser.ecomap_set.all()
@@ -178,45 +178,37 @@ def show_maps(request):
 
 
 class ContactForm(forms.Form):
+    '''This is a form class that will be returned later in the contact form view.'''
     subject = forms.CharField(max_length=100)
     message = forms.CharField(max_length=200)
     sender = forms.EmailField()
 
 
 class FeedbackForm(forms.Form):
+    '''This is a form class that will be returned later in the contact form view. CAN PROB DELETE ONE JUST HAVE ONE FORM'''
     subject = forms.CharField(max_length=100)    
     message = forms.CharField(max_length=200)
     sender = forms.EmailField()
 
 class EcomapForm(forms.Form):
+    '''TO DO:Form to allow user to add additional data about their graph - user should be able to add description of map and give it a name.'''
     name = forms.CharField(max_length=50)
 
 
-
-#not sure these are correct
-def inst_check(user):
-    return user.ecouser.status == 'IN'
-def stu_check(user):
-    return user.ecouser.status == 'ST'
-def admin_check(user):
-    return user.ecouser.status == 'AD'
-
-
-
-
-
 def logout(request):
+    '''Allow user to log out.'''
     logout(request)
     return HttpResponse("You have successfully logged out.")
 
 
 def guest_login(self,uni="",password=""): #shows guest login page
-    """Presents login page."""
+    """Presents login page for guest NOT SURE IF THIS SHOULD BE DIFFERNENT FROM THE REGULARE LOGIN PAGE - HAVE ONE PAGE WITH OPTION TO CREATE ACCOUNT."""
     return render_to_response("ecomap/guest_login.html")
 
 
 #Done --> definately needs to be cleaned up
 def contact(request):
+    '''Contact someone regarding the project - WHO???'''
     if request.method == 'POST': # If the form has been submitted...
         form = ContactForm(request.POST) # A form bound to the POST data
         if form.is_valid(): # All validation rules pass

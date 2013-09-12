@@ -1,16 +1,14 @@
+'''Models for Ecouser and Ecomap. Ecouser is an extension of the User Profile'''
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
-from django.contrib.auth.admin import UserAdmin
-from django.contrib.admin import StackedInline
-from django.contrib import admin
-from django.conf import settings
 
 
 class Ecouser(models.Model):
+    '''Stores Ecouser profile with User profile if User uses Ecomaps'''
 
     class Meta:
-        verbose_name_plural="users"
+        verbose_name_plural = "users"
 
     user = models.OneToOneField(User, unique=True)
 
@@ -27,14 +25,16 @@ class Ecouser(models.Model):
         return self.user.first_name + " " + self.user.last_name
 
 
-def create_user_profile(sender, instance, created, **kwargs):  
-    if created:  
-       profile, created = Ecouser.objects.get_or_create(user=instance)
+def create_user_profile(sender, instance, created, **kwargs):
+    '''method that associates Ecouser with User object'''
+    if created:
+        profile, created = Ecouser.objects.get_or_create(user=instance)
     post_save.connect(create_user_profile, sender=User)
 
 
 
 class Ecomap(models.Model):
+    '''Store Ecomap and associated information'''
     name = models.CharField(max_length=50)
     ecomap_xml = models.TextField()
     owner = models.ForeignKey('Ecouser') # an ecomap must have an owner or creator
