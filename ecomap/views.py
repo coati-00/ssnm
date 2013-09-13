@@ -1,18 +1,15 @@
-'''Each view renders page of site with the excection of display - that method deals with the flash in the web page.'''
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, render_to_response, get_object_or_404, redirect
+'''Each view renders page of site with the excection of
+ display - that method deals with the flash in the web page.'''
+from django.http import HttpResponse
+from django.shortcuts import render, render_to_response, get_object_or_404
 from django.contrib.auth.models import User
-from django.template import RequestContext, Context, loader
 from django import forms
-from django.views.generic.edit import FormView
 from ecomap.models import Ecouser, Ecomap
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import login
 from django.contrib.auth import logout
-from django.forms.models import model_to_dict
-from django.utils import simplejson
-from xml.dom.minidom import parse, parseString
+from xml.dom.minidom import parseString
 #this code taken from nynja
-from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.csrf import csrf_protect
 
@@ -63,7 +60,7 @@ from django.views.decorators.csrf import csrf_protect
 #             m_xml = m.ecomap_xml
 #     if action == "load":
 #         if count_maps == 0:
-#            return HttpResponse(new_xml % username) #this runs correctly - if use has no map they create new one
+#            return HttpResponse(new_xml % username)
 #         else:
 #             return HttpResponse(m_xml)
 #     if action == "save":
@@ -80,7 +77,8 @@ from django.views.decorators.csrf import csrf_protect
 
 @login_required
 def display(request, map_id=""):
-    '''This method deals with the flash inside the web page, it passes it the needed data as xml in a large string'''
+    '''This method deals with the flash inside the web page,
+     it passes it the needed data as xml in a large string'''
     new_xml = """<data>
         <response>OK</response>
         <isreadonly>false</isreadonly>
@@ -120,7 +118,8 @@ def display(request, map_id=""):
 
     if action == "load":
         if map_id == "":
-            return HttpResponse(new_xml % username)  # this runs correctly - if use has no map they create new one
+            return HttpResponse(new_xml % username)
+            # this runs correctly - if use has no map they create new one
         else:
             find_map = ecouser.ecomap_set.get(pk=map_id)
             m_xml = find_map.ecomap_xml
@@ -153,7 +152,8 @@ def get_map(request, map_id=""):
 
 @login_required
 def show_maps(request):
-    '''Show the user all of their saved maps. Allow user to click on one and have it retrieved.'''
+    '''Show the user all of their saved maps.
+    Allow user to click on one and have it retrieved.'''
     user = request.user
     ecouser = request.user.get_profile()
     maps = ecouser.ecomap_set.all()
@@ -161,21 +161,24 @@ def show_maps(request):
 
 
 class ContactForm(forms.Form):
-    '''This is a form class that will be returned later in the contact form view.'''
+    '''This is a form class that will be returned
+    later in the contact form view.'''
     subject = forms.CharField(max_length=100)
     message = forms.CharField(max_length=200)
     sender = forms.EmailField()
 
 
 class FeedbackForm(forms.Form):
-    '''This is a form class that will be returned later in the contact form view. CAN PROB DELETE ONE JUST HAVE ONE FORM'''
+    '''This is a form class that will be returned later in the contact
+    form view. CAN PROB DELETE ONE JUST HAVE ONE FORM'''
     subject = forms.CharField(max_length=100)
     message = forms.CharField(max_length=200)
     sender = forms.EmailField()
 
 
 class EcomapForm(forms.Form):
-    '''TO DO:Form to allow user to add additional data about their graph - user should be able to add description of map and give it a name.'''
+    '''TO DO:Form to allow user to add additional data about their graph
+     - user should be able to add description of map and give it a name.'''
     name = forms.CharField(max_length=50)
 
 
@@ -186,7 +189,9 @@ def logout(request):
 
 
 def guest_login(self, uni="", password=""):  # hows guest login page
-    """Presents login page for guest NOT SURE IF THIS SHOULD BE DIFFERNENT FROM THE REGULARE LOGIN PAGE - HAVE ONE PAGE WITH OPTION TO CREATE ACCOUNT."""
+    """Presents login page for guest NOT SURE IF THIS SHOULD
+    BE DIFFERNENT FROM THE REGULAR
+    LOGIN PAGE - HAVE ONE PAGE WITH OPTION TO CREATE ACCOUNT."""
     return render_to_response("ecomap/guest_login.html")
 
 
@@ -216,6 +221,6 @@ def about(request):
     return render_to_response('ecomap/about.html')
 
 
-def help(request):
+def help_page(request):
     """Returns help page."""
     return render_to_response('ecomap/help.html')

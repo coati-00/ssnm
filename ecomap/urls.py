@@ -9,7 +9,7 @@ site_media_root = os.path.join(os.path.dirname(__file__), "media")
 
 urlpatterns = patterns(
     '',
-    url(r'^help/$', views.help, name='help'),
+    url(r'^help/$', views.help_page, name='help'),
     url(r'^about/$', views.about, name='about'),
     url(r'^contact/$', views.contact, name='contact'),
     url(r'^guest_login/$', views.guest_login, name='guest_login'),

@@ -1,3 +1,6 @@
+'''
+This file is to test all the views of the application.
+'''
 from django.utils import unittest
 from ecomap.models import *
 from ecomap.views import *

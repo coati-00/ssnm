@@ -8,6 +8,7 @@ class Ecouser(models.Model):
     '''Stores Ecouser profile with User profile if User uses Ecomaps'''
 
     class Meta:
+        '''put users when multiple ecousers are involved'''
         verbose_name_plural = "users"
 
     user = models.OneToOneField(User, unique=True)
@@ -35,4 +36,5 @@ class Ecomap(models.Model):
     '''Store Ecomap and associated information'''
     name = models.CharField(max_length=50)
     ecomap_xml = models.TextField()
-    owner = models.ForeignKey('Ecouser')  # an ecomap must have an owner or creator
+    owner = models.ForeignKey('Ecouser')
+    # an ecomap must have an owner or creator

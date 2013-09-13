@@ -1,8 +1,9 @@
+'''Administer Ecouser and Ecomap from the
+adming interface.'''
 from ecomap.models import Ecouser, Ecomap
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.admin import StackedInline
 
 
 class EcouserInline(admin.StackedInline):
