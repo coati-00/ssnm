@@ -167,6 +167,14 @@ class ContactForm(forms.Form):
     message = forms.CharField(max_length=200)
     sender = forms.EmailField()
 
+class CreateAccountForm(forms.Form):
+    '''This is a form class that will be returned
+    later in the contact form view.'''
+    firstname = forms.CharField(max_length=100)
+    lastname = forms.CharField(max_length=100)
+    username = forms.CharField(max_length=100)
+    password1 = forms.CharField(max_length=100)
+    password2 = forms.CharField(max_length=100)
 
 class FeedbackForm(forms.Form):
     '''This is a form class that will be returned later in the contact
@@ -224,3 +232,25 @@ def about(request):
 def help_page(request):
     """Returns help page."""
     return render_to_response('ecomap/help.html')
+
+def home(request):
+    """Presents login page for guest NOT SURE IF THIS SHOULD
+    BE DIFFERNENT FROM THE REGULAR
+    LOGIN PAGE - HAVE ONE PAGE WITH OPTION TO CREATE ACCOUNT."""
+    return render_to_response("ecomap/home_login.html")
+
+def create_account(request):
+    if request.method == 'POST':  # If the form has been submitted...
+        form = ContactForm(request.POST)  # A form bound to the POST data
+        if form.is_valid():  # All validation rules pass
+            firstname = form.cleaned_data['firstname']
+            lastname = form.cleaned_data['lastname']
+            username = form.cleaned_data['username']
+            return render_to_response('ecomap/thanks.html')
+    else:
+        form = ContactForm()  # An unbound form
+
+    return render(request, 'ecomap/contact.html', {
+        'form': form,
+    })
+

@@ -18,7 +18,8 @@ urlpatterns = patterns(
     url(r'^ecomap/$', views.ecomap, name='game'),
     url(r'^ecomap/display/flashConduit$', views.display, name='display'),
     url(r'^show_maps/$', views.show_maps, name='show_maps'),
-    #url(r'^home/$', views.home, name='home'),
+    url(r'^$', views.home, name='ecomap'),
+    url(r'^create_account/$', views.create_account, name='create_account'),
     #url(r'^show_all_students', views.show_all_students, name='show_all_students'),
     #url(r'^show_all_maps', views.show_all_students, name='show_all_students'),
 

@@ -27,7 +27,6 @@ urlpatterns = patterns(
     logout_page,
     (r'^$', 'ssnm.main.views.index'),
     (r'^ecomap/', include('ecomap.urls')),
-    (r'^interface/', include('interface.urls')),
     #(r'^$', 'ssnm_app.main.views.index'),
     (r'^admin/', include(admin.site.urls)),
     url(r'^_impersonate/', include('impersonate.urls')),
