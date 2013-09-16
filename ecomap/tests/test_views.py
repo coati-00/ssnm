@@ -19,6 +19,11 @@ class ViewTest(TestCase):  # unittest.
         self.user.ecouser = Ecouser(status='ST', uni='444', user_id='679')
         self.user.ecouser.save()
         self.user.save()
+        #Guest user
+        #self.guestuser = User.objects.create_user('guestuser', 'guestuser@email.com', 'guestuser')
+        #self.guestuser.ecouser = Ecouser(status='ST', uni='888', user_id='135')
+        #self.guestuser.ecouser.save()
+        #self.guestuser.save()
         #IF BELOW VIEWS ARE COMMENTED OUT ALMOST EVERYTHING PASSES
         self.ecomap = Ecomap(pk='6', name="Test Map 1", ecomap_xml="<data><response>OK</response><isreadonly>false</isreadonly><name>somestudent</name><flashData><circles><circle><radius>499</radius></circle><circle><radius>350</radius></circle><circle><radius>200</radius></circle></circles><supportLevels><supportLevel><text>VeryHelpful</text></supportLevel><supportLevel><text>SomewhatHelpful</text></supportLevel><supportLevel><text>NotSoHelpful</text></supportLevel></supportLevels><supportTypes><supportType><text>Social</text></supportType><supportType><text>Advice</text></supportType><supportType><text>Empathy</text></supportType><supportType><text>Practical</text></supportType></supportTypes><persons><person><name>green</name><supportLevel>2</supportLevel><supportTypes><support>Advice</support><support>Social</support></supportTypes><x>293</x><y>70</y></person><person><name>yellow</name><supportLevel>1</supportLevel><supportTypes><support>Social</support><support>Empathy</support></supportTypes><x>448</x><y>208</y></person><person><name>red</name><supportLevel>0</supportLevel><supportTypes><support>Social</support><support>Practical</support></supportTypes><x>550</x><y>81.95</y></person></persons></flashData></data>")
         self.ecomap.owner_id = '444'
@@ -26,6 +31,14 @@ class ViewTest(TestCase):  # unittest.
         #unauthenticated user
         self.bad_user = User.objects.create_user('not_ecouser', 'email@email.com', 'not_ecouser')
         self.bad_user.save()
+
+
+
+
+
+
+
+
 
     # FIRST CHECK THAT ALL URLS ARE ACCESSIBLE
     # following three pass whether using client or the above user info
@@ -84,11 +97,10 @@ class ViewTest(TestCase):  # unittest.
         response = self.client.post('', { 'username' : 'somestudent', 'password' : 'somestudent'})
         self.assertEqual(response.status_code, 200)
 
-    def guest_login_page(self):
+    def test_guest_login_page(self):
         '''Test that guest user who created an account is returned a page upon logging in.'''
-        pass
-        #response = self.client.post('', { 'username' : 'guestuser', 'password' : 'guestuser'})
-        #self.assertEqual(response.status_code, 200)
+        response = self.client.post('', { 'username' : 'guestuser', 'password' : 'guestuser'})
+        self.assertEqual(response.status_code, 200)
 
     def test_home_page(self):
         '''Test that logged in user recieves response of home page..'''
@@ -107,11 +119,9 @@ class ViewTest(TestCase):  # unittest.
     #  TEST RETRIEVAL OF SAVE MAP
     def test_saved_ecomap(self):
         '''Test that requesting saved_ecomap page returns a response.'''
-        print "inside method"
-        request = self.factory.post('/ecomap/ecomap/6/')  # WSGI Request
-        request.user = self.user  # User
+        request = self.factory.post('/ecomap/ecomap/6/')
+        request.user = self.user
         response = get_map(request, 6)
-        print type(response)
         self.assertEqual(response.status_code, 200)
 
 # TEST FLASH IS RETURNING RESPONSE
@@ -133,11 +143,6 @@ class ViewTest(TestCase):  # unittest.
 
 # ###########################
 # # CHECK THAT VIEWS ARE NOT RETURNED TO NON ECOMAP USER
-    def test_fail_login_page(self):
-        '''We want to make sure that users who may have unis but
-        are not actually ecomap users cannot login.'''
-        response = self.bad_user.post('', { 'username' : 'not_ecouser', 'password' : 'not_ecouser'})
-        self.assertEqual(response.status_code, 401)
 
     def test_fail_show_maps_page(self):
         '''We want to make sure that users who may have unis but
@@ -151,11 +156,9 @@ class ViewTest(TestCase):  # unittest.
         '''We want to make sure that users who may have unis but
         are not actually ecomap users cannot cannot access other
         users saved maps.'''
-        print "inside method"
         request = self.factory.post('/ecomap/ecomap/6/')  # WSGI Request
-        request.user = self.bad_user  # User
+        request.user = self.bad_user
         response = get_map(request, 6)
-        print type(response)
         self.assertEqual(response.status_code, 401)
 
     def test_fail_flash_ecomap(self):
@@ -174,3 +177,17 @@ class ViewTest(TestCase):  # unittest.
         request.user = self.bad_user
         response = show_maps(request)
         self.assertEqual(response.status_code, 401)
+
+    def test_user_request_map_that_does_not_exist(self):
+        '''We should check that when a user requests a map that does
+        not exist in the url an appropriate response is given.'''
+        request = self.client.post('/ecomap/ecomap/7/')
+        request.user = self.user
+        response = get_map(request)
+        self.assertEqual(response.status_code, 404)
+
+    def test_empty_create_account_post(self):
+        '''Testing create account function can correctly handle
+        empty post data.'''
+        pass
+

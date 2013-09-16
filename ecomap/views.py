@@ -1,12 +1,11 @@
 '''Each view renders page of site with the excection of
  display - that method deals with the flash in the web page.'''
-from django.http import HttpResponse
+from ecomap.models import Ecouser, Ecomap
+from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, render_to_response, get_object_or_404
 from django.contrib.auth.models import User
 from django import forms
-from ecomap.models import Ecouser, Ecomap
-from django.contrib.auth import login
-from django.contrib.auth import logout
+from django.contrib.auth import login, logout
 from xml.dom.minidom import parseString
 #this code taken from nynja
 from django.contrib.auth.decorators import login_required
@@ -82,7 +81,7 @@ def display(request, map_id=""):
 def ecomap(request):
     '''User would like to create an ecomap - redirect them to a blank one.'''
     user = request.user
-    if type(user.get_profile()) == Ecouser:
+    if hasattr(user, 'ecouser'):
         return render_to_response('ecomap/game_test.html')
     else:
         #return HttpResponse("You must be an Ecouser to use this application")
@@ -92,9 +91,13 @@ def ecomap(request):
 @login_required
 def get_map(request, map_id=""):
     '''User has requested a save ecomap - retrieve it.'''
-    if type(user.get_profile()) == Ecouser:
-        ecomap = Ecomap.objects.get(pk=map_id)
-        return render_to_response('ecomap/game_test.html', {'map': ecomap})
+    user = request.user
+    if hasattr(user, 'ecouser'):
+        try:
+            ecomap = Ecomap.objects.get(pk=map_id)
+            return render_to_response('ecomap/game_test.html', {'map': ecomap})
+        except:
+            return HttpResponseNotFound('<h1>Page not found</h1>')
     else:
         #return HttpResponse("You must be an Ecouser to use this application")
         return HttpResponse('Unauthorized', status=401)
@@ -107,7 +110,7 @@ def show_maps(request):
     # user should only be able to access Ecouser related
     # link if they are actually an Ecouser
     user = request.user
-    if type(user.get_profile()) == Ecouser:
+    if hasattr(user, 'ecouser'):
         ecouser = request.user.get_profile()
         maps = ecouser.ecomap_set.all()
         return render_to_response("ecomap/map_page.html", {'maps': maps, 'user': user, })
@@ -146,13 +149,6 @@ class EcomapForm(forms.Form):
     '''TO DO:Form to allow user to add additional data about their graph
      - user should be able to add description of map and give it a name.'''
     name = forms.CharField(max_length=50)
-
-
-def logout(request):
-    '''Allow user to log out.'''
-    logout(request)
-    return HttpResponse("You have successfully logged out.")
-
 
 def guest_login(self, uni="", password=""):  # hows guest login page
     """Presents login page for guest NOT SURE IF THIS SHOULD
