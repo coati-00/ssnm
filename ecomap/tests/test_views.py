@@ -64,6 +64,8 @@ class ViewTest(TestCase):  # unittest.
         '''Test that user who creates account get appropriate response.'''
         pass
 
+
+
     def test_create_guest_account(self):
         '''Test that guest user who creates account is returned an appropriate resposne.'''
         pass

@@ -99,7 +99,6 @@ def get_map(request, map_id=""):
         except:
             return HttpResponseNotFound('<h1>Page not found</h1>')
     else:
-        #return HttpResponse("You must be an Ecouser to use this application")
         return HttpResponse('Unauthorized', status=401)
 
 
@@ -115,7 +114,6 @@ def show_maps(request):
         maps = ecouser.ecomap_set.all()
         return render_to_response("ecomap/map_page.html", {'maps': maps, 'user': user, })
     else:
-        #return HttpResponse("You must be an Ecouser to use this application")
         return HttpResponse('Unauthorized', status=401)
 
 
@@ -136,15 +134,6 @@ class CreateAccountForm(forms.Form):
     password1 = forms.CharField(max_length=100)
     password2 = forms.CharField(max_length=100)
 
-
-class FeedbackForm(forms.Form):
-    '''This is a form class that will be returned later in the contact
-    form view. CAN PROB DELETE ONE JUST HAVE ONE FORM'''
-    subject = forms.CharField(max_length=100)
-    message = forms.CharField(max_length=200)
-    sender = forms.EmailField()
-
-
 class EcomapForm(forms.Form):
     '''TO DO:Form to allow user to add additional data about their graph
      - user should be able to add description of map and give it a name.'''
@@ -155,7 +144,6 @@ def guest_login(self, uni="", password=""):  # hows guest login page
     BE DIFFERNENT FROM THE REGULAR
     LOGIN PAGE - HAVE ONE PAGE WITH OPTION TO CREATE ACCOUNT."""
     return render_to_response("ecomap/guest_login.html")
-
 
 # Done --> definately needs to be cleaned up
 def contact(request):
@@ -177,16 +165,13 @@ def contact(request):
         'form': form,
     })
 
-
 def about(request):
     """Returns about page."""
     return render_to_response('ecomap/about.html')
 
-
 def help_page(request):
     """Returns help page."""
     return render_to_response('ecomap/help.html')
-
 
 def home(request):
     """Presents login page for guest NOT SURE IF THIS SHOULD
@@ -206,6 +191,6 @@ def create_account(request):
     else:
         form = ContactForm()  # An unbound form
 
-    return render(request, 'ecomap/contact.html', {
+    return render(request, 'ecomap/create_account.html', {
         'form': form,
     })

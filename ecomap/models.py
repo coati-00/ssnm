@@ -12,18 +12,7 @@ class Ecouser(models.Model):
         verbose_name_plural = "users"
 
     user = models.OneToOneField(User, unique=True)
-
-    USER_STATUS_CHOICES = (
-        ('IN', 'Instructor'),
-        ('ST', 'Student'),
-        ('AD', 'Administrator'),
-    )
-    status = models.CharField(max_length=2, choices=USER_STATUS_CHOICES, default='ST')
     uni = models.CharField(max_length=50)
-
-    def __unicode__(self):
-        return self.user.first_name + " " + self.user.last_name
-
 
 def create_user_profile(sender, instance, created, **kwargs):
     '''method that associates Ecouser with User object'''
@@ -37,4 +26,3 @@ class Ecomap(models.Model):
     name = models.CharField(max_length=50)
     ecomap_xml = models.TextField()
     owner = models.ForeignKey('Ecouser')
-    # an ecomap must have an owner or creator
