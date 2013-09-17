@@ -16,7 +16,7 @@ class ViewTest(TestCase):  # unittest.
         #self.client = Client()
         self.factory = RequestFactory()
         self.user = User.objects.create_user('somestudent', 'email@email.com', 'somestudent')
-        self.user.ecouser = Ecouser(status='ST', uni='444', user_id='679')
+        self.user.ecouser = Ecouser(uni='444', user_id='679')
         self.user.ecouser.save()
         self.user.save()
         #Guest user
