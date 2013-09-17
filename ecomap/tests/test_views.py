@@ -3,7 +3,7 @@ This file is to test all the views of the application.
 '''
 #from django.utils import unittest
 from ecomap.models import Ecouser, Ecomap
-from ecomap.views import ecomap, get_map, show_maps, ContactForm, CreateAccountForm, FeedbackForm, EcomapForm, logout, guest_login, contact, about, help_page, home
+from ecomap.views import ecomap, get_map, show_maps, ContactForm, CreateAccountForm, EcomapForm, logout, guest_login, contact, about, help_page, home
 #from django.test.client import Client
 from django.contrib.auth.models import User
 from django.test import TestCase, RequestFactory

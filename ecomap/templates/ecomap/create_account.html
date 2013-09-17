@@ -1,0 +1,61 @@
+{% extends "ecobase.html" %}
+{% block content %}		
+		<div id="breadcrumbbar">
+		<span class="here">You are Here:</span>  
+				&gt; 	Create Account
+		</div>
+		
+		<div id="container">
+			<h2>	Create Account	</h2>
+			<form action="/create_account" method="post">
+			<fieldset>
+				<legend>Account Information</legend>
+
+					<label for="username">	Username:</label><input id="username" type="text" name="uname" />
+					<form:iferror name="name"><span class="errormessage"><form:error name="name" />	</span>
+					</form:iferror>
+					<br/><br/>
+
+					<label for="email">	Email:</label><input id="email_id" type="text" name="email" />
+					<form:iferror name="name"><span class="errormessage"><form:error name="name" />	</span>
+					</form:iferror>
+					<br/><br/>
+
+
+					<label for="firstname">	First Name:</label><input id="firstname" type="text" name="fname" />
+					<form:iferror name="name"><span class="errormessage"><form:error name="name" />	</span>
+					</form:iferror>
+					<br/><br/>
+
+
+					<label for="lastname">	Last Name:</label><input id="lastname" type="text" name="lname" />
+					<form:iferror name="name"><span class="errormessage"><form:error name="name" />	</span>
+					</form:iferror>
+					<br/><br/>
+
+
+					<label for="password1">	Password:</label><input id="password1" type="password" name="password1" />
+					<form:iferror name="name"><span class="errormessage"><form:error name="name" />	</span>
+					</form:iferror>
+					<br/><br/>
+
+
+					<label for="password2">	Password:</label><input id="password2" type="password" name="uname" />
+					<form:iferror name="name"><span class="errormessage"><form:error name="name" />	</span>
+					</form:iferror>
+					<br/><br/>
+
+
+					<br/><br/>
+					<label for="createaccount">	</label>
+					<input id="createaccount" type="submit" value="Create Account" />
+					
+				</fieldset>
+				
+			</form>
+			
+		</div>
+		
+	</div>
+	
+{% endblock %}

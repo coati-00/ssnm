@@ -1,1 +1,1 @@
-from ecomap.views import display, ecomap, get_map, show_maps, ContactForm, CreateAccountForm, FeedbackForm, EcomapForm, logout, guest_login, contact, about, help_page, home
+from ecomap.views import display, ecomap, get_map, show_maps, ContactForm, CreateAccountForm, EcomapForm, logout, guest_login, contact, about, help_page, home
