@@ -26,3 +26,14 @@ class Ecomap(models.Model):
     name = models.CharField(max_length=50)
     ecomap_xml = models.TextField()
     owner = models.ForeignKey('Ecouser')
+
+
+'''
+from django.contrib.auth.hashers import UNUSABLE_PASSWORD
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.forms import PasswordResetForm
+from registration.forms import RegistrationForm
+from django.core.exceptions import ImproperlyConfigured
+from django.utils.encoding import DjangoUnicodeDecodeError
+from django import forms
+'''

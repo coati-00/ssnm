@@ -13,6 +13,7 @@ urlpatterns = patterns(
     url(r'^help/$', views.help_page, name='help'),
     url(r'^about/$', views.about, name='about'),
     url(r'^contact/$', views.contact, name='contact'),
+    url(r'^thanks/$', views.thanks, name='thanks'),
     url(r'^guest_login/$', views.guest_login, name='guest_login'),
     url(r'^ecomap/(?P<map_id>\d+)/$', views.get_map, name='get_map'),
     url(r'^ecomap/(?P<map_id>\d+)/display/flashConduit$', views.display, name='display'),

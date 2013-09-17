@@ -1,7 +1,7 @@
 '''Each view renders page of site with the excection of
  display - that method deals with the flash in the web page.'''
 from ecomap.models import Ecouser, Ecomap
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render, render_to_response, get_object_or_404
 from django.contrib.auth.models import User
 from django import forms
@@ -133,6 +133,7 @@ class CreateAccountForm(forms.Form):
     username = forms.CharField(max_length=100)
     password1 = forms.CharField(max_length=100)
     password2 = forms.CharField(max_length=100)
+    email = forms.EmailField()
 
 class EcomapForm(forms.Form):
     '''TO DO:Form to allow user to add additional data about their graph
@@ -165,6 +166,10 @@ def contact(request):
         'form': form,
     })
 
+def thanks(request):
+    """Returns thanks page."""
+    return render_to_response('ecomap/thanks.html')
+
 def about(request):
     """Returns about page."""
     return render_to_response('ecomap/about.html')
@@ -181,15 +186,38 @@ def home(request):
 
 
 def create_account(request):
-    if request.method == 'POST':  # If the form has been submitted...
-        form = ContactForm(request.POST)  # A form bound to the POST data
-        if form.is_valid():  # All validation rules pass
-            firstname = form.cleaned_data['firstname']
-            lastname = form.cleaned_data['lastname']
-            username = form.cleaned_data['username']
-            return render_to_response('ecomap/thanks.html')
+    if request.method == 'POST':
+        form = CreateAccountForm(request.POST)
+        if form.is_valid(): #  now is valid
+            try:
+                print "inside try block"
+                User.objects.get(username=form.cleaned_data['username']) #  checking to see if user exists
+                raise forms.ValidationError("this username already exists")
+            except User.DoesNotExist:
+                print "inside except block, returning user name"
+                #return form.cleaned_data['username']
+            
+                print "we have gotten past exception land"
+
+                if 'password1' in form.cleaned_data and 'password2' in form.cleaned_data:
+                    #make sure the passwords entered match
+                    print "comparing passwords"
+                    print form.cleaned_data['password1']
+                    print form.cleaned_data['password2']
+                    if form.cleaned_data['password1'] != form.cleaned_data['password2']:
+                        raise forms.ValidationError("passwords dont match each other")
+                    if form.cleaned_data['password1'] == form.cleaned_data['password2']:
+                        new_user = User.objects.create_user(username=form.cleaned_data['username'], email=form.cleaned_data['email'], password=form.cleaned_data['password1'])
+                        new_user.first_name = form.cleaned_data['firstname']
+                        new_user.last_name = form.cleaned_data['lastname']
+                        new_user.save()
+                        return HttpResponseRedirect('/ecomap/thanks/')
+
+                else:
+                    raise forms.ValidationError("You must enter two matching passwords")
+                
     else:
-        form = ContactForm()  # An unbound form
+        form = CreateAccountForm()  # An unbound form
 
     return render(request, 'ecomap/create_account.html', {
         'form': form,

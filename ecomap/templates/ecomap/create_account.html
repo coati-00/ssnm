@@ -1,4 +1,5 @@
 {% extends "ecobase.html" %}
+{% load i18n %}
 {% block content %}		
 		<div id="breadcrumbbar">
 		<span class="here">You are Here:</span>  
@@ -7,55 +8,58 @@
 		
 		<div id="container">
 			<h2>	Create Account	</h2>
-			<form action="/create_account" method="post">
-			<fieldset>
+			<form action="." method="post">{% csrf_token %}
+			    {{form.non_field_errors}}
+                <fieldset>
 				<legend>Account Information</legend>
 
-					<label for="username">	Username:</label><input id="username" type="text" name="uname" />
-					<form:iferror name="name"><span class="errormessage"><form:error name="name" />	</span>
-					</form:iferror>
+                    <div class="fieldWrapper">
+                    {{ form.username.errors }}
+					<label for="username">	Username:</label>
+					{{form.username}}
 					<br/><br/>
+					</div>
 
-					<label for="email">	Email:</label><input id="email_id" type="text" name="email" />
-					<form:iferror name="name"><span class="errormessage"><form:error name="name" />	</span>
-					</form:iferror>
+                    <div class="fieldWrapper">
+                    {{ form.email.errors }}
+					<label for="email">	Email:</label>
+					{{form.email}}
 					<br/><br/>
+					</div>
 
-
-					<label for="firstname">	First Name:</label><input id="firstname" type="text" name="fname" />
-					<form:iferror name="name"><span class="errormessage"><form:error name="name" />	</span>
-					</form:iferror>
+                    <div class="fieldWrapper">
+                    {{ form.firstname.errors }}
+					<label for="firstname">	First Name:</label>
+					{{form.firstname}}
 					<br/><br/>
+                    </div>
 
-
-					<label for="lastname">	Last Name:</label><input id="lastname" type="text" name="lname" />
-					<form:iferror name="name"><span class="errormessage"><form:error name="name" />	</span>
-					</form:iferror>
+                    <div class="fieldWrapper">
+                    {{ form.lastname.errors }}
+					<label for="lastname">	Last Name:</label>
+					{{form.lastname}}
 					<br/><br/>
+					</div>
 
-
-					<label for="password1">	Password:</label><input id="password1" type="password" name="password1" />
-					<form:iferror name="name"><span class="errormessage"><form:error name="name" />	</span>
-					</form:iferror>
+                    <div class="fieldWrapper">
+                    {{ form.password1.errors }}
+					<label for="password1">	Password:</label>
+					{{form.password1}}
 					<br/><br/>
-
-
-					<label for="password2">	Password:</label><input id="password2" type="password" name="uname" />
-					<form:iferror name="name"><span class="errormessage"><form:error name="name" />	</span>
-					</form:iferror>
+                    {{ form.password2.errors }}
+					<label for="password2">	Password:</label>
+					{{form.password2}}
 					<br/><br/>
+					</div>
 
 
 					<br/><br/>
 					<label for="createaccount">	</label>
 					<input id="createaccount" type="submit" value="Create Account" />
-					
 				</fieldset>
-				
 			</form>
 			
 		</div>
-		
-	</div>
+
 	
 {% endblock %}
