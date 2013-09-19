@@ -122,6 +122,7 @@ INSTALLED_APPS = [
     'impersonate',
     'ssnm.main',
     'ecomap',
+    'registration',
 ]
 
 LETTUCE_APPS = (

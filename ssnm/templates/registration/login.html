@@ -1,24 +1,97 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "ecobase.html" %}
 
-<h2>Choose a Login Option...</h2>
+{% block content %}
+        <div id="breadcrumbbar">
+        <span class="here">You are Here:</span>
+        &gt;
+        Login
+        </div>
+        
+        <div id="container">
+
+
+
+        <table cellspacing="0" class="infotable" summary="Network Map Table">
+        <tr><td><h2>  Columbia Login  </h2>
+
 
 <form method="get" action="{{ wind_base }}login" class="well">
 <input type="hidden" name="service" value="{{ wind_service }}" />
-<input type="hidden" name="destination" value="http{% if request.is_secure %}s{% endif %}://{{ request.get_host }}/accounts/windlogin/?next={{ next }}" />
+<input type="hidden" name="destination" value="http://{{ request.get_host }}/accounts/windlogin/?next={{ next }}" />
 <p>If you have a Columbia University Network ID
         (UNI)... </p><input type="submit" value="LOG IN" class="btn btn-primary"/></p>
-</form>
+</form><br>
+                
+  
+            </td>
+            <td>
 
-<form method="post" action="." class="well">
-<p>If you have a project account...</p>
+        <div id="guest-login-form">
+        {% if form.username.errors or form.password.errors or form.errors %}
+        <div class="alert alert-error">
+            {% if form.username.errors %}
+                Please enter your username.
+            {% else %}    
+                {% if form.password.errors %}
+                    Please enter your password.
+                {% else %}                
+                    {% if form.errors %}
+                        Please enter a correct username and password.
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
+        {% endif %}
 
-<label for="id_username">Username: {{ form.username }}</label>
-<label for="id_password">Password: {{ form.password }}</label>
+            <h2>Not a Columbia User? Login as a Guest.</h2>
+            <form  action="." method="post">
+                <fieldset>
 
-<input type="submit" value="LOG IN" class="btn btn-primary" />
-<input type="hidden" name="next" value="{{ next }}" />
-</form>
+                    <label for="id_username">Username: {{ form.username }}</label><br><br>
+                    <label for="id_password">Password: {{ form.password }}</label>
+                    <input type="submit" value="Log in" class="btn btn-large btn-primary" id="td_login" />
+                    <input type="hidden" name="next" value="{% if next %}{{ next }}{% else %}/{% endif %}" />
+        
+            </fieldset>
+            </form>
+            </td>
+            </tr>               
+            </table>    
+                    
+            <br><br>
+    <h2>Don't have and account? </h2> <a href="/accounts/register/">Click here to create one. </a>
+        </div>
+        
+    </div>
 {% endblock %}
 
 
+
+
+
+
+
+
+
+
+{% block js %}
+<script type="text/javascript">
+    jQuery(document).ready(function(jQuery){
+        
+        {% if form.username.errors or form.password.errors or form.errors %}
+            jQuery(".login-set").fadeIn("fast", "linear");
+        {% endif %}
+        
+        /* For Login page */
+        jQuery("#invitation #login").click(function(){
+            jQuery(".login-set").fadeIn("fast", "linear");
+        });
+        jQuery("#login-window #close-login").click(function(){
+            jQuery(".login-set").fadeOut("fast", "linear");
+        });
+        jQuery('.carousel').carousel({
+            interval: 7000
+        })
+    });
+</script>
+{% endblock %}

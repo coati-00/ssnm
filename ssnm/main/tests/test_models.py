@@ -1,6 +1,2 @@
-from django.test import TestCase
+'''Test the almost nonexistant methods within the model classes'''
 
-
-class BasicModelTest(TestCase):
-    def test_dummy(self):
-        assert True
