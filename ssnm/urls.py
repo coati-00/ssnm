@@ -30,11 +30,7 @@ urlpatterns = patterns(
     url(r'^accounts/register/$', RegistrationView.as_view(
         form_class=CreateAccountForm),
         name='registration_register'),
-
-    (r'^$', 'ssnm.main.views.login'),
-    #(r'^another_map/$', 'ssnm.main.views.another_map'),
-    #(r'^another_map/(?P<map_id>\d+)/display/flashConduit$', 'ssnm.main.views.display'),
-    #(r'^another_map/display/flashConduit$', 'ssnm.main.views.display'),
+    (r'^$', 'ssnm.main.views.my_login'),
     (r'^help/$', 'ssnm.main.views.help_page'),
     (r'^about/$', 'ssnm.main.views.about'),
     (r'^contact/$', 'ssnm.main.views.contact'),
@@ -42,11 +38,11 @@ urlpatterns = patterns(
     (r'^ecomap/$', 'ssnm.main.views.get_map'),
     (r'^ecomap/(?P<map_id>\d+)/$', 'ssnm.main.views.get_map'),
     (r'^ecomap/(?P<map_id>\d+)/display/flashConduit$', 'ssnm.main.views.display'),
-
     (r'^show_maps/$', 'ssnm.main.views.show_maps'),
     (r'^create_account/$', 'ssnm.main.views.create_account'),
     (r'^register/$', 'ssnm.main.views.create_account'),
     (r'^ecomap/(?P<map_id>\d+)/delete_map/$', 'ssnm.main.views.delete_map'),
+    (r'^login/$', 'ssnm.main.views.my_login'),
 # taken from nynjaetc
     (r'^accounts/', include('registration.backends.default.urls')),
     (r'^admin/', include(admin.site.urls)),

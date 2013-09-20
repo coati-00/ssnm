@@ -7,27 +7,6 @@ from registration.forms import RegistrationForm
 
 
 
-# class Ecouser(models.Model):
-#     '''Stores Ecouser profile with User profile if User uses Ecomaps'''
-
-#     class Meta:
-#         '''put users when multiple ecousers are involved'''
-#         verbose_name_plural = "users"
-
-#     user = models.OneToOneField(User, unique=True)
-#     uni = models.CharField(max_length=50)
-
-#     def __unicode__(self):
-#         return self.user.first_name + " " + self.user.last_name
-
-# def create_user_profile(sender, instance, created, **kwargs):
-#     '''method that associates Ecouser with User object'''
-#     if created:
-#         profile, created = Ecouser.objects.get_or_create(user=instance)
-#     post_save.connect(create_user_profile, sender=User)
-
-
-
 class CreateAccountForm(RegistrationForm):
     '''This is a form class that will be used
     to allow guest users to create guest accounts.'''
