@@ -2,7 +2,7 @@ from django.conf.urls.defaults import patterns, include, url
 from django.contrib import admin
 from django.conf import settings
 from django.views.generic.simple import direct_to_template
-from ecomap.models import CreateAccountForm
+from ssnm.main.models import CreateAccountForm
 from registration.backends.default.views import RegistrationView
 import os.path
 admin.autodiscover()
@@ -31,22 +31,22 @@ urlpatterns = patterns(
         form_class=CreateAccountForm),
         name='registration_register'),
 
-    (r'^$', 'ecomap.views.login'),
-    (r'^help/$', 'ecomap.views.help_page'),
-    (r'^about/$', 'ecomap.views.about'),
-    (r'^contact/$', 'ecomap.views.contact'),
-    (r'^thanks/$', 'ecomap.views.thanks'),
+    (r'^$', 'ssnm.main.views.login'),
+    #(r'^another_map/$', 'ssnm.main.views.another_map'),
+    #(r'^another_map/(?P<map_id>\d+)/display/flashConduit$', 'ssnm.main.views.display'),
+    #(r'^another_map/display/flashConduit$', 'ssnm.main.views.display'),
+    (r'^help/$', 'ssnm.main.views.help_page'),
+    (r'^about/$', 'ssnm.main.views.about'),
+    (r'^contact/$', 'ssnm.main.views.contact'),
+    (r'^thanks/$', 'ssnm.main.views.thanks'),
+    (r'^ecomap/$', 'ssnm.main.views.get_map'),
+    #(r'^ecomap/(?P<map_id>\d+)/$', 'ssnm.main.views.get_map'),
+    (r'^ecomap/(?P<map_id>\d+)/display/flashConduit$', 'ssnm.main.views.display'),
 
-    (r'^ecomap/$', 'ecomap.views.ecomap'),
-    (r'^ecomap/display/flashConduit$', 'ecomap.views.display'),
-
-    #(r'^ecomap/(?P<map_id>\d+)/$', 'ecomap.views.get_map'),
-    #(r'^ecomap/(?P<map_id>\d+)/display/flashConduit$', 'ecomap.views.display'),
-
-    (r'^show_maps/$', 'ecomap.views.show_maps'),
-    (r'^create_account/$', 'ecomap.views.create_account'),
-    (r'^register/$', 'ecomap.views.create_account'),
-    (r'^ecomap/(?P<map_id>\d+)/delete_map/$', 'ecomap.views.delete_map'),
+    (r'^show_maps/$', 'ssnm.main.views.show_maps'),
+    (r'^create_account/$', 'ssnm.main.views.create_account'),
+    (r'^register/$', 'ssnm.main.views.create_account'),
+    (r'^ecomap/(?P<map_id>\d+)/delete_map/$', 'ssnm.main.views.delete_map'),
 # taken from nynjaetc
     (r'^accounts/', include('registration.backends.default.urls')),
     (r'^admin/', include(admin.site.urls)),
@@ -61,37 +61,3 @@ urlpatterns = patterns(
 ) + staticmedia.serve()
 
 
-
-
-
-'''
-#from django.conf.urls.defaults import *
-#from django.contrib import admin
-#from django.conf import settings
-from django.conf.urls import patterns, url
-import staticmedia
-import os.path
-from ecomap import views
-site_media_root = os.path.join(os.path.dirname(__file__), "media")
-
-urlpatterns = patterns(
-    '',
-    url(r'^help/$', views.help_page, name='help'),
-    url(r'^about/$', views.about, name='about'),
-    url(r'^contact/$', views.contact, name='contact'),
-    url(r'^thanks/$', views.thanks, name='thanks'),
-    url(r'^ecomap/(?P<map_id>\d+)/$', views.get_map, name='get_map'),
-    url(r'^ecomap/(?P<map_id>\d+)/display/flashConduit$', views.display, name='display'),
-    url(r'^ecomap/$', views.ecomap, name='game'),
-    url(r'^ecomap/display/flashConduit$', views.display, name='display'),
-    url(r'^show_maps/$', views.show_maps, name='show_maps'),
-    url(r'^$', views.home, name='ecomap'),
-    url(r'^create_account/$', views.create_account, name='create_account'),
-    #url(r'^show_all_students', views.show_all_students, name='show_all_students'),
-    #url(r'^show_all_maps', views.show_all_students, name='show_all_students'),
-
-    (r'^site_media/(?P<path>.*)$', 'django.views.static.serve',
-        {'document_root': '/ecomap/media'}),
-
-) + staticmedia.serve()
-'''

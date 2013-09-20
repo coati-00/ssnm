@@ -1,6 +1,6 @@
 '''Each view renders page of site with the excection of
  display - that method deals with the flash in the web page.'''
-from ecomap.models import Ecouser, Ecomap, EcomapManager
+from ssnm.main.models import Ecomap, EcomapManager
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render, render_to_response, get_object_or_404
 from django.contrib.auth.models import User
@@ -12,10 +12,74 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from registration.signals import user_registered
 
-@login_required
-def display(request):
-    user = request.user
-    #if type(user.get_profile()) == Ecouser:
+# @login_required
+# def display(request):
+#     print "inside display method"
+#     '''This method deals with the flash inside the web page,
+#     it passes it the needed data as xml in a large string'''
+#     new_xml = """<data>
+#         <response>OK</response>
+#         <isreadonly>false</isreadonly>
+#         <name>%s</name>
+#         <flashData>
+#             <circles>
+#             <circle><radius>499</radius></circle>
+#             <circle><radius>350</radius></circle>
+#             <circle><radius>200</radius></circle>
+#             </circles>
+#             <supportLevels>
+#             <supportLevel><text>Very Helpful</text>
+#             </supportLevel>
+#             <supportLevel><text>Somewhat Helpful</text>
+#             </supportLevel>
+#             <supportLevel><text>Not So Helpful</text>
+#             </supportLevel>
+#         </supportLevels>
+#         <supportTypes>
+#             <supportType><text>Social</text></supportType>
+#             <supportType><text>Advice</text></supportType>
+#             <supportType><text>Empathy</text></supportType>
+#             <supportType><text>Practical</text></supportType>
+#             </supportTypes>
+#         <persons></persons>
+#         </flashData>
+#         </data>"""
+#     #if request.POST == {}:
+#     #    return HttpResponse("Nothing in request POST.")
+#     post = request.raw_post_data
+#     dom = parseString(post)
+#     action = dom.getElementsByTagName("action")[0].firstChild.toxml()
+#     user = request.user
+#     username = user.first_name
+#     #m_xml = ""
+
+#     if action == "load":
+#         if map_id == "":
+#             return HttpResponse(new_xml % username)
+#     #    else:
+#     #        find_map = user.ecomap_set.get(pk=map_id)
+#     #        m_xml = find_map.ecomap_xml
+#     #        return HttpResponse(m_xml)
+
+#     #if action == "save":
+#     #    name = dom.getElementsByTagName("name")[0].toxml()
+#     #    flash_data = dom.getElementsByTagName("flashData")[0].toxml()
+#     #    map_to_save = "<data><response>OK</response><isreadonly>false</isreadonly>%s%s</data>" % (name, flash_data)
+#     #    new_map = Ecomap(ecomap_xml=map_to_save, name="some_map_name", owner=user)
+#     #    new_map.save()
+#     #    return HttpResponse("<data><response>OK</response></data>")
+
+
+
+
+
+
+
+
+
+
+def display(request, map_id):
+    print "inside display method"
     '''This method deals with the flash inside the web page,
     it passes it the needed data as xml in a large string'''
     new_xml = """<data>
@@ -45,61 +109,47 @@ def display(request):
         <persons></persons>
         </flashData>
         </data>"""
+    #print new_xml
+    post = request.raw_post_data
     if request.POST == {}:
         return HttpResponse("Nothing in request POST.")
-    post = request.raw_post_data
     dom = parseString(post)
+    print dom
     action = dom.getElementsByTagName("action")[0].firstChild.toxml()
     user = request.user
     username = user.first_name
-    ecouser = user.get_profile()
-    m_xml = ""
-
-    if action == "load":
-        if map_id == "":
-            return HttpResponse(new_xml % username)
-        else:
-            find_map = ecouser.ecomap_set.get(pk=map_id)
-            m_xml = find_map.ecomap_xml
-            return HttpResponse(m_xml)
-
-    if action == "save":
-        name = dom.getElementsByTagName("name")[0].toxml()
-        flash_data = dom.getElementsByTagName("flashData")[0].toxml()
-        map_to_save = "<data><response>OK</response><isreadonly>false</isreadonly>%s%s</data>" % (name, flash_data)
-        current_user = user.get_profile()
-        new_map = Ecomap(ecomap_xml=map_to_save, name="some_map_name", owner=current_user)
-        new_map.save()
-        return HttpResponse("<data><response>OK</response></data>")
-
-
-
-@login_required
-def ecomap(request):
-    #import pdb
-    #pdb.set_trace()
-    '''User would like to create an ecomap - redirect them to a blank one.'''
-#    user = request.user
-#    if hasattr(user, 'ecouser'):
-        #ecomap = Ecomap.objects.create_ecomap(user.ecouser)
-    return render_to_response('ecomap/game_test.html')
-#    else:
-        #return HttpResponse("You must be an Ecouser to use this application")
-#        return HttpResponse('Unauthorized', status=401)
+    return HttpResponse(new_xml)
 
 
 # @login_required
-# def get_map(request, map_id=""):
-#     '''User has requested a save ecomap - retrieve it.'''
-#     user = request.user
-#     if hasattr(user, 'ecouser'):
-#         try:
-#             ecomap = Ecomap.objects.get(pk=map_id)
-#             return render_to_response('ecomap/game_test.html', {'map': ecomap})
-#         except:
-#             return HttpResponseNotFound('<h1>Page not found</h1>')
-#     else:
-#         return HttpResponse('Unauthorized', status=401)
+# def ecomap(request):
+#     '''User would like to create an ecomap - redirect them to a blank one.'''
+#     print "inside ecomap method"
+#     return render_to_response('game_test.html')
+
+@login_required
+def get_map(request, map_id=""):
+    print "inside get_map"
+    '''User has requested a save ecomap - retrieve it.'''
+    user = request.user
+    print user
+    count_maps = user.ecomap_set.count()
+    print count_maps
+    if count_maps > 0 and map_id != "":
+        print "count_maps greater than 0"
+        ecomap = Ecomap.objects.get(pk=map_id)
+        return render_to_response('game_test.html', {'map': ecomap})
+    else:
+        print "count_maps is 0"
+        ecomap = Ecomap.objects.create_ecomap(owner=user)
+        print ecomap
+        print "if no ecomap printed it is probably undefined"
+        print type(ecomap)
+        return render_to_response('game_test.html', {'map': ecomap})
+
+    #         return HttpResponseNotFound('<h1>Page not found</h1>')
+    # else:
+    #     return HttpResponse('Unauthorized', status=401)
 
 
 @login_required
@@ -107,12 +157,9 @@ def show_maps(request):
     '''Show the user all of their saved maps.
     Allow user to click on one and have it retrieved.'''
     user = request.user
-    if hasattr(user, 'ecouser'):
-        ecouser = request.user.get_profile()
-        maps = ecouser.ecomap_set.all()
-        return render_to_response("ecomap/map_page.html", {'maps': maps, 'user': user, })
-    else:
-        return HttpResponse('Unauthorized', status=401)
+    maps = user.ecomap_set.all()
+    return render_to_response("map_page.html", {'maps': maps, 'user': user, })
+
 
 def logout(request):
     return HttpResponseRedirect('/accounts/logout/')
@@ -151,25 +198,25 @@ def contact(request):
             recipients = ['someone@somewhere.com']
             from django.core.mail import send_mail
             send_mail(subject, message, sender, recipients)
-            return render_to_response('ecomap/thanks.html')
+            return render_to_response('thanks.html')
     else:
         form = ContactForm()  # An unbound form
 
-    return render(request, 'ecomap/contact.html', {
+    return render(request, 'contact.html', {
         'form': form,
     })
 
 def thanks(request):
     """Returns thanks page."""
-    return render_to_response('ecomap/thanks.html')
+    return render_to_response('thanks.html')
 
 def about(request):
     """Returns about page."""
-    return render_to_response('ecomap/about.html')
+    return render_to_response('about.html')
 
 def help_page(request):
     """Returns help page."""
-    return render_to_response('ecomap/help.html')
+    return render_to_response('help.html')
 
 
 def create_account(request):
@@ -198,7 +245,7 @@ def create_account(request):
                         new_user.first_name = form.cleaned_data['firstname']
                         new_user.last_name = form.cleaned_data['lastname']
                         new_user.save()
-                        return HttpResponseRedirect('/ecomap/thanks/')
+                        return HttpResponseRedirect('thanks.html')
 
                 else:
                     raise forms.ValidationError("You must enter two matching passwords")
@@ -206,7 +253,7 @@ def create_account(request):
     else:
         form = CreateAccountForm()  # An unbound form
 
-    return render(request, 'ecomap/create_account.html', {
+    return render(request, 'create_account.html', {
         'form': form,
     })
 
@@ -215,7 +262,7 @@ def register(request):
     return render_to_response('registration.html')
 
 def home(request):
-    return render_to_response('ecomap/home_page.html')
+    return render_to_response('home_page.html')
 
 
 def login(request):
@@ -228,7 +275,7 @@ def login(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return HttpResponseRedirect('/ecomap/show_maps/')
+                    return HttpResponseRedirect('/show_maps/')
                 else:
                     return HttpResponseRedirect('It appears you do not have an account, please create one to use this application')
             else:
@@ -236,7 +283,7 @@ def login(request):
     else:
         form = LoginForm()  # An unbound form
 
-    return render(request, 'ecomap/login.html', {
+    return render(request, 'login.html', {
         'form': form,
     })
 def delete_map(request, map_id):

@@ -37,7 +37,7 @@ SOUTH_TESTS_MIGRATE = False
 
 NOSE_ARGS = [
     '--with-coverage',
-    '--cover-package=ssnm.ecomap',
+    '--cover-package=ssnm.main',
 ]
 
 JENKINS_TASKS = (
@@ -48,7 +48,7 @@ JENKINS_TASKS = (
     'django_jenkins.tasks.run_pyflakes',
 )
 PROJECT_APPS = [
-    'ssnm.main', 'ecomap'
+    'ssnm.main'
 ]
 
 ALLOWED_HOSTS = ['localhost', '.ccnmtl.columbia.edu']
@@ -121,7 +121,6 @@ INSTALLED_APPS = [
     'django_extensions',
     'impersonate',
     'ssnm.main',
-    'ecomap',
     'registration',
 ]
 
@@ -161,10 +160,6 @@ STATICMEDIA_MOUNTS = (
 
 COMPRESS_URL = "/site_media/"
 COMPRESS_ROOT = "media/"
-
-# WIND settings
-#added this after reading about user profiles on django site - still not really clear to me
-AUTH_PROFILE_MODULE = 'ecomap.Ecouser'
 
 
 AUTHENTICATION_BACKENDS = ('djangowind.auth.WindAuthBackend',
