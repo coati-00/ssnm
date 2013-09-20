@@ -82,7 +82,70 @@ def display(request, map_id):
     print "inside display method"
     '''This method deals with the flash inside the web page,
     it passes it the needed data as xml in a large string'''
-    new_xml = """<data>
+    # new_xml = """<data>
+    #     <response>OK</response>
+    #     <isreadonly>false</isreadonly>
+    #     <name>%s</name>
+    #     <flashData>
+    #         <circles>
+    #         <circle><radius>499</radius></circle>
+    #         <circle><radius>350</radius></circle>
+    #         <circle><radius>200</radius></circle>
+    #         </circles>
+    #         <supportLevels>
+    #         <supportLevel><text>Very Helpful</text>
+    #         </supportLevel>
+    #         <supportLevel><text>Somewhat Helpful</text>
+    #         </supportLevel>
+    #         <supportLevel><text>Not So Helpful</text>
+    #         </supportLevel>
+    #     </supportLevels>
+    #     <supportTypes>
+    #         <supportType><text>Social</text></supportType>
+    #         <supportType><text>Advice</text></supportType>
+    #         <supportType><text>Empathy</text></supportType>
+    #         <supportType><text>Practical</text></supportType>
+    #         </supportTypes>
+    #     <persons></persons>
+    #     </flashData>
+    #     </data>"""
+
+    post = request.raw_post_data
+    print post
+    if request.POST == {}:
+        return HttpResponse("Nothing in request POST.")
+    dom = parseString(post)
+    print dom
+    action = dom.getElementsByTagName("action")[0].firstChild.toxml()
+    #user = request.user
+    #print user
+    #username = user.first_name
+    #print "username inside display " + username
+    ecomap = Ecomap.objects.get(pk=map_id)
+    if action == "load":
+        return HttpResponse(ecomap.ecomap_xml)
+    if action == "save":
+       name = dom.getElementsByTagName("name")[0].toxml()
+       flash_data = dom.getElementsByTagName("flashData")[0].toxml()
+       map_to_save = "<data><response>OK</response><isreadonly>false</isreadonly>%s%s</data>" % (name, flash_data)
+       #new_map = Ecomap(ecomap_xml=map_to_save, name="some_map_name", owner=user)
+       #new_map.save()
+       ecomap.ecomap_xml = map_to_save
+       ecomap.save()
+       return HttpResponse("<data><response>OK</response></data>")
+
+@login_required
+def get_map(request, map_id=""):
+    '''User has requested a save ecomap - retrieve it.'''
+    user = request.user
+    count_maps = user.ecomap_set.count()
+    if count_maps > 0 and map_id != "":
+        ecomap = Ecomap.objects.get(pk=map_id)
+        print "inside retrieving map id" + str(map_id)
+        return render_to_response('game_test.html', {'map': ecomap})
+    else:
+        ecomap = Ecomap.objects.create_ecomap(owner=user)
+        new_xml = """<data>
         <response>OK</response>
         <isreadonly>false</isreadonly>
         <name>%s</name>
@@ -109,42 +172,14 @@ def display(request, map_id):
         <persons></persons>
         </flashData>
         </data>"""
-    #print new_xml
-    post = request.raw_post_data
-    if request.POST == {}:
-        return HttpResponse("Nothing in request POST.")
-    dom = parseString(post)
-    print dom
-    action = dom.getElementsByTagName("action")[0].firstChild.toxml()
-    user = request.user
-    username = user.first_name
-    return HttpResponse(new_xml)
 
-
-# @login_required
-# def ecomap(request):
-#     '''User would like to create an ecomap - redirect them to a blank one.'''
-#     print "inside ecomap method"
-#     return render_to_response('game_test.html')
-
-@login_required
-def get_map(request, map_id=""):
-    print "inside get_map"
-    '''User has requested a save ecomap - retrieve it.'''
-    user = request.user
-    print user
-    count_maps = user.ecomap_set.count()
-    print count_maps
-    if count_maps > 0 and map_id != "":
-        print "count_maps greater than 0"
-        ecomap = Ecomap.objects.get(pk=map_id)
-        return render_to_response('game_test.html', {'map': ecomap})
-    else:
-        print "count_maps is 0"
-        ecomap = Ecomap.objects.create_ecomap(owner=user)
-        print ecomap
-        print "if no ecomap printed it is probably undefined"
-        print type(ecomap)
+        print "new_xml is : " + new_xml + "\n\n"
+        eco_xml = new_xml % username
+        print "eco_xml with name substitute : " + new_xml + "\n\n"
+        ecomap.ecomap_xml = eco_xml
+        ecomap.save()
+        print "ecomap.owner.first_name" + ecomap.owner.first_name
+        print "ecomap.pk" + str(ecomap.pk)
         return render_to_response('game_test.html', {'map': ecomap})
 
     #         return HttpResponseNotFound('<h1>Page not found</h1>')
