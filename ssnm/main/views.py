@@ -1,6 +1,6 @@
 '''Each view renders page of site with the excection of
  display - that method deals with the flash in the web page.'''
-from ssnm.main.models import Ecomap, EcomapManager, CreateAccountForm
+from ssnm.main.models import Ecomap, CreateAccountForm
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render, render_to_response, get_object_or_404
 from django.contrib.auth.models import User
@@ -14,7 +14,7 @@ from registration.signals import user_registered
 
 
 def display(request, map_id):
-    print "inside display method"
+    '''Method processes infromation comunicated by flash.'''
     post = request.raw_post_data
 
     #  making sure there is something in the POST request
@@ -25,29 +25,28 @@ def display(request, map_id):
     dom = parseString(post)
     action = dom.getElementsByTagName("action")[0].firstChild.toxml()
 
-    #retrieve the appropriate map for the page
+    #  retrieve the appropriate map for the page
     ecomap = Ecomap.objects.get(pk=map_id)
 
     if action == "load":
-        return HttpResponse(ecomap.ecomap_xml) #return saved xml
+        return HttpResponse(ecomap.ecomap_xml)  # return saved xml
 
     if action == "save":
-       name = dom.getElementsByTagName("name")[0].toxml() #  get name next to person
-       print name
-       flash_data = dom.getElementsByTagName("flashData")[0].toxml() #  get xml detailing the position of elements on the screen
-       print flash_data
-       map_to_save = "<data><response>OK</response><isreadonly>false</isreadonly>%s%s</data>" % (name, flash_data) # add some extra data
-       print map_to_save
-       ecomap.ecomap_xml = map_to_save #  save the new xml to restore the map
-       print ecomap.ecomap_xml
-       ecomap.save()
-       return HttpResponse("<data><response>OK</response></data>")
+        name = dom.getElementsByTagName("name")[0].toxml()
+        flash_data = dom.getElementsByTagName("flashData")[0].toxml()
+        #  get xml detailing the position of elements on the screen
+        map_to_save = "<data><response>OK</response><isreadonly>false</isreadonly>%s%s</data>" % (name, flash_data)
+        # add some extra data
+        ecomap.ecomap_xml = map_to_save
+        ecomap.save()
+        return HttpResponse("<data><response>OK</response></data>")
+
 
 @login_required
 def get_map(request, map_id=""):
     '''User has requested a save ecomap - retrieve it.'''
-    user = request.user #request.user is a simply lazy object?
-    #count_maps = user.ecomap_set.count()
+    user = request.user  # request.user is a simply lazy object?
+    #  count_maps = user.ecomap_set.count()
     if map_id != "":
         ecomap = Ecomap.objects.get(pk=map_id)
         print "inside retrieving map id" + str(map_id)
@@ -92,26 +91,13 @@ def get_map(request, map_id=""):
         return render_to_response('game_test.html', {'map': ecomap})
 
 
-
-
 @login_required
 def show_maps(request):
     '''Show the user all of their saved maps.
     Allow user to click on one and have it retrieved.'''
-    print str(request.user)
     user_obj = User.objects.get(username=str(request.user))
     user_key = user_obj.pk
-    print user_key
-    fname = user_obj.first_name
-    lname = user_obj.last_name
-    print fname
-    print lname
     maps = Ecomap.objects.filter(owner=user_obj)
-    print type(maps)
-    for each in maps:
-        print type(each)
-        print each.owner#.first_name
-        print type(each.owner)
     return render_to_response("map_page.html", {'maps': maps, 'user': user_obj, })
 
 
@@ -160,36 +146,30 @@ def contact(request):
         'form': form,
     })
 
-def thanks(request):
+
+def thanks():
     """Returns thanks page."""
     return render_to_response('thanks.html')
 
-def about(request):
+
+def about():
     """Returns about page."""
     return render_to_response('about.html')
 
-def help_page(request):
+
+def help_page():
     """Returns help page."""
     return render_to_response('help.html')
 
 
 def create_account(request):
+    '''This is based off of django-request - creates a new user account.'''
     if request.method == 'POST':
         form = CreateAccountForm(request.POST)
-        #if form.is_valid(): #  now is valid
-        #    print "form is valid"
         try:
-            print "inside try block"
-            User.objects.get(username=request.POST['username']) #  checking to see if user exists
+            User.objects.get(username=request.POST['username'])
             raise forms.ValidationError("this username already exists")
         except User.DoesNotExist:
-            print "inside except block, returning user name"
-            #return form.cleaned_data['username']
-            username = request.POST['username']
-            password1 = request.POST['password1']
-            password2 = request.POST['password2']
-            print "we have gotten past exception land"
-
             if 'password1' in request.POST and 'password2' in request.POST:
                 print "comparing passwords"
                 if request.POST['password1'] != request.POST['password2']:
@@ -197,22 +177,14 @@ def create_account(request):
 
                 if request.POST['password1'] == request.POST['password2']:
                     new_user = User.objects.create_user(username=request.POST['username'], email=request.POST['email'], password=request.POST['password1'])
-
                     new_user.first_name = request.POST['first_name']
-                    # print request.POST['first_name']
                     new_user.last_name = request.POST['last_name']
-                    # print request.POST['last_name']
                     new_user.save()
-                    #test retrieving new user
-                    test_user = User.objects.get(username=new_user.first_name)
-                    #print type(test_user)
-                    #print test_user.first_name
-                    #print test_user.last_name  --- this works 
                     return HttpResponseRedirect('/thanks/')
 
             else:
                 raise forms.ValidationError("You must enter two matching passwords")
-                
+
     else:
         form = CreateAccountForm()  # An unbound form
 
@@ -221,18 +193,11 @@ def create_account(request):
     })
 
 
-def register(request):
-    return render_to_response('registration.html')
-
-def home(request):
-    return render_to_response('home_page.html')
-
-
-
 def my_login(request):
+    '''My login method -- probably very wrong...'''
     if request.method == 'POST':
         form = LoginForm(request.POST)
-        username=request.POST['username']
+        username = request.POST['username']
         password = request.POST['password']
         user = authenticate(username=username, password=password)
         #print user.username
@@ -251,11 +216,9 @@ def my_login(request):
         'form': form,
     })
 
+
 def delete_map(request, map_id):
+    '''Deletes the selected map.'''
     ecomap = Ecomap.objects.get(pk=map_id)
     ecomap.delete()
     return show_maps(request)
-
-
-
-

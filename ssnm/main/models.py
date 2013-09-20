@@ -6,7 +6,6 @@ from django.db.models.signals import post_save
 from registration.forms import RegistrationForm
 
 
-
 class CreateAccountForm(RegistrationForm):
     '''This is a form class that will be used
     to allow guest users to create guest accounts.'''
@@ -20,7 +19,6 @@ class CreateAccountForm(RegistrationForm):
     def clean(self):
         return super(RegistrationForm, self).clean()
 
-
     def clean_choice(self, field_name):
         if self.cleaned_data[field_name] == u"-----":
             msg = u"This field is required."
@@ -30,11 +28,13 @@ class CreateAccountForm(RegistrationForm):
         else:
             return self.cleaned_data[field_name]
 
+
 class EcomapManager(models.Manager):
     def create_ecomap(self, owner):
         ecomap = self.create(owner=owner)
-        
+
         return ecomap
+
 
 class Ecomap(models.Model):
     '''Store Ecomap and associated information'''
@@ -43,7 +43,3 @@ class Ecomap(models.Model):
     owner = models.ForeignKey(User)
     descriptions = models.TextField()
     objects = EcomapManager()
-
-
-
-
