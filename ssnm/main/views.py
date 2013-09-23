@@ -108,9 +108,9 @@ def logout(request):
 class ContactForm(forms.Form):
     '''This is a form class that will be returned
     later in the contact form view.'''
-    subject = forms.CharField(max_length=100)
-    message = forms.CharField(max_length=200)
-    sender = forms.EmailField()
+    subject = forms.CharField(max_length=100, required=True)
+    message = forms.CharField(max_length=500, required=True, widget=forms.Textarea)
+    sender = forms.EmailField(required=True)
 
 
 class EcomapForm(forms.Form):
@@ -135,7 +135,7 @@ def contact(request):
             subject = form.cleaned_data['subject']
             message = form.cleaned_data['message']
             sender = form.cleaned_data['sender']
-            recipients = ['someone@somewhere.com']
+            recipients = ['cdunlop@columbia.edu']
             from django.core.mail import send_mail
             send_mail(subject, message, sender, recipients)
             return render_to_response('thanks.html')

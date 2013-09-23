@@ -1,7 +1,18 @@
-<html>
-<head>
-</head>
-<body>
-Thank you for using the website!
-</body>
-</html>
+{% extends "ecobase.html" %}
+{% load i18n %}
+
+{% block stylesheet %}{% load adminmedia %}{% admin_media_prefix %}css/login.css{% endblock %}
+
+{% block bodyclass %}login{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+{% block content %}
+<p>Thank you for submitting your feedback!</p>
+
+
+<a href="/">  Login  </a><a href="/about/">  About  </a> <a href="/show_maps/">  Home  </a>
+
+
+{% endblock %}
