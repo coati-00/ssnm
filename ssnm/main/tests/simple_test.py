@@ -26,11 +26,11 @@ class SimpleViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('contact.html')
 
-    # def test_home_page(self):
-    #     '''Test that logged in user recieves response of home page..'''
-    #     response = self.c.post('')
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed('home_login.html')
+    def test_home_page(self):
+        '''Test that user recieves response of home page.'''
+        response = self.c.get('')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('/login.html')
 
     def test_create_account(self):
         '''Test that user creating an account returns a response.'''
@@ -38,8 +38,8 @@ class SimpleViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('/thanks.html')
 
-    # def test_create_user_account(self):
-    # 	'''Test user submitting form to create account.'''
-    #     #MUST STRAIGHTEN OUT FORM
-    #     submit = self.c.post('/ecomap/contact.html', {'firstname' : 'firstname', 'lastname' : 'lastname', 'username' : 'username'})
-    #     self.assertEqual(submit.status_code, 301)
+    def test_create_user_account(self):
+        '''Test user submitting form to create account.'''
+        submit = self.c.post('/contact/', {'firstname' : 'firstname', 'lastname' : 'lastname', 'username' : 'username', 'password1' : 'password', 'password2' : 'password'})
+        self.assertEqual(submit.status_code, 200)
+        self.assertTemplateUsed('/contact.html')
