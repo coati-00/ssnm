@@ -147,17 +147,17 @@ def contact(request):
     })
 
 
-def thanks():
+def thanks(request):
     """Returns thanks page."""
     return render_to_response('thanks.html')
 
 
-def about():
+def about(request):
     """Returns about page."""
     return render_to_response('about.html')
 
 
-def help_page():
+def help_page(request):
     """Returns help page."""
     return render_to_response('help.html')
 
