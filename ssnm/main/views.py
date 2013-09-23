@@ -149,17 +149,17 @@ def contact(request):
 
 def thanks(request):
     """Returns thanks page."""
-    return render_to_response('thanks.html')
+    return HttpResponse('/thanks/')
 
 
 def about(request):
     """Returns about page."""
-    return render_to_response('about.html')
+    return HttpResponse('/about/')
 
 
 def help_page(request):
     """Returns help page."""
-    return render_to_response('help.html')
+    return HttpResponse('/help/')
 
 
 def create_account(request):
