@@ -183,7 +183,7 @@ def create_account(request):
                     return HttpResponseRedirect('/thanks/')
 
             else:
-                raise forms.ValidationError("You must enter two matching passwords")
+                raise forms.ValidationError("You are missing a password.")
 
     else:
         form = CreateAccountForm()  # An unbound form
@@ -208,7 +208,7 @@ def my_login(request):
             else:
                 return HttpResponseRedirect('It appears you do not have an account, please create one to use this application')
         else:
-            forms.ValidationError('It appears you do not have an account, please create one to use this application')
+            forms.ValidationError('This login is incorrect.')
     else:
         form = LoginForm()  # An unbound form
 
