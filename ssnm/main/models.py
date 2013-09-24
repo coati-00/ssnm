@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from registration.forms import RegistrationForm
+from django.forms.widgets import CheckboxSelectMultiple
 
 
 class CreateAccountForm(RegistrationForm):
@@ -15,18 +16,6 @@ class CreateAccountForm(RegistrationForm):
     password1 = forms.CharField(max_length=25, widget=forms.PasswordInput, required=True, label="Password")
     password2 = forms.CharField(max_length=25, widget=forms.PasswordInput, required=True, label="Confirm Password")
     email = forms.EmailField()
-
-    def clean(self):
-        return super(RegistrationForm, self).clean()
-
-    def clean_choice(self, field_name):
-        if self.cleaned_data[field_name] == u"-----":
-            msg = u"This field is required."
-            self._errors[field_name] = self.error_class([msg])
-            del self.cleaned_data[field_name]
-            return None
-        else:
-            return self.cleaned_data[field_name]
 
 
 class EcomapManager(models.Manager):
