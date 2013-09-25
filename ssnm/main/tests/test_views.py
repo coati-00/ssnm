@@ -119,6 +119,21 @@ class ViewTest(TestCase):  # unittest.
 
 
 
+    #set details for a map
+    def test_details(self):
+        '''Test that user who creates account get appropriate response.'''
+        request = self.factory.post('/details/6/', {"name" : "Test Map Name Here", "description" : "Make sure description box takes input"})
+        request.user = self.user
+        response = get_map_details(request, 6)
+        self.assertEqual(response.status_code, 200)
+
+    def test_details_empty_form(self):
+        '''Test that user who creates account get appropriate response.'''
+        request = self.factory.get('/details/6/')
+        request.user = self.user
+        response = get_map_details(request, 6)
+        self.assertEqual(response.status_code, 200)
+
 
     #THIS MUST BE DONE
     # def test_login(self):
@@ -223,6 +238,29 @@ class ViewTest(TestCase):  # unittest.
         request.user = self.user
         response = show_maps(request)
         self.assertEqual(response.status_code, 200)
+
+
+    def test_saved_flash(self):
+        request = self.factory.post('/ecomap/6/display/flashConduit')
+        request.user = self.user
+        response = display(request, 6)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('game_test.html')
+
+
+    def test_get_map(self):
+        request = self.factory.post('/ecomap/')
+        request.user = self.user
+        response = get_map(request, "")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('game_test.html')
+
+
+
+
+
+
+
 
 # ###########################
 # # CHECK THAT VIEWS ARE NOT RETURNED TO NON ECOMAP USER
