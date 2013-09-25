@@ -1,0 +1,25 @@
+{% extends "ecobase.html" %}
+{% load i18n %}
+{% block content %} 
+
+map id = {{map.id}}
+
+<form action="" method="post">
+    {{ form.non_field_errors }}
+<div class="fieldWrapper">
+{{ form.name.errors }}
+<label for="id_name">Map Name:</label>
+{{ form.name }}
+</div>
+<br><br>
+<div class="fieldWrapper">
+{{ form.description.errors }}
+<label for="id_description">Map Description:</label>
+{{ form.description }}
+</div>
+<p><input type="submit" value="Save Description" /></p>
+
+</form>
+
+
+{% endblock %}

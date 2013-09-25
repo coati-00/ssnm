@@ -42,22 +42,6 @@ def display(request, map_id):
         return HttpResponse("<data><response>OK</response></data>")
 
 
-def get_map_details(request, map_id):
-    '''Make user enter name and description of the map'''
-    user = request.user
-    ecomap = Ecomap.objects.get(pk=map_id)
-    if request.method == 'POST':  # If the form has been submitted...
-        form = EcomapForm(request.POST)  # A form bound to the POST data
-        if form.is_valid():  # All validation rules pass
-            ecomap.name = form.cleaned_data['name']
-            ecomap.description = form.cleaned_data['description']
-            ecomap.save()
-            return render_to_response('thanks.html')
-    else:
-        form = EcomapForm()  # An unbound form
-
-    return render(request, 'details.html', {  'form': form, 'map' : ecomap})
-
 
 @login_required
 def get_map(request, map_id=""):
@@ -101,6 +85,23 @@ def get_map(request, map_id=""):
         ecomap.save()
 
     return render_to_response('game_test.html', {'map' : ecomap})
+
+@login_required
+def get_map_details(request, map_id):
+    '''Make user enter name and description of the map'''
+    user = request.user
+    ecomap = Ecomap.objects.get(pk=map_id)
+    if request.method == 'POST':  # If the form has been submitted...
+        form = EcomapForm(request.POST)  # A form bound to the POST data
+        if form.is_valid():  # All validation rules pass
+            ecomap.name = form.cleaned_data['name']
+            ecomap.description = form.cleaned_data['description']
+            ecomap.save()
+            return render_to_response('thanks.html')
+    else:
+        form = EcomapForm()  # An unbound form
+
+    return render(request, 'details.html', {  'form': form, 'map' : ecomap})
 
 
 @login_required
