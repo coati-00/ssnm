@@ -42,22 +42,37 @@ def display(request, map_id):
         return HttpResponse("<data><response>OK</response></data>")
 
 
+def get_map_details(request, map_id):
+    '''Make user enter name and description of the map'''
+    user = request.user
+    ecomap = Ecomap.objects.get(pk=map_id)
+    if request.method == 'POST':  # If the form has been submitted...
+        form = EcomapForm(request.POST)  # A form bound to the POST data
+        if form.is_valid():  # All validation rules pass
+            ecomap.name = form.cleaned_data['name']
+            ecomap.description = form.cleaned_data['description']
+            ecomap.save()
+            return render_to_response('thanks.html')
+    else:
+        form = EcomapForm()  # An unbound form
+
+    return render(request, 'details.html', {  'form': form, 'map' : ecomap})
+
+
 @login_required
 def get_map(request, map_id=""):
     '''User has requested a save ecomap - retrieve it.'''
-    user = request.user  # request.user is a simply lazy object?
-    #  count_maps = user.ecomap_set.count()
+    user = request.user
     if map_id != "":
         ecomap = Ecomap.objects.get(pk=map_id)
-        print "inside retrieving map id" + str(map_id)
         return render_to_response('game_test.html', {'map': ecomap})
     else:
         ecomap = Ecomap.objects.create_ecomap(owner=user)
         new_xml = """<data>
-        <response>OK</response>
-        <isreadonly>false</isreadonly>
-        <name>%s</name>
-        <flashData>
+            <response>OK</response>
+            <isreadonly>false</isreadonly>
+            <name>%s</name>
+            <flashData>
             <circles>
             <circle><radius>499</radius></circle>
             <circle><radius>350</radius></circle>
@@ -70,25 +85,22 @@ def get_map(request, map_id=""):
             </supportLevel>
             <supportLevel><text>Not So Helpful</text>
             </supportLevel>
-        </supportLevels>
-        <supportTypes>
+            </supportLevels>
+            <supportTypes>
             <supportType><text>Social</text></supportType>
             <supportType><text>Advice</text></supportType>
             <supportType><text>Empathy</text></supportType>
             <supportType><text>Practical</text></supportType>
             </supportTypes>
-        <persons></persons>
-        </flashData>
-        </data>"""
+            <persons></persons>
+            </flashData>
+            </data>"""
 
-        print "new_xml is : " + new_xml + "\n\n"
         eco_xml = new_xml % request.user
-        print "eco_xml with name substitute : " + new_xml + "\n\n"
         ecomap.ecomap_xml = eco_xml
         ecomap.save()
-        print "ecomap.owner.first_name" + ecomap.owner.first_name
-        print "ecomap.pk" + str(ecomap.pk)
-        return render_to_response('game_test.html', {'map': ecomap})
+
+    return render_to_response('game_test.html', {'map' : ecomap})
 
 
 @login_required
@@ -116,7 +128,8 @@ class ContactForm(forms.Form):
 class EcomapForm(forms.Form):
     '''TO DO:Form to allow user to add additional data about their graph
      - user should be able to add description of map and give it a name.'''
-    name = forms.CharField(max_length=50)
+    name = forms.CharField(max_length=50, label="Name")
+    description = forms.CharField(max_length=500, widget=forms.Textarea, label="Description")
 
 
 class LoginForm(forms.Form):

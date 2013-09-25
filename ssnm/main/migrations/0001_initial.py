@@ -14,7 +14,7 @@ class Migration(SchemaMigration):
             ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
             ('ecomap_xml', self.gf('django.db.models.fields.TextField')()),
             ('owner', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('descriptions', self.gf('django.db.models.fields.TextField')()),
+            ('description', self.gf('django.db.models.fields.TextField')()),
         ))
         db.send_create_signal('main', ['Ecomap'])
 
@@ -63,7 +63,7 @@ class Migration(SchemaMigration):
         },
         'main.ecomap': {
             'Meta': {'object_name': 'Ecomap'},
-            'descriptions': ('django.db.models.fields.TextField', [], {}),
+            'description': ('django.db.models.fields.TextField', [], {}),
             'ecomap_xml': ('django.db.models.fields.TextField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),

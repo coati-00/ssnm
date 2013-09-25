@@ -13,27 +13,25 @@
 		</form>
 	</div>
 		
-	<h2>	My Maps	{{ map.title }}</h2>
+	<h2>	My Maps	{{ map.name }}</h2>
 
 		<table cellspacing="0" class="infotable" summary="Network Map Table">
-			<colgroup span="4" id="coursetablecols">
+			<colgroup span="3" id="coursetablecols">
 				<col class="name" />
 				<col class="description" />
-				<col class="instructor" />
 				<col class="functions" />
 			</colgroup>
 					
 			<thead>
 						<tr>
-							<th>	Name	</th>	<th>	Description		</th>	<th>	Instructor	</th>
-							<th class="centered">	Functions	</th>
+							<th>	Name	</th>	<th>	Description		</th>	<th class="centered">	Functions	</th>
 						</tr>
 			</thead>
 
 
 			<tbody>
 			{% for map in maps %}
-				    <tr><td>{{ map.title }}</td><td>{{ ecomap.ecouser.owner }}</td><td class="centered"><a href="/ecomap/{{ map.pk }}">View Map</a> | <a href="/ecomap/{{ map.pk }}/delete_map">Delete</a></td></tr>
+				    <tr><td>{{ map.name }}</td><td>{{ map.description }}</td><td class="centered"><a href="/ecomap/{{ map.pk }}">View Map</a> | <a href="/details/{{ map.pk }}">Edit Map Details</a> | <a href="/ecomap/{{ map.pk }}/delete_map">Delete</a></td></tr>
 			{% endfor %}
 			</tbody>
 

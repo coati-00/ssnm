@@ -30,5 +30,5 @@ class Ecomap(models.Model):
     name = models.CharField(max_length=50)
     ecomap_xml = models.TextField()
     owner = models.ForeignKey(User)
-    descriptions = models.TextField()
+    description = models.TextField()
     objects = EcomapManager()

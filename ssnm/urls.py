@@ -36,6 +36,7 @@ urlpatterns = patterns(
     (r'^contact/$', 'ssnm.main.views.contact'),
     (r'^thanks/$', 'ssnm.main.views.thanks'),
     (r'^ecomap/$', 'ssnm.main.views.get_map'),
+    (r'^details/(?P<map_id>\d+)/$', 'ssnm.main.views.get_map_details'),
     (r'^ecomap/(?P<map_id>\d+)/$', 'ssnm.main.views.get_map'),
     (r'^ecomap/(?P<map_id>\d+)/display/flashConduit$', 'ssnm.main.views.display'),
     (r'^show_maps/$', 'ssnm.main.views.show_maps'),

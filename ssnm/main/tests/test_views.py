@@ -107,7 +107,7 @@ class ViewTest(TestCase):  # unittest.
     def test_validation_three_create_account(self):
         with self.assertRaises(forms.ValidationError):
             '''Test that user who creates account a missing password triggers exception handling.'''
-            request = self.factory.post('/create_account/', {"first_name" : "firstname", "last_name" : "lastname", "username" : "somestudent", "email" : "test_email@email.com","password1" : "", "password2" : "password"})
+            request = self.factory.post('/create_account/', {"first_name" : "some_rand_name", "last_name" : "some_rand_name", "username" : "unknownstudent", "email" : "test_email@email.com", "password2" : "password"})
             response = create_account(request)
 
     # Contact Form
@@ -198,9 +198,12 @@ class ViewTest(TestCase):  # unittest.
             ecomap = Ecomap.objects.get(pk=6)
 
 
-
-
-
+    def test_logout(self):
+        request = self.factory.post('/logout/')
+        request.user = self.user
+        response = logout(request)
+        self.assertEqual(response.status_code, 302)
+        #self.assertRedirects(response, '/accounts/logout/')
 
 
 # TEST FLASH IS RETURNING RESPONSE

@@ -1,14 +1,9 @@
+{% extends "ecobase.html" %}
+{% load i18n %}
+{% block content %} 
+
 map id = {{map.id}}
 
-<form action="" method="post">
-    {{ form.non_field_errors }}
-    <div class="fieldWrapper">
-        {{ form.name.errors }}
-        <label for="id_name">Map Name:</label>
-        {{ form.name }}
-    </div>
-    <p><input type="submit" value="Save Name" /></p>
-</form>
 
 <div id="game_content">
 {% block game_content %}
@@ -43,3 +38,5 @@ map id = {{map.id}}
     </object>
     {% endblock %}
 </div>
+<a href="/show_maps/">  Back to Maps  </a>  <a href="/details/{{map.id}}/">  Add Details About Map  </a>
+{% endblock %}
