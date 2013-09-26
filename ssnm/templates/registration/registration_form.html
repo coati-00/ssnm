@@ -1,63 +1,69 @@
-{% extends "registration/base_registration.html" %}
+{% extends "ecobase.html" %}
 {% load i18n admin_static %}
 {% block title %}Sign up for an account{% endblock %}
+{% block content %}		
+		<div id="breadcrumbbar">
+		<span class="here">You are Here:</span>  
+				&gt; 	Create Account
+		</div>
+		
+		<div id="container">
+			<h2>	Create Account	</h2>
+			<form action="." method="post">{% csrf_token %}
+			    {{form.non_field_errors}}
+                <fieldset>
+				<legend>Account Information</legend>
 
-{% block extrahead %}
-    {{ block.super }}
-    <link rel="stylesheet" type="text/css" href='{% static "admin/css/widgets.css" %}' />        
-{% endblock %}
+                    <div class="fieldWrapper">
+                    {{ form.username.errors }}
+					<label for="username">	Username:</label>
+					{{form.username}}
+					<br/><br/>
+					</div>
 
-{% block js %}
-    {{ block.super }}
-    <script type="text/javascript" src="/site_media/bootstrap-multiselect/js/bootstrap-multiselect.js"></script>
-   
-    <script type="text/javascript">
-        jQuery(document).ready(function() {
-            jQuery('#id_state').addClass("multiselect");
-            jQuery('#id_state').multiselect({
-              buttonClass: 'btn',
-              buttonWidth: 'auto',
-              buttonContainer: '<div class="btn-group" />',
-              maxHeight: false,
-              buttonText: function(options) {
-                if (options.length == 0) {
-                  return 'None selected <b class="caret"></b>';
-                }
-                else if (options.length > 3) {
-                  return options.length + ' selected  <b class="caret"></b>';
-                }
-                else {
-                  var selected = '';
-                  options.each(function() {
-                    selected += jQuery(this).text() + ', ';
-                  });
-                  return selected.substr(0, selected.length -2) + ' <b class="caret"></b>';
-                }
-              }
-            });
-        });
-    </script>    
-{% endblock %}
+                    <div class="fieldWrapper">
+                    {{ form.email.errors }}
+					<label for="email">	Email:</label>
+					{{form.email}}
+					<br/><br/>
+					</div>
 
-{% block registration_content %}
-    <h2 class="pagetitle signuptitle">Sign up for an account</h2>
-    
-    <div class="p">Use the following form to create a new account to access Teach Dentistry.</div>
-    
-    
+                    <div class="fieldWrapper">
+                    {{ form.first_name.errors }}
+					<label for="first_name">	First Name:</label>
+					{{form.first_name}}
+					<br/><br/>
+                    </div>
+
+                    <div class="fieldWrapper">
+                    {{ form.last_name.errors }}
+					<label for="last_name">	Last Name:</label>
+					{{form.last_name}}
+					<br/><br/>
+					</div>
+
+                    <div class="fieldWrapper">
+                    {{ form.password1.errors }}
+					<label for="password1">	Password:</label>
+					{{form.password1}}
+					<br/><br/>
+                    {{ form.password2.errors }}
+					<label for="password2">	Password:</label>
+					{{form.password2}}
+					<br/><br/>
+					</div>
+
+
+					<br/><br/>
+					<label for="createaccount">	</label>
+					<input id="createaccount" type="submit" value="Create Account" />
+				</fieldset>
+			</form>
+			
+		</div>
     <div class="p">
     If you already have a username or password, but have forgotten either,
         <a href="{% url auth_password_reset %}">reset them here</a>.
     </div>
-    
-    <div class="p"><i><span style="color: #c00; font-size: 20px;">*</span> Indicates required field</i></div>
-    
-    <form method="post" action="." class="register">
-      {{ form.as_p }}
-      
-      <input class="btn btn-primary" type="submit" value="{% trans 'Sign up!' %}" />
-    </form>
-
+	
 {% endblock %}
-
-

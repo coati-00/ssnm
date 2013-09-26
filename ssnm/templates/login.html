@@ -21,10 +21,30 @@
 <input type="hidden" name="destination" value="http{% if request.is_secure %}s{% endif %}://{{ request.get_host }}/accounts/windlogin/?next=/show_maps/" />
 <p>If you have a Columbia Uni you can log in <input type="submit" value="here" />.</p>
 </form>
+    <p>If you have a PASS account...</p>
+<form method="post" action="." name="login_local">
+
+{% csrf_token %}
+
+    <div class="fieldwrapper">
+        <label for="id_username">Username:</label>
+        {{ form.username }}
+    </div><!-- fieldwrapper -->
+
+    <div class="fieldwrapper">
+        <label for="id_password">Password:</label>
+        {{ form.password }}
+    </div><!-- fieldwrapper -->
+    
+
+<input class="regbutton" type="submit" value="LOG IN" />
+<input type="hidden" name="next" value="{{ next }}" />
+</form>
+
 </div>
 
             <h2>Not a Columbia User? Login as a Guest.</h2>
-            <form  action="/login/" method="post">
+            <form  action="accounts/login/" method="post">
                 <fieldset>
                     <legend>Guest Account Information</legend>
                     <label for="username">User Name:</label>
@@ -38,5 +58,5 @@
                 </fieldset>
             </form>
                         <br><br>
-    <h2>Don't have and account? </h2> <a href="/create_account/">Click here to create one. </a>
+    <h2>Don't have and account? </h2> <a href="account/register/">Click here to create one. </a>
 {% endblock %}

@@ -1,4 +1,4 @@
-{% extends "registration/base_registration.html" %}
+{% extends "ecobase.html" %}
 {% load i18n %}
 {% block title %}{% if account %}Activation complete{% else %}Activation problem{% endif %}{% endblock %}
 
@@ -7,7 +7,7 @@
 
 {% if account %}
 
-<div class="p">Thanks {{ account }}, your account activation is now completed! You may now <a href="/">log in</a> using the username and password you set at registration.</div>
+<div class="p">Thanks {{ account }}, your account activation is now completed! You may now <a href="http://kodos.ccnmtl.columbia.edu:13095/accounts/login/">log in</a> using the username and password you set at registration.</div>
 
 {% else %}
 

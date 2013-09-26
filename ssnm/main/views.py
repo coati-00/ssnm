@@ -11,8 +11,9 @@ from xml.dom.minidom import parseString
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from registration.signals import user_registered
+from django.conf import settings
 
-
+@login_required
 def display(request, map_id):
     '''Method processes infromation comunicated by flash.'''
     post = request.raw_post_data
@@ -207,28 +208,9 @@ def create_account(request):
     })
 
 
-def my_login(request):
-    '''My login method -- probably very wrong...'''
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username=username, password=password)
-        #print user.username
-        if user is not None:
-            if user.is_active:
-                login(request, user)
-                return HttpResponseRedirect('/show_maps/')
-            else:
-                return HttpResponseRedirect('It appears you do not have an account, please create one to use this application')
-        else:
-            forms.ValidationError('This login is incorrect.')
-    else:
-        form = LoginForm()  # An unbound form
 
-    return render(request, 'login.html', {
-        'form': form,
-    })
+#def my_login(request):
+#    return render_to_response('login.html')
 
 
 def delete_map(request, map_id):

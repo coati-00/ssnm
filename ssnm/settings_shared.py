@@ -124,6 +124,8 @@ INSTALLED_APPS = [
     'registration',
 ]
 
+ACCOUNT_ACTIVATION_DAYS = 1
+
 LETTUCE_APPS = (
     'ssnm.main',
 )
