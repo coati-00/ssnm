@@ -29,14 +29,8 @@ class SimpleViewTest(TestCase):
     def test_home_page(self):
         '''Test that user recieves response of home page.'''
         response = self.c.get('')
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
         self.assertTemplateUsed('/login.html')
-
-    def test_create_account(self):
-        '''Test that user creating an account returns a response.'''
-        response = self.c.get('/create_account/')
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed('/thanks.html')
 
     def test_create_user_account(self):
         '''Test user submitting form to create account.'''
