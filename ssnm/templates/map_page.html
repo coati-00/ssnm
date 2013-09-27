@@ -30,9 +30,11 @@
 
 
 			<tbody>
+
 			{% for map in maps %}
-				    <tr><td>{%if map.name%}{{ map.name }}</td><td>{%if map.description%}{{ map.description }}</td><td class="centered"><a href="/ecomap/{{ map.pk }}">View Map</a> | <a href="/details/{{ map.pk }}">Edit Map Details</a> | <a href="/ecomap/{{ map.pk }}/delete_map">Delete</a></td></tr>
+				    <tr><td>{%if map.name%}{{ map.name }}</td><td class="centered"><a href="/ecomap/{{ map.pk }}">View Map</a> | <a href="/details/{{ map.pk }}">Edit Map Details</a> | <a href="/ecomap/{{ map.pk }}/delete_map">Delete</a></td></tr>
 			{% endfor %}
+
 			</tbody>
 
 			</table>			
