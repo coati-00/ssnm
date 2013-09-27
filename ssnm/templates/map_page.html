@@ -13,7 +13,7 @@
 		</form>
 	</div>
 		
-	<h2>	My Maps	{{ map.name }}</h2>
+	<h2>	My Maps	</h2>
 
 		<table cellspacing="0" class="infotable" summary="Network Map Table">
 			<colgroup span="3" id="coursetablecols">
@@ -31,9 +31,7 @@
 
 			<tbody>
 
-			{% for map in maps %}
-				    <tr><td>{{ map.name }}</td><td class="centered"><a href="/ecomap/{{ map.pk }}">View Map</a> | <a href="/details/{{ map.pk }}">Edit Map Details</a> | <a href="/ecomap/{{ map.pk }}/delete_map">Delete</a></td></tr>
-			{% endfor %}
+
 
 			</tbody>
 
