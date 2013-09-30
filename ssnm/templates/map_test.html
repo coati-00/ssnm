@@ -30,7 +30,7 @@
             <param name="scale" value="noscale" />
             <param name="salign" value="lt" />
             <param name="bgcolor" value="#ffffff" />
-            <param  name="server=http://{{request_host}}/ssnm/{{ssnm_map_type}}/{{user.id}}/&amp;returnPath=back_to_list_button_clicked" />
+            <param  name="server=http://{{request_host}}/ssnm/{{user.id}}/&amp;returnPath=back_to_list_button_clicked" />
             <embed
                 src="media/flash/ecomap.swf?{{random_value}}"
                 loop="false" menu="false"
@@ -44,7 +44,7 @@
                 allowscriptaccess="sameDomain"
                 type="application/x-shockwave-flash" 
                 pluginspage="http://www.macromedia.com/go/getflashplayer"
-                flashVars="server=http://{{request_host}}/ssnm/{{ssnm_map_type}}/{{user.id}}/&amp;returnPath=back_to_list_button_clicked" 
+                flashVars="server=http://{{request_host}}/ssnm/{{user.id}}/&amp;returnPath=back_to_list_button_clicked" 
             />
         </object>
     </div>
