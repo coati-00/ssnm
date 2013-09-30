@@ -18,7 +18,7 @@ map id = {{map.id}}
         <param name="scale" value="noscale" />
         <param name="salign" value="lt" />
         <param name="bgcolor" value="#ffffff" />
-        <param  name="server=http://kodos.ccnmtl.columbia.edu:13095/ecomap/{{map.id}}/display/&amp;returnPath=back_to_list_button_clicked" />
+        <param  name="server=http://ssnm.stage.ccnmtl.columbia.edu:13095/ecomap/{{map.id}}/display/&amp;returnPath=back_to_list_button_clicked" />
             <embed
             src="/site_media/ecomap.swf"
             loop="false" menu="false"
@@ -32,11 +32,11 @@ map id = {{map.id}}
             allowscriptaccess="sameDomain"
             type="application/x-shockwave-flash" 
             pluginspage="http://www.macromedia.com/go/getflashplayer"
-            flashVars="server=http://kodos.ccnmtl.columbia.edu:13095/ecomap/{{map.id}}/display/&amp;returnPath=back_to_list_button_clicked"
+            flashVars="server=http://ssnm.stage.ccnmtl.columbia.edu:13095/ecomap/{{map.id}}/display/&amp;returnPath=back_to_list_button_clicked"
             
             />
     </object>
     {% endblock %}
 </div>
-<a href="/show_maps/">  Back to Maps  </a>  <a href="/details/{{map.id}}/">  Add Details About Map  </a>
+<a href="/">  Back to Maps  </a>  <a href="/details/{{map.id}}/">  Add Details About Map  </a>
 {% endblock %}
