@@ -50,7 +50,7 @@ def get_map(request, map_id):
 def get_map_details(request, map_id=""):
     '''Make user enter name and description of the map before letting them go to the actual map site'''
     user = request.user
-    if map_id != "":
+    if map_id != "" and request.method == 'POST':
         ecomap = Ecomap.objects.get(pk=map_id)
         if request.method == 'POST':  # If the form has been submitted...
             form = EcomapForm(request.POST)  # A form bound to the POST data
@@ -65,7 +65,7 @@ def get_map_details(request, map_id=""):
 
         return render(request, 'details.html', {  'form': form, 'map' : ecomap})
 
-    else:
+    elif request.method == 'POST':
         print "map_id BEFORE ECOMAP CREATION" + str(map_id)
         ecomap = Ecomap.objects.create_ecomap(owner=user)
         map_id = ecomap.pk
@@ -103,22 +103,19 @@ def get_map_details(request, map_id=""):
         eco_xml = new_xml % request.user
         ecomap.ecomap_xml = eco_xml
 
-
-
-        if request.method == 'POST':
-            print "ecomap.pk after POST" + str(ecomap.pk)
-            form = EcomapForm(request.POST)
-            if form.is_valid():
-                print "ecomap.pk inside form" + str(ecomap.pk)
-                ecomap.name = form.cleaned_data['name']
-                ecomap.description = form.cleaned_data['description']
-                ecomap.save()
-                print "ecomap.pk after save" + str(ecomap.pk)
-                return HttpResponseRedirect('/ecomap/' + str(ecomap.pk))
-        else:
+        print "ecomap.pk after POST" + str(ecomap.pk)
+        form = EcomapForm(request.POST)
+        if form.is_valid():
+            print "ecomap.pk inside form" + str(ecomap.pk)
+            ecomap.name = form.cleaned_data['name']
+            ecomap.description = form.cleaned_data['description']
+            ecomap.save()
+            print "ecomap.pk after save" + str(ecomap.pk)
+            return HttpResponseRedirect('/ecomap/' + str(ecomap.pk))
+    else:
             form = EcomapForm()
 
-        return render(request, 'details.html', {  'form' : form, 'map' : ecomap})
+    return render(request, 'details.html', {  'form' : form})#, 'map' : ecomap})
 
 
 @login_required
