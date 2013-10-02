@@ -135,59 +135,6 @@ class ViewTest(TestCase):  # unittest.
         self.assertEqual(response.status_code, 200)
 
 
-    #THIS MUST BE DONE
-    # def test_login(self):
-    #     '''Test that user can login through login form.'''
-    #     request = self.factory.post('', {"username" : "somestudent", "password" : "somestudent"})
-    #     response = my_login(request)
-    #     #self.assertEqual(response.status_code, 302)
-    #     #self.assertRedirects(response, "/show_maps/")
-
-    # def test_login_one_error(self):
-    #     with self.assertRaises(forms.ValidationError):
-    #         '''Test that user who tries to login and does not have an account triggers exception handling.'''
-    #         request = self.factory.post('', {"username" : "no_username", "password" : "password"})
-    #         response = my_login(request)
-
-    # def test_login_two_error(self):
-    #     with self.assertRaises(forms.ValidationError):
-    #         '''Test that user who enters wrong password triggers exception handling.'''
-    #         request = self.factory.post('', {"username" : "somestudent", "password" : "bad_password"})
-    #         response = my_login(request)
-
-    # if request.method == 'POST':
-    #     form = LoginForm(request.POST)
-    #     username = request.POST['username']
-    #     password = request.POST['password']
-    #     user = authenticate(username=username, password=password)
-    #     #print user.username
-    #     if user is not None:
-    #         if user.is_active:
-    #             login(request, user)
-    #             return HttpResponseRedirect('/show_maps/')
-    #         else:
-    #             return HttpResponseRedirect('It appears you do not have an account, please create one to use this application')
-    #     else:
-    #         forms.ValidationError('It appears you do not have an account, please create one to use this application')
-    # else:
-    #     form = LoginForm()  # An unbound form
-
-    # return render(request, 'login.html', {
-    #     'form': form,
-    # })
-        # response, the name of template used for form, form field in question, error text
-        #self.assertValidationError(response, "RegistrationForm", 'username', 'this username already exists')
-        #self.assertRaises(forms.ValidationError("this username already exists"))
-        #self.assertTemplateUsed('create_account.html')
-
-
-    # def test_login_page(self):
-    #     '''Test that created user logging in returns a page.'''
-    #     request = self.client.post('', { 'username' : 'somestudent', 'password' : 'somestudent'})
-    #     response = login(request)
-    #     self.assertEqual(response.status_code, 200)
-
-
     def test_show_maps(self):
         '''Test that logged in user recieves response of home page..'''
         request = self.factory.post('/show_maps/')
@@ -256,10 +203,57 @@ class ViewTest(TestCase):  # unittest.
         self.assertTemplateUsed('game_test.html')
 
 
+    #THIS MUST BE DONE
+    # def test_login(self):
+    #     '''Test that user can login through login form.'''
+    #     request = self.factory.post('', {"username" : "somestudent", "password" : "somestudent"})
+    #     response = my_login(request)
+    #     #self.assertEqual(response.status_code, 302)
+    #     #self.assertRedirects(response, "/show_maps/")
+
+    # def test_login_one_error(self):
+    #     with self.assertRaises(forms.ValidationError):
+    #         '''Test that user who tries to login and does not have an account triggers exception handling.'''
+    #         request = self.factory.post('', {"username" : "no_username", "password" : "password"})
+    #         response = my_login(request)
+
+    # def test_login_two_error(self):
+    #     with self.assertRaises(forms.ValidationError):
+    #         '''Test that user who enters wrong password triggers exception handling.'''
+    #         request = self.factory.post('', {"username" : "somestudent", "password" : "bad_password"})
+    #         response = my_login(request)
+
+    # if request.method == 'POST':
+    #     form = LoginForm(request.POST)
+    #     username = request.POST['username']
+    #     password = request.POST['password']
+    #     user = authenticate(username=username, password=password)
+    #     #print user.username
+    #     if user is not None:
+    #         if user.is_active:
+    #             login(request, user)
+    #             return HttpResponseRedirect('/show_maps/')
+    #         else:
+    #             return HttpResponseRedirect('It appears you do not have an account, please create one to use this application')
+    #     else:
+    #         forms.ValidationError('It appears you do not have an account, please create one to use this application')
+    # else:
+    #     form = LoginForm()  # An unbound form
+
+    # return render(request, 'login.html', {
+    #     'form': form,
+    # })
+        # response, the name of template used for form, form field in question, error text
+        #self.assertValidationError(response, "RegistrationForm", 'username', 'this username already exists')
+        #self.assertRaises(forms.ValidationError("this username already exists"))
+        #self.assertTemplateUsed('create_account.html')
 
 
-
-
+    # def test_login_page(self):
+    #     '''Test that created user logging in returns a page.'''
+    #     request = self.client.post('', { 'username' : 'somestudent', 'password' : 'somestudent'})
+    #     response = login(request)
+    #     self.assertEqual(response.status_code, 200)
 
 
 # ###########################

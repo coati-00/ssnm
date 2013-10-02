@@ -17,16 +17,12 @@ from django.conf import settings
 def display(request, map_id):
     '''Method processes infromation comunicated by flash.'''
     post = request.raw_post_data
-
-    #  making sure there is something in the POST request
     if request.POST == {}:
         return HttpResponse("Nothing in request POST.")
 
     #  parse post request and get infromation
     dom = parseString(post)
     action = dom.getElementsByTagName("action")[0].firstChild.toxml()
-
-    #  retrieve the appropriate map for the page
     ecomap = Ecomap.objects.get(pk=map_id)
 
     if action == "load":
@@ -35,24 +31,45 @@ def display(request, map_id):
     if action == "save":
         name = dom.getElementsByTagName("name")[0].toxml()
         flash_data = dom.getElementsByTagName("flashData")[0].toxml()
-        #  get xml detailing the position of elements on the screen
         map_to_save = "<data><response>OK</response><isreadonly>false</isreadonly>%s%s</data>" % (name, flash_data)
-        # add some extra data
         ecomap.ecomap_xml = map_to_save
         ecomap.save()
         return HttpResponse("<data><response>OK</response></data>")
 
 
+@login_required
+def get_map(request, map_id):
+    '''User has requested a saved ecomap - retrieve it.'''
+    user = request.user
+    print "map id " + map_id
+    ecomap = Ecomap.objects.get(pk=map_id)
+    print "ecomap id " + str(ecomap.id)
+    return render_to_response('game_test.html', {'map' : ecomap})
 
 @login_required
-def get_map(request, map_id=""):
-    '''User has requested a save ecomap - retrieve it.'''
+def get_map_details(request, map_id=""):
+    '''Make user enter name and description of the map before letting them go to the actual map site'''
     user = request.user
     if map_id != "":
         ecomap = Ecomap.objects.get(pk=map_id)
-        return render_to_response('game_test.html', {'map': ecomap})
+        if request.method == 'POST':  # If the form has been submitted...
+            form = EcomapForm(request.POST)  # A form bound to the POST data
+            if form.is_valid():  # All validation rules pass
+                ecomap.name = form.cleaned_data['name']
+                ecomap.description = form.cleaned_data['description']
+                ecomap.save()
+                print "ecomap.pk " + str(ecomap.pk)
+                return HttpResponseRedirect('/ecomap/' + str(ecomap.pk))
+        else:
+            form = EcomapForm()
+
+        return render(request, 'details.html', {  'form': form, 'map' : ecomap})
+
     else:
+        print "map_id BEFORE ECOMAP CREATION" + str(map_id)
         ecomap = Ecomap.objects.create_ecomap(owner=user)
+        map_id = ecomap.pk
+        print "ecomap.pk right after ecomap creation" + str(ecomap.pk)
         new_xml = """<data>
             <response>OK</response>
             <isreadonly>false</isreadonly>
@@ -81,28 +98,27 @@ def get_map(request, map_id=""):
             </flashData>
             </data>"""
 
+
+
         eco_xml = new_xml % request.user
         ecomap.ecomap_xml = eco_xml
-        ecomap.save()
 
-    return render_to_response('game_test.html', {'map' : ecomap})
 
-@login_required
-def get_map_details(request, map_id):
-    '''Make user enter name and description of the map'''
-    user = request.user
-    ecomap = Ecomap.objects.get(pk=map_id)
-    if request.method == 'POST':  # If the form has been submitted...
-        form = EcomapForm(request.POST)  # A form bound to the POST data
-        if form.is_valid():  # All validation rules pass
-            ecomap.name = form.cleaned_data['name']
-            ecomap.description = form.cleaned_data['description']
-            ecomap.save()
-            return render_to_response('thanks.html')
-    else:
-        form = EcomapForm()  # An unbound form
 
-    return render(request, 'details.html', {  'form': form, 'map' : ecomap})
+        if request.method == 'POST':
+            print "ecomap.pk after POST" + str(ecomap.pk)
+            form = EcomapForm(request.POST)
+            if form.is_valid():
+                print "ecomap.pk inside form" + str(ecomap.pk)
+                ecomap.name = form.cleaned_data['name']
+                ecomap.description = form.cleaned_data['description']
+                ecomap.save()
+                print "ecomap.pk after save" + str(ecomap.pk)
+                return HttpResponseRedirect('/ecomap/' + str(ecomap.pk))
+        else:
+            form = EcomapForm()
+
+        return render(request, 'details.html', {  'form' : form, 'map' : ecomap})
 
 
 @login_required
