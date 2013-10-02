@@ -5,20 +5,21 @@
 
 
 <form action="" method="post">
-    {{ form.non_field_errors }}
-<div class="fieldWrapper">
-<br><br>
-{{ form.name.errors }}
-<label for="id_name">Map Name:</label>
-{{ form.name }}
-</div>
-<br><br>
-<div class="fieldWrapper">
 
-<label for="id_description">Map Description:</label>
-{{ form.description }}
-</div>
-<p><input type="submit" value="Save Description" /></p>
+
+    <div class="fieldWrapper">
+    <br><br>
+
+    <label for="id_name">Map Name:</label>
+    {{ form.name }}
+    </div>
+    <br><br>
+    <div class="fieldWrapper">
+
+   <label for="id_description">Map Description:</label>
+   {{ form.description }}
+   </div>
+   <p><input type="submit" value="Save Description" /></p>
 
 </form>
 
