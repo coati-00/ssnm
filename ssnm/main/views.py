@@ -49,19 +49,15 @@ def get_map_details(request, map_id=""):
     '''Make user enter name and description of the map before letting them go to the actual map site'''
     user = request.user
     if map_id != "" and request.method == 'POST':
-        ecomap = Ecomap.objects.get(pk=map_id)
-        if request.method == 'POST':  # If the form has been submitted...
-            form = EcomapForm(request.POST)  # A form bound to the POST data
-            if form.is_valid():  # All validation rules pass
+        if request.method == 'POST':
+            form = EcomapForm(request.POST)
+            if form.is_valid():
                 ecomap.name = form.cleaned_data['name']
                 ecomap.description = form.cleaned_data['description']
                 ecomap.save()
                 print "ecomap.pk " + str(ecomap.pk)
                 return HttpResponseRedirect('/ecomap/' + str(ecomap.pk))
-        else:
-            form = EcomapForm()
 
-        return render(request, 'details.html', {  'form': form, 'map' : ecomap})
 
     elif request.method == 'POST':
         ecomap = Ecomap.objects.create_ecomap(owner=user)
@@ -95,10 +91,6 @@ def get_map_details(request, map_id=""):
             </data>"""
 
 
-
-
-
-
         form = EcomapForm(request.POST)
         if form.is_valid():
             ecomap.name = form.cleaned_data['name']
@@ -107,8 +99,14 @@ def get_map_details(request, map_id=""):
             ecomap.ecomap_xml = eco_xml
             ecomap.save()
             return HttpResponseRedirect('/ecomap/' + str(ecomap.pk))
+
+    elif map_id != "":
+            ecomap = Ecomap.objects.get(pk=map_id)
+            form = EcomapForm({"name" : ecomap.name , "description" : ecomap.description})
+
     else:
-            form = EcomapForm()
+
+        form = EcomapForm()
 
     return render(request, 'details.html', {  'form' : form})
 
