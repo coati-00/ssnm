@@ -41,9 +41,7 @@ def display(request, map_id):
 def get_map(request, map_id):
     '''User has requested a saved ecomap - retrieve it.'''
     user = request.user
-    # print "map id " + map_id
     ecomap = Ecomap.objects.get(pk=map_id)
-    # print "ecomap id " + str(ecomap.id)
     return render_to_response('game_test.html', {'map' : ecomap})
 
 @login_required
@@ -66,10 +64,8 @@ def get_map_details(request, map_id=""):
         return render(request, 'details.html', {  'form': form, 'map' : ecomap})
 
     elif request.method == 'POST':
-        # print "map_id BEFORE ECOMAP CREATION" + str(map_id)
         ecomap = Ecomap.objects.create_ecomap(owner=user)
         map_id = ecomap.pk
-        # print "ecomap.pk right after ecomap creation" + str(ecomap.pk)
         new_xml = """<data>
             <response>OK</response>
             <isreadonly>false</isreadonly>
@@ -100,22 +96,21 @@ def get_map_details(request, map_id=""):
 
 
 
-        eco_xml = new_xml % request.user
-        ecomap.ecomap_xml = eco_xml
 
-        # print "ecomap.pk after POST" + str(ecomap.pk)
+
+
         form = EcomapForm(request.POST)
         if form.is_valid():
-            # print "ecomap.pk inside form" + str(ecomap.pk)
             ecomap.name = form.cleaned_data['name']
             ecomap.description = form.cleaned_data['description']
+            eco_xml = new_xml % ecomap.name
+            ecomap.ecomap_xml = eco_xml
             ecomap.save()
-            # print "ecomap.pk after save" + str(ecomap.pk)
             return HttpResponseRedirect('/ecomap/' + str(ecomap.pk))
     else:
             form = EcomapForm()
 
-    return render(request, 'details.html', {  'form' : form})#, 'map' : ecomap})
+    return render(request, 'details.html', {  'form' : form})
 
 
 @login_required
@@ -143,7 +138,7 @@ class ContactForm(forms.Form):
 class EcomapForm(forms.Form):
     '''TO DO:Form to allow user to add additional data about their graph
      - user should be able to add description of map and give it a name.'''
-    name = forms.CharField(max_length=50, label="Name")
+    name = forms.CharField(max_length=50, label="Name", required=True)
     description = forms.CharField(max_length=500, widget=forms.Textarea, label="Description")
 
 
