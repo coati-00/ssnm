@@ -120,12 +120,12 @@ class ViewTest(TestCase):  # unittest.
 
 
     #set details for a map
-    def test_details(self):
-        '''Test that user who creates account get appropriate response.'''
-        request = self.factory.post('/details/6/', {"name" : "Test Map Name Here", "description" : "Make sure description box takes input"})
-        request.user = self.user
-        response = get_map_details(request, 6)
-        self.assertEqual(response.status_code, 200)
+    # def test_details(self):
+    #     '''Test that user who creates account get appropriate response.'''
+    #     request = self.factory.post('/details/6/', {"name" : "Test Map Name Here", "description" : "Make sure description box takes input"})
+    #     request.user = self.user
+    #     response = get_map_details(request, 6)
+    #     self.assertEqual(response.status_code, 200)
 
     def test_details_empty_form(self):
         '''Test that user who creates account get appropriate response.'''
@@ -143,13 +143,13 @@ class ViewTest(TestCase):  # unittest.
         self.assertEqual(response.status_code, 200)
 
 
-    #  TEST RETRIEVAL OF SAVE MAP
-    def test_saved_ecomap(self):
-        '''Test that requesting saved_ecomap page returns a response.'''
-        request = self.factory.post('/ecomap/6/')
-        request.user = self.user
-        response = get_map(request, 6)
-        self.assertEqual(response.status_code, 200)
+    # #  TEST RETRIEVAL OF SAVE MAP
+    # def test_saved_ecomap(self):
+    #     '''Test that requesting saved_ecomap page returns a response.'''
+    #     request = self.factory.post('/ecomap/6/')
+    #     request.user = self.user
+    #     response = get_map(request, 6)
+    #     self.assertEqual(response.status_code, 200)
 
 
     def test_delete_map(self):
@@ -195,12 +195,12 @@ class ViewTest(TestCase):  # unittest.
         self.assertTemplateUsed('game_test.html')
 
 
-    def test_get_map(self):
-        request = self.factory.post('/ecomap/')
-        request.user = self.user
-        response = get_map(request, "")
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed('game_test.html')
+    # def test_get_map(self):
+    #     request = self.factory.post('/ecomap/')
+    #     request.user = self.user
+    #     response = get_map(request, "")
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed('game_test.html')
 
 
     #THIS MUST BE DONE
