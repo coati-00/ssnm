@@ -2,7 +2,7 @@
 {% trans "Thank you for registering for the Social Support Network Map application. To activate your account, please click the link below. This link will be available to you for 24 hours." %}
 
 
-http://{{ site.domain }}{% url registration_activate activation_key %}
+http://{{ site.domain }}{% url 'registration_activate' activation_key %}
 
 
 Once you've activated your account, you can log in to {{site.domain}} using the log in button on the front page.
