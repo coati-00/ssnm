@@ -32,3 +32,4 @@ class Ecomap(models.Model):
     owner = models.ForeignKey(User)
     description = models.TextField()
     objects = EcomapManager()
+

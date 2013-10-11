@@ -19,10 +19,10 @@
 
     <div id="toolbar">
         <div id="standard">
-            <a href="/about/">About</a>
-            <a href="/help/">Help</a>
-            <a href="/contact/">Feedback</a>
-            <a href="accounts/logout/">Logout</a>
+            <a href="{% url ssnm.main.views.about %}">About</a>
+            <a href="{% url ssnm.main.views.help_page %}">Help</a>
+            <a href="{% url ssnm.main.views.contact %}">Contact</a>
+            <a href="{% url django.contrib.auth.views.logout %}">Logout</a>
         </div>
       
     </div>

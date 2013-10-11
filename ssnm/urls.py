@@ -47,15 +47,10 @@ urlpatterns = patterns(
     (r'^contact/$', 'ssnm.main.views.contact'),
     (r'^thanks/$', 'ssnm.main.views.thanks'),
     (r'^ecomap/$', 'ssnm.main.views.get_map'),
-    #(r'^details/$', 'ssnm.main.views.get_map_details')
     (r'^ecomap/(?P<map_id>\d+)/$', 'ssnm.main.views.get_map'),
     (r'^ecomap/(?P<map_id>\d+)/display/flashConduit$', 'ssnm.main.views.display'),
     (r'^details/(?P<map_id>\d+)/$', 'ssnm.main.views.get_map_details'),
-#    (r'^create_account/$', 'ssnm.main.views.create_account'),
-#    (r'^register/$', 'ssnm.main.views.create_account'),
     (r'^ecomap/(?P<map_id>\d+)/delete_map/$', 'ssnm.main.views.delete_map'),
-    #(r'^login/$', 'ssnm.main.views.my_login'),
-# taken from nynjaetc
     (r'^details/$', 'ssnm.main.views.get_map_details'),
     (r'^accounts/', include('registration.backends.default.urls')),
     (r'^admin/', include(admin.site.urls)),

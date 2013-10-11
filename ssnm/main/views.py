@@ -214,11 +214,6 @@ def create_account(request):
     })
 
 
-
-#def my_login(request):
-#    return render_to_response('login.html')
-
-
 def delete_map(request, map_id):
     '''Deletes the selected map.'''
     ecomap = Ecomap.objects.get(pk=map_id)
