@@ -119,8 +119,17 @@ def show_maps(request):
     user_key = user_obj.pk
     maps = Ecomap.objects.filter(owner=user_obj)
     return render_to_response("map_page.html", {'maps': maps, 'user': user_obj, })
+    
+@login_required
+def go_home(request, map_id):
+    '''Show the user all of their saved maps.
+    Allow user to click on one and have it retrieved.'''
+    user_obj = User.objects.get(username=str(request.user))
+    user_key = user_obj.pk
+    maps = Ecomap.objects.filter(owner=user_obj)
+    return render_to_response("map_page.html", {'maps': maps, 'user': user_obj, })
 
-
+@login_required
 def logout(request):
     return HttpResponseRedirect('/accounts/logout/')
 

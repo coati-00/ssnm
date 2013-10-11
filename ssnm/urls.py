@@ -51,6 +51,7 @@ urlpatterns = patterns(
     (r'^ecomap/(?P<map_id>\d+)/display/flashConduit$', 'ssnm.main.views.display'),
     (r'^details/(?P<map_id>\d+)/$', 'ssnm.main.views.get_map_details'),
     (r'^ecomap/(?P<map_id>\d+)/delete_map/$', 'ssnm.main.views.delete_map'),
+    (r'^ecomap/(?P<map_id>\d+)/display/back_to_list_button_clicked$', 'ssnm.main.views.go_home'),
     (r'^details/$', 'ssnm.main.views.get_map_details'),
     (r'^accounts/', include('registration.backends.default.urls')),
     (r'^admin/', include(admin.site.urls)),
