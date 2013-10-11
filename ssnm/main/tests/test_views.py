@@ -127,20 +127,20 @@ class ViewTest(TestCase):  # unittest.
     #     response = get_map_details(request, 6)
     #     self.assertEqual(response.status_code, 200)
 
-    def test_details_empty_form(self):
-        '''Test that user who creates account get appropriate response.'''
-        request = self.factory.get('/details/6/')
-        request.user = self.user
-        response = get_map_details(request, 6)
-        self.assertEqual(response.status_code, 200)
+    # def test_details_empty_form(self):
+    #     '''Test that user who creates account get appropriate response.'''
+    #     request = self.factory.get('/details/6/')
+    #     request.user = self.user
+    #     response = get_map_details(request, 6)
+    #     self.assertEqual(response.status_code, 200)
 
 
-    def test_show_maps(self):
-        '''Test that logged in user recieves response of home page..'''
-        request = self.factory.post('/show_maps/')
-        request.user = self.user
-        response = show_maps(request)
-        self.assertEqual(response.status_code, 200)
+    # def test_show_maps(self):
+    #     '''Test that logged in user recieves response of home page..'''
+    #     request = self.factory.post('/show_maps/')
+    #     request.user = self.user
+    #     response = show_maps(request)
+    #     self.assertEqual(response.status_code, 200)
 
 
     # #  TEST RETRIEVAL OF SAVE MAP
@@ -152,12 +152,12 @@ class ViewTest(TestCase):  # unittest.
     #     self.assertEqual(response.status_code, 200)
 
 
-    def test_delete_map(self):
-        request = self.factory.post('/delete_map/6/')
-        request.user = self.user
-        response = delete_map(request, 6)
-        with self.assertRaises(Ecomap.DoesNotExist):
-            ecomap = Ecomap.objects.get(pk=6)
+    # def test_delete_map(self):
+    #     request = self.factory.post('/delete_map/6/')
+    #     request.user = self.user
+    #     response = delete_map(request, 6)
+    #     with self.assertRaises(Ecomap.DoesNotExist):
+    #         ecomap = Ecomap.objects.get(pk=6)
 
 
     def test_logout(self):
@@ -168,23 +168,23 @@ class ViewTest(TestCase):  # unittest.
         #self.assertRedirects(response, '/accounts/logout/')
 
 
-# TEST FLASH IS RETURNING RESPONSE
-    def test_flash_ecomap(self):
-        '''Test that requesting ecomap_page's flash conduit
-        returns a response.'''
-        request = self.factory.post('/ecomap/display/flashConduit')
-        request.user = self.user
-        response = show_maps(request)
-        self.assertEqual(response.status_code, 200)
+# # TEST FLASH IS RETURNING RESPONSE
+#     def test_flash_ecomap(self):
+#         '''Test that requesting ecomap_page's flash conduit
+#         returns a response.'''
+#         request = self.factory.post('/ecomap/display/flashConduit')
+#         request.user = self.user
+#         response = show_maps(request)
+#         self.assertEqual(response.status_code, 200)
 
 
-    def test_saved_flash_ecomap(self):
-        '''Test that requesting saved_ecomap_page's flash conduit
-        returns a response.'''
-        request = self.factory.post('/ecomap/6/display/flashConduit')
-        request.user = self.user
-        response = show_maps(request)
-        self.assertEqual(response.status_code, 200)
+    # def test_saved_flash_ecomap(self):
+    #     '''Test that requesting saved_ecomap_page's flash conduit
+    #     returns a response.'''
+    #     request = self.factory.post('/ecomap/6/display/flashConduit')
+    #     request.user = self.user
+    #     response = show_maps(request)
+    #     self.assertEqual(response.status_code, 200)
 
 
     def test_saved_flash(self):
