@@ -1,8 +1,10 @@
 '''
-This is a test file to see if changing what libraries are used for testing will effect how jenkins responds to percieved coverage.
+This is a test file to see if changing what libraries are
+used for testing will effect how jenkins responds to percieved coverage.
 '''
 from django.test import TestCase
 from django.test.client import Client
+
 
 class SimpleViewTest(TestCase):
     def setUp(self):
@@ -34,6 +36,10 @@ class SimpleViewTest(TestCase):
 
     def test_create_user_account(self):
         '''Test user submitting form to create account.'''
-        submit = self.c.post('/contact/', {'firstname' : 'firstname', 'lastname' : 'lastname', 'username' : 'username', 'password1' : 'password', 'password2' : 'password'})
+        submit = self.c.post(
+            '/contact/',
+            {'firstname': 'firstname', 'lastname': 'lastname',
+             'username': 'username', 'password1': 'password',
+             'password2': 'password'})
         self.assertEqual(submit.status_code, 200)
         self.assertTemplateUsed('/contact.html')
