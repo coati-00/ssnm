@@ -1,30 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>ssnm: {% block title %}{% endblock %}</title>
-  <link rel="shortcut icon" href="/site_media/favicon.ico" type="image/x-icon" />
-  <link href="/site_media/ecomap.css" rel="stylesheet">
+  <title>SSNM: {% block title %}{% endblock %}</title>
+  <link rel="shortcut icon" href="/site_media/img/favicon.ico" type="image/x-icon" />
+  <link href="/site_media/css/ecomap.css" rel="stylesheet">
   {% block css %}{% endblock %}
     <script src="/site_media/js/jquery-1.7.2.min.js"></script>
 </head>
 
 <body>
-    <h1>
-        <a href="/" title="">Social Support Network Map</a>
-    </h1>
-
-    <div id="ccnmtl">
-        <a href="http://ccnmtl.columbia.edu/" target="_blank" title="Go to the CCNMTL web site.">CCNMTL</a>
-    </div>
-
-    <div id="toolbar">
-        <div id="standard">
-            <a href="{% url "ssnm.main.views.about" %}">About</a>
-            <a href="{% url "ssnm.main.views.help_page" %}">Help</a>
-            <a href="{% url "ssnm.main.views.contact" %}">Contact</a>
-            <a href="{% url "django.contrib.auth.views.logout" %}">Logout</a>
+    <div id="site-header">
+        <div id="logo-project"><a href="/"></a></div>
+        <ul id="sitewide-pages">
+        {% block usernav %}
+            <li id="user-status">
+            {% if request.user.is_anonymous %}
+                <a href="/accounts/login/?next=/">Log in</a>
+            {% else %}
+                <a href="{% url "django.contrib.auth.views.logout" %}">Log out</a>
+            {% endif %}
+            </li>
+        {% endblock %}
+            <li class="flatpages"><a href="{% url "ssnm.main.views.about" %}">ABOUT</a></li>
+            <li class="flatpages"><a href="{% url "ssnm.main.views.help_page" %}">HELP</a></li>
+            <li class="flatpages"><a href="{% url "ssnm.main.views.contact" %}">CONTACT</a></li>
+        </ul>
+        <div id="ccnmtl">
+            <a href="http://ccnmtl.columbia.edu/" target="_blank" title="Go to the CCNMTL web site.">CCNMTL</a>
         </div>
-      
     </div>
 
     
