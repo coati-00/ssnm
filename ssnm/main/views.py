@@ -54,9 +54,10 @@ def get_map_details(request, map_id=""):
             if form.is_valid():
                 ecomap.name = form.cleaned_data['name']
                 ecomap.description = form.cleaned_data['description']
-                ecomap.save()
-                print "ecomap.pk " + str(ecomap.pk)
+                if ecomap.name != '' and ecomap.description != '':
+                    ecomap.save()
                 return HttpResponseRedirect('/ecomap/' + str(ecomap.pk))
+
 
 
     elif request.method == 'POST':
@@ -94,11 +95,17 @@ def get_map_details(request, map_id=""):
         form = EcomapForm(request.POST)
         if form.is_valid():
             ecomap.name = form.cleaned_data['name']
+            print "ecomap.name is: " + ecomap.name
             ecomap.description = form.cleaned_data['description']
+            print "ecomap.description is: " + ecomap.description
             eco_xml = new_xml % ecomap.name
             ecomap.ecomap_xml = eco_xml
-            ecomap.save()
+            if ecomap.name != '':
+                    ecomap.save()
             return HttpResponseRedirect('/ecomap/' + str(ecomap.pk))
+
+        elif request.POST['name'] == "":
+            ecomap.delete()
 
     elif map_id != "":
             ecomap = Ecomap.objects.get(pk=map_id)
@@ -146,7 +153,7 @@ class EcomapForm(forms.Form):
     '''TO DO:Form to allow user to add additional data about their graph
      - user should be able to add description of map and give it a name.'''
     name = forms.CharField(max_length=50, label="Name", required=True)
-    description = forms.CharField(max_length=500, widget=forms.Textarea, label="Description")
+    description = forms.CharField(max_length=500, widget=forms.Textarea, label="Description", required=False)
 
 
 class LoginForm(forms.Form):

@@ -112,7 +112,7 @@ INSTALLED_APPS = [
     'compressor',
     'django_statsd',
     'bootstrapform',
-    'lettuce.django',
+    #'lettuce.django',
     'debug_toolbar',
     'waffle',
     'django_jenkins',

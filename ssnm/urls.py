@@ -10,15 +10,6 @@ import staticmedia
 
 
 
-
-
-
-#    (r'^accounts/', include('registration.backends.default.urls')),
-#    (r'^logout/$',
-#     'django.contrib.auth.views.logout',
-#     {'next_page': '/'}),
-
-
 site_media_root = os.path.join(os.path.dirname(__file__), "../media")
 
 redirect_after_logout = getattr(settings, 'LOGOUT_REDIRECT_URL', None)
