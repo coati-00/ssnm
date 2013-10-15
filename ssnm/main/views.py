@@ -236,4 +236,5 @@ def delete_map(request, map_id):
     '''Deletes the selected map.'''
     ecomap = Ecomap.objects.get(pk=map_id)
     ecomap.delete()
-    return show_maps(request)
+    #return show_maps(request)
+    return HttpResponseRedirect('/')
