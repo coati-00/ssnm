@@ -1,17 +1,13 @@
 '''Each view renders page of site with the excection of
  display - that method deals with the flash in the web page.'''
 from ssnm.main.models import Ecomap, CreateAccountForm
-from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
-from django.shortcuts import render, render_to_response, get_object_or_404
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, render_to_response
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
 from django import forms
-from django.contrib.auth import login, logout
 from xml.dom.minidom import parseString
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_protect
-from registration.signals import user_registered
-from django.conf import settings
+
 
 @login_required
 def display(request, map_id):
@@ -31,7 +27,8 @@ def display(request, map_id):
     if action == "save":
         name = dom.getElementsByTagName("name")[0].toxml()
         flash_data = dom.getElementsByTagName("flashData")[0].toxml()
-        map_to_save = "<data><response>OK</response><isreadonly>false</isreadonly>%s%s</data>" % (name, flash_data)
+        map_to_save = ("<data><response>OK</response><isreadonly>false"
+                       "</isreadonly>%s%s</data>" % (name, flash_data))
         ecomap.ecomap_xml = map_to_save
         ecomap.save()
         return HttpResponse("<data><response>OK</response></data>")
@@ -40,13 +37,14 @@ def display(request, map_id):
 @login_required
 def get_map(request, map_id):
     '''User has requested a saved ecomap - retrieve it.'''
-    user = request.user
     ecomap = Ecomap.objects.get(pk=map_id)
-    return render_to_response('game_test.html', {'map' : ecomap})
+    return render_to_response('game_test.html', {'map': ecomap})
+
 
 @login_required
 def get_map_details(request, map_id=""):
-    '''Make user enter name and description of the map before letting them go to the actual map site'''
+    '''Make user enter name and description of the map before
+    letting them go to the actual map site'''
     user = request.user
     if map_id != "" and request.method == 'POST':
         if request.method == 'POST':
@@ -57,8 +55,6 @@ def get_map_details(request, map_id=""):
                 if ecomap.name != '' and ecomap.description != '':
                     ecomap.save()
                 return HttpResponseRedirect('/ecomap/' + str(ecomap.pk))
-
-
 
     elif request.method == 'POST':
         ecomap = Ecomap.objects.create_ecomap(owner=user)
@@ -91,7 +87,6 @@ def get_map_details(request, map_id=""):
             </flashData>
             </data>"""
 
-
         form = EcomapForm(request.POST)
         if form.is_valid():
             ecomap.name = form.cleaned_data['name']
@@ -109,13 +104,11 @@ def get_map_details(request, map_id=""):
 
     elif map_id != "":
             ecomap = Ecomap.objects.get(pk=map_id)
-            form = EcomapForm({"name" : ecomap.name , "description" : ecomap.description})
-
+            form = EcomapForm({"name": ecomap.name,
+                               "description": ecomap.description})
     else:
-
         form = EcomapForm()
-
-    return render(request, 'details.html', {  'form' : form})
+    return render(request, 'details.html', {'form': form})
 
 
 @login_required
@@ -123,18 +116,21 @@ def show_maps(request):
     '''Show the user all of their saved maps.
     Allow user to click on one and have it retrieved.'''
     user_obj = User.objects.get(username=str(request.user))
-    user_key = user_obj.pk
     maps = Ecomap.objects.filter(owner=user_obj)
-    return render_to_response("map_page.html", {'maps': maps, 'user': user_obj, })
-    
+    return render_to_response("map_page.html",
+                              {'maps': maps, 'user': user_obj, })
+
+
 @login_required
 def go_home(request, map_id):
     '''Show the user all of their saved maps.
     Allow user to click on one and have it retrieved.'''
     user_obj = User.objects.get(username=str(request.user))
-    user_key = user_obj.pk
     maps = Ecomap.objects.filter(owner=user_obj)
-    return render_to_response("map_page.html", {'maps': maps, 'user': user_obj, })
+    return render_to_response(
+        "map_page.html",
+        {'maps': maps, 'user': user_obj, })
+
 
 @login_required
 def logout(request):
@@ -145,7 +141,8 @@ class ContactForm(forms.Form):
     '''This is a form class that will be returned
     later in the contact form view.'''
     subject = forms.CharField(max_length=100, required=True)
-    message = forms.CharField(max_length=500, required=True, widget=forms.Textarea)
+    message = forms.CharField(max_length=500, required=True,
+                              widget=forms.Textarea)
     sender = forms.EmailField(required=True)
 
 
@@ -210,10 +207,14 @@ def create_account(request):
             if 'password1' in request.POST and 'password2' in request.POST:
                 print "comparing passwords"
                 if request.POST['password1'] != request.POST['password2']:
-                    raise forms.ValidationError("passwords dont match each other")
+                    raise forms.ValidationError(
+                        "passwords dont match each other")
 
                 if request.POST['password1'] == request.POST['password2']:
-                    new_user = User.objects.create_user(username=request.POST['username'], email=request.POST['email'], password=request.POST['password1'])
+                    new_user = User.objects.create_user(
+                        username=request.POST['username'],
+                        email=request.POST['email'],
+                        password=request.POST['password1'])
                     new_user.first_name = request.POST['first_name']
                     new_user.last_name = request.POST['last_name']
                     new_user.save()

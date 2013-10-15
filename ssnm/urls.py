@@ -9,7 +9,6 @@ admin.autodiscover()
 import staticmedia
 
 
-
 site_media_root = os.path.join(os.path.dirname(__file__), "../media")
 
 redirect_after_logout = getattr(settings, 'LOGOUT_REDIRECT_URL', None)
@@ -23,7 +22,7 @@ if hasattr(settings, 'WIND_BASE'):
     logout_page = (
         r'^accounts/logout/$',
         'djangowind.views.logout',
-        {'next_page': '/'})#redirect_after_logout})
+        {'next_page': '/'})  # redirect_after_logout})
 
 urlpatterns = patterns(
     '',
@@ -39,10 +38,12 @@ urlpatterns = patterns(
     (r'^thanks/$', 'ssnm.main.views.thanks'),
     (r'^ecomap/$', 'ssnm.main.views.get_map'),
     (r'^ecomap/(?P<map_id>\d+)/$', 'ssnm.main.views.get_map'),
-    (r'^ecomap/(?P<map_id>\d+)/display/flashConduit$', 'ssnm.main.views.display'),
+    (r'^ecomap/(?P<map_id>\d+)/display/flashConduit$',
+     'ssnm.main.views.display'),
     (r'^details/(?P<map_id>\d+)/$', 'ssnm.main.views.get_map_details'),
     (r'^ecomap/(?P<map_id>\d+)/delete_map/$', 'ssnm.main.views.delete_map'),
-    (r'^ecomap/(?P<map_id>\d+)/display/back_to_list_button_clicked$', 'ssnm.main.views.go_home'),
+    (r'^ecomap/(?P<map_id>\d+)/display/back_to_list_button_clicked$',
+     'ssnm.main.views.go_home'),
     (r'^details/$', 'ssnm.main.views.get_map_details'),
     (r'^accounts/', include('registration.backends.default.urls')),
     (r'^admin/', include(admin.site.urls)),
@@ -55,5 +56,3 @@ urlpatterns = patterns(
     (r'^uploads/(?P<path>.*)$',
      'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
 ) + staticmedia.serve()
-
-
