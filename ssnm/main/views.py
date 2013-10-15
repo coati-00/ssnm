@@ -47,12 +47,13 @@ def get_map_details(request, map_id=""):
     letting them go to the actual map site'''
     user = request.user
     if map_id != "" and request.method == 'POST':
+        ecomap = Ecomap.objects.get(owner=user, pk=map_id)
         if request.method == 'POST':
             form = EcomapForm(request.POST)
             if form.is_valid():
                 ecomap.name = form.cleaned_data['name']
                 ecomap.description = form.cleaned_data['description']
-                if ecomap.name != '' and ecomap.description != '':
+                if ecomap.name != '':
                     ecomap.save()
                 return HttpResponseRedirect('/ecomap/' + str(ecomap.pk))
 
