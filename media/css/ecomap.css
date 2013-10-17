@@ -20,6 +20,13 @@ a:hover, a:active
 	text-decoration: none;
 }
 
+.clearfix-div {
+    clear: both;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
 #site-header {
     margin: 0 auto 0 auto;
     padding: 0;
@@ -324,4 +331,164 @@ textarea
 {
     font-size: 10px;
     color: #666;
+}
+
+/* REGISTRATION - LOGIN */
+
+
+.loginbox
+{
+	display: block;
+	min-width: 800px;
+	margin: 0 auto;
+	padding: 0;
+	border: 0;
+	background-color: #fff;
+	font-size: 12px;
+}
+
+.loginbox h2
+{
+	font-weight: bold !important;
+	margin: 0px;
+	padding: 10px 0;
+	color: #348eae;
+	font-size: 14px;
+	background: transparent;
+	text-align: center;
+}
+
+
+.loginbox .content
+{
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+.loginbox .seperator
+{
+	margin: 20px 0;
+	padding: 0;
+	border: 0;
+	border-top: 1px dotted #999;
+	background-color: #fff;
+}
+
+.loginbox .fieldwrapper
+{
+	margin: 0 0 10px 10px;
+	padding: 0;
+	border: 0;
+}
+
+.loginbox .fieldwrapper label
+{
+	width: 80px !important;
+	line-height: 26px;
+	font-weight: bold;
+	color: #666;
+	font-size: 12px;
+	padding: 0;
+	text-align: left;
+	width: auto;
+	display: block;
+	float: left;
+}
+
+.loginbox .fieldwrapper input
+{
+	width: 200px;
+	margin: 2px 0;
+	padding: 3px;
+	border: 0;
+	border: 1px solid #ccc;
+	background-color: #f4f4f4;
+	font: bold 12px arial, helvetica, verdana, sans-serif;
+}
+
+.loginbox .fieldwrapper input:focus
+{
+	border: 1px solid #06f;
+	background-color: #fff;
+}
+
+.loginbox .regbutton
+{
+	cursor: pointer;
+	padding: 4px 17px;
+	margin: 0 0 10px 10px;
+	color: #000;
+	font-weight: normal;
+	font-size: 14px;
+	border: 1px solid #999;
+	border-bottom: 1px solid #666;
+	border-left-color: #999;
+	border-right-color: #999;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	border-radius: 20px;
+	text-align: center;
+	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ccc));
+	background: -moz-linear-gradient(top, #fff, #ccc);
+	font: bold 14px arial, helvetica, verdana, sans-serif !important;
+	text-transform: uppercase;
+}
+
+.loginbox .regbutton:hover
+{
+	border: 1px solid #339999;
+	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#99cccc));
+	background: -moz-linear-gradient(top, #fff, #99cccc);
+}
+
+.loginbox .regbutton:active
+{
+	border: 1px solid #006666;
+	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#669999));
+	background: -moz-linear-gradient(top, #fff, #669999);
+}
+
+.loginbox .smalltxt
+{
+	font-size: 11px;
+	text-align: center;
+}
+
+.loginbox .uni-login
+{
+    margin: 30px auto 0px auto;
+    width: 120px;
+}
+
+.loginbox .other-login
+{
+    margin: 0px auto;
+    width: 120px;
+}
+
+.errornote {
+	background: url("/site_media/img/icon_alert.png") no-repeat 5px 5px #FFEBE8;
+	border: 1px solid #c00 !important;
+	display: block;
+	font-size: 11px !important;
+	margin: 10px 0 10px 0;
+	padding: 5px 5px 5px 25px !important;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	line-height: 140%;
+}
+
+.errornote span {
+	color: #c00;
+}
+
+.login-type {
+    width: 350px;
+    min-height: 190px;
+    float: left;
+    margin: 0;
+    margin-right: 10px;
+    background-color: #ceebea;
+    padding: 0px 20px;
 }
