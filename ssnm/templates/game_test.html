@@ -3,9 +3,7 @@
 {% load i18n %}
 {% block content %} 
 
-map id = {{map.id}}
 
-<b>Note: maps are automatically saved - if you do not want to save this map make sure you delete it from you home page.</b>
 <div id="game_content">
 {% block game_content %}
 <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
@@ -19,7 +17,7 @@ map id = {{map.id}}
         <param name="scale" value="noscale" />
         <param name="salign" value="lt" />
         <param name="bgcolor" value="#ffffff" />
-        <param  name="server=http://ssnm.stage.ccnmtl.columbia.edu/ecomap/{{map.id}}/display/&amp;returnPath=back_to_list_button_clicked" />
+        <param  name="server=http://ssnm.ccnmtl.columbia.edu/ecomap/{{map.id}}/display/&amp;returnPath=back_to_list_button_clicked" />
             <embed
             src="/site_media/ecomap.swf"
             loop="false" menu="false"
@@ -33,7 +31,7 @@ map id = {{map.id}}
             allowscriptaccess="sameDomain"
             type="application/x-shockwave-flash" 
             pluginspage="http://www.macromedia.com/go/getflashplayer"
-            flashVars="server=http://ssnm.stage.ccnmtl.columbia.edu/ecomap/{{map.id}}/display/&amp;returnPath=back_to_list_button_clicked"
+            flashVars="server=http://ssnm.ccnmtl.columbia.edu/ecomap/{{map.id}}/display/&amp;returnPath=back_to_list_button_clicked"
             
             />
     </object>
