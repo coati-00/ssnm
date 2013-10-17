@@ -27,7 +27,7 @@ if hasattr(settings, 'WIND_BASE'):
 urlpatterns = patterns(
     '',
     auth_urls,
-    logout_page,
+    #logout_page,
     url(r'^accounts/register/$', RegistrationView.as_view(
         form_class=CreateAccountForm),
         name='registration_register'),
@@ -35,6 +35,9 @@ urlpatterns = patterns(
     (r'^help/$', 'ssnm.main.views.help_page'),
     (r'^about/$', 'ssnm.main.views.about'),
     (r'^contact/$', 'ssnm.main.views.contact'),
+    (r'^logout/$',
+     'django.contrib.auth.views.logout',
+     {'next_page': '/'}),
     (r'^thanks/$', 'ssnm.main.views.thanks'),
     (r'^ecomap/$', 'ssnm.main.views.get_map'),
     (r'^ecomap/(?P<map_id>\d+)/$', 'ssnm.main.views.get_map'),
