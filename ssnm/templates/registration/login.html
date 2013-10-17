@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-
+{% block title %}Log In{% endblock %}
+{% block usernav %}{% endblock %}
 {% block content %}
         <div id="breadcrumbbar">
         <span class="here">You are Here:</span>
@@ -9,49 +10,79 @@
         
         <div id="container">
 
+	<h2>
+		Log in
+	</h2>
+
+<p>Social Support mapping grows out of a long social work tradition of starting where a person is and recognizing strengths. It helps a person tap into and use his or her own natural support network to deal with challenging life issues. At a time when mental health interventions are increasingly complicated, it remains a simple and accessible, yet powerful tool to support individuals and families.</p>
+
+<p>The Social Support Network Map is a tool to help students and mental health professionals create digital social support maps. This tool helps you create an image that shows important people in the life of you or your client, tag those people as negative, neutral or positive supports, and assign them support attributes.  It will help guide a discussion of if, where and how to engage supports for help.</p>
+
+<p>If you are associate with Columbia University please log in using your UNI. Guest users are also welcome to <a href="{% url "registration_register" %}" title="Create your new project account">create an account</a>.</p>
 
 
-        <table cellspacing="0" class="infotable" summary="Network Map Table">
-        <tr><td><h2>  Columbia Login  </h2>
 
-
-<form method="get" action="{{ wind_base }}login" class="well">
-<input type="hidden" name="service" value="{{ wind_service }}" />
-<input type="hidden" name="destination" value="http://{{ request.get_host }}/accounts/windlogin/?next={{ next }}" />
-<p>If you have a Columbia University Network ID
-        (UNI)... </p><input type="submit" value="LOG IN" class="btn btn-primary"/></p>
-</form><br>
-                
-  
-            </td>
-            <td>
-
-        <div id="guest-login-form">
+<div class="loginbox">
+	<div class="content">
+	
+	<div class="login-type">
+        <form method="get" action="{{ wind_base }}login">
+        <input type="hidden" name="service" value="{{ wind_service }}" />
+        <input type="hidden" name="destination" value="http://{{ request.get_host }}/accounts/windlogin/?next={{ next }}" />
+        <h2>For Columbia University users:</h2>
+        <div class="uni-login"><input class="regbutton" type="submit" value="UNI LOG IN" /></div>
+        </form>
+    
+        <p class="smalltxt"><a href="http://cuit.columbia.edu/cuit/manage-my-uni" title="Learn more about UNI" target="_blank">What is a UNI?</a></p>
+        <!-- End UNI LOG IN -->
+	
+	</div>
+	
+	<div class="login-type">
         {% if form.username.errors or form.password.errors or form.errors %}
-        <div class="alert alert-error">
+        <p class="errornote"><span><b>ERROR:</b> 
             {% if form.username.errors %}
-                Please enter your username.
+                Your username is invalid.
             {% else %}    
                 {% if form.password.errors %}
-                    Please enter your password.
+                     Your password is invalid.
                 {% else %}                
                     {% if form.errors %}
-                        Please enter a correct username and password.
+                        Invalid username or password.
                     {% endif %}
                 {% endif %}
             {% endif %}
-        </div>
+        </span> Please try again. Note that both username and password are case-sensitive.</p>
         {% endif %}
-
-            <h2>Not a Columbia User? Login as a Guest.</h2>
-            <form  action="." method="post">
-                <fieldset>
-
-                    <label for="id_username">Username: {{ form.username }}</label><br><br>
-                    <label for="id_password">Password: {{ form.password }}</label>
-                    <input type="submit" value="Log in" class="btn btn-large btn-primary" id="td_login" />
-                    <input type="hidden" name="next" value="{% if next %}{{ next }}{% else %}/{% endif %}" />
         
+<<<<<<< HEAD
+        <h2>For other users:</h2>
+        <form action="." method="post">
+        
+        {% csrf_token %}
+        
+        <div class="fieldwrapper">
+        <label for="id_username">Username:</label>
+        {{ form.username }}
+        </div><!-- fieldwrapper -->
+        
+        <div class="fieldwrapper">
+        <label for="id_password">Password:</label>
+        {{ form.password }}
+        </div><!-- fieldwrapper -->
+        
+        
+        <div class="other-login"><input class="regbutton" type="submit" value="LOG IN" /></div>
+        <input type="hidden" name="next" value="{% if next %}{{ next }}{% else %}/{% endif %}" />
+        </form>
+        <p class="smalltxt"> <a href="{% url "registration_register" %}" title="Create your new project account">Need a new account?</a></p>
+    </div>
+    
+    <div class="clearfix-div"></div>
+	</div><!-- content -->
+</div><!-- loginbox -->
+
+=======
             </fieldset>
             </form>
             </td>
@@ -68,6 +99,7 @@
     If you already have a username or password, but have forgotten either,
         <a href="/accounts/password/reset/">reset them here</a>.
     </div>
+>>>>>>> 4b9a1ca296d1204b406b66c49947d16624ee76ba
 
 {% endblock %}
 
