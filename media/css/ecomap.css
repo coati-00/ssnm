@@ -92,12 +92,12 @@ a:hover, a:active
     padding-right: 0;
 }
 
-#sitewide-pages li#user-status a
+#sitewide-pages li#user-status a, .bttn
 {
 	cursor: pointer;
 	padding: 2px 8px;
 	margin: 0 0 10px 0;
-	color: #000;
+	color: #000 !important;
 	font-weight: normal;
 	font-size: 12px;
 	border: 1px solid #999;
@@ -111,17 +111,17 @@ a:hover, a:active
 	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ccc));
 	background: -moz-linear-gradient(top, #fff, #ccc);
 	text-transform: uppercase;
-	text-decoration: none;
+	text-decoration: none !important;
 }
 
-#sitewide-pages li#user-status a:hover
+#sitewide-pages li#user-status a:hover, .bttn:hover
 {
 	border: 1px solid #339999;
 	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#99cccc));
 	background: -moz-linear-gradient(top, #fff, #99cccc);
 }
 
-#sitewide-pages li#user-status a:active
+#sitewide-pages li#user-status a, .bttn:active
 {
 	border: 1px solid #006666;
 	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#669999));
@@ -491,4 +491,31 @@ textarea
     margin-right: 10px;
     background-color: #ceebea;
     padding: 0px 20px;
+}
+
+#game_content {
+    margin-top: -20px;
+}
+
+#game_content .button-right {
+    width: 695px;
+    text-align: right;
+    padding: 0;
+    margin: 0 0 3px 0;
+}
+
+.map-container {
+    border: 1px solid #ccc;
+    width: 685px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	padding: 5px;
+	margin: 0 20px 0 0;
+	float: left;
+}
+
+.map-details {
+    width: 300px;
+	float: left;
 }
