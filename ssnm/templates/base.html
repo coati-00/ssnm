@@ -30,6 +30,10 @@
         </div>
     </div>
 
+        <div id="breadcrumbbar">
+        <span class="here">You are here:</span>
+        {% block breadcrumb %}{% endblock %}
+        </div>
     
     <div id="content">
         {% block content %}{% endblock %}
