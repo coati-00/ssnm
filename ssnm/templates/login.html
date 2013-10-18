@@ -1,67 +1,73 @@
 {% extends "base.html" %}
-{% load i18n %}
-{% block stylesheet %}{% endblock %}
+{% block title %}Log In{% endblock %}
+{% block usernav %}{% endblock %}
+{% block content %}
         <div id="breadcrumbbar">
         <span class="here">You are Here:</span>
         &gt;
         Login
         </div>
-{% block bodyclass %}login{% endblock %}
+        
+        <div id="container">
 
-{% block content_title %}{% endblock %}
+    <h2>
+        Log in
+    </h2>
 
-{% block breadcrumbs %}{% endblock %}
-{% block content %}
-{% if error_message %}
-<p class="errornote">{{ error_message }}</p>
-{% endif %}
-<div id="content-main">
-<form method="get" action="https://wind.columbia.edu/login">
-<input type="hidden" name="service" value="cnmtl_full_np" />
-<input type="hidden" name="destination" value="http{% if request.is_secure %}s{% endif %}://{{ request.get_host }}/accounts/windlogin/?next=/show_maps/" />
-<p>If you have a Columbia Uni you can log in <input type="submit" value="here" />.</p>
-</form>
-    <p>If you have a PASS account...</p>
-<form method="post" action="." name="login_local">
+<p>Social Support mapping grows out of a long social work tradition of starting where a person is and recognizing strengths. It helps a person tap into and use his or her own natural support network to deal with challenging life issues. At a time when mental health interventions are increasingly complicated, it remains a simple and accessible, yet powerful tool to support individuals and families.</p>
 
-{% csrf_token %}
+<p>The Social Support Network Map is a tool to help students and mental health professionals create digital social support maps. This tool helps you create an image that shows important people in the life of you or your client, tag those people as negative, neutral or positive supports, and assign them support attributes.  It will help guide a discussion of if, where and how to engage supports for help.</p>
 
-    <div class="fieldwrapper">
-        <label for="id_username">Username:</label>
-        {{ form.username }}
-    </div><!-- fieldwrapper -->
+<p>If you are associate with Columbia University please log in using your UNI. Guest users are also welcome to <a href="{% url "registration_register" %}" title="Create your new project account">create an account</a>.</p>
 
-    <div class="fieldwrapper">
-        <label for="id_password">Password:</label>
-        {{ form.password }}
-    </div><!-- fieldwrapper -->
+
+
+<div class="loginbox">
+    <div class="content">
     
+    <div class="login-type">
+        <form method="get" action="{{ wind_base }}login">
+        <input type="hidden" name="service" value="{{ wind_service }}" />
+        <input type="hidden" name="destination" value="http://{{ request.get_host }}/accounts/windlogin/?next={{ next }}" />
+        <h2>For Columbia University users:</h2>
+        <div class="uni-login"><input class="regbutton" type="submit" value="UNI LOG IN" /></div>
+        </form>
+    
+        <p class="smalltxt"><a href="http://cuit.columbia.edu/cuit/manage-my-uni" title="Learn more about UNI" target="_blank">What is a UNI?</a></p>
+        <!-- End UNI LOG IN -->
+    
+    </div>
+    
+    <div class="login-type">
+        {% if form.username.errors or form.password.errors or form.errors %}
+        <p class="errornote"><span><b>ERROR:</b> 
+            {% if form.username.errors %}
+                Your username is invalid.
+            {% else %}    
+                {% if form.password.errors %}
+                     Your password is invalid.
+                {% else %}                
+                    {% if form.errors %}
+                        Invalid username or password.
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </span> Please try again. Note that both username and password are case-sensitive.</p>
+        {% endif %}
+        
 
-<input class="regbutton" type="submit" value="LOG IN" />
-<input type="hidden" name="next" value="{{ next }}" />
-</form>
-
-</div>
-
-            <h2>Not a Columbia User? Login as a Guest.</h2>
-            <form  action="accounts/login/" method="post">
-                <fieldset>
-                    <legend>Guest Account Information</legend>
-                    <label for="username">User Name:</label>
-                    <input id="guest_username" type="text" name="username" />
-                    <br /><br />
-                    <label for="pass">Password:</label>
-                    <input id="guest_pass" type="password" name="password" />
-                    <br /><br />
-                    <label for="login"></label>
-                    <input id="login" type="submit" value="Log In" />
-                </fieldset>
+            </fieldset>
             </form>
-                        <br><br><br>
-    <h2>Don't have and account? </h2> <a href="account/register/">Click here to create one. </a>
-
-
-    <br><br><br>
+            </td>
+            </tr>               
+            </table>    
+                    
+            <br><br>
+            </div>
+    <div class="p">
+    Don't have and account? <a href="{% url "registration_register" %}">Click here to create one. </a>
+    </div>
+          <br><br>
     <div class="p">
     If you already have a username or password, but have forgotten either,
         <a href="/accounts/password/reset/">reset them here</a>.
@@ -69,3 +75,28 @@
 
 
 {% endblock %}
+
+
+
+{% block js %}
+<script type="text/javascript">
+    jQuery(document).ready(function(jQuery){
+        
+        {% if form.username.errors or form.password.errors or form.errors %}
+            jQuery(".login-set").fadeIn("fast", "linear");
+        {% endif %}
+        
+        /* For Login page */
+        jQuery("#invitation #login").click(function(){
+            jQuery(".login-set").fadeIn("fast", "linear");
+        });
+        jQuery("#login-window #close-login").click(function(){
+            jQuery(".login-set").fadeOut("fast", "linear");
+        });
+        jQuery('.carousel').carousel({
+            interval: 7000
+        })
+    });
+</script>
+{% endblock %}
+
