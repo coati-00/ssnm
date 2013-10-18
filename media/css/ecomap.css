@@ -229,7 +229,7 @@ colgroup#allmaptablecols col.delete { width: 10%; }
 table.infotable
 {
 	margin-bottom: 20px;
-	width: 100%;
+	width: 90%;
 }
 
 table.infotable th
@@ -237,7 +237,6 @@ table.infotable th
 	text-align: left;
 	background-color: #bddfde;
 	color: #369;
-	font-size: 12px;
 	padding: 5px;
 	margin: 0;
 }
@@ -248,7 +247,6 @@ table.infotable td
 {
 	background-color: #fff;
 	color: #000;
-	font-size: 11px;
 	padding: 5px;
 	margin: 0;
 	vertical-align: top;
@@ -259,10 +257,8 @@ table.infotable td.centered { text-align: center; }
 
 .addbar
 {
-	float: right;
-	padding: 0px 0px 10px 0px;
-	font-size: 12px;
-	color: #348eae;
+	padding: 0px;
+	margin: 0px;
 }
 
 .deletebar
