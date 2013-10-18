@@ -17,7 +17,7 @@
             {% if request.user.is_anonymous %}
                 <a href="/accounts/login/?next=/">Log in</a>
             {% else %}
-                <a href="{% url "django.contrib.auth.views.logout" %}">Log out</a>
+                <a href="/logout/">Log out</a>
             {% endif %}
             </li>
         {% endblock %}
@@ -30,6 +30,10 @@
         </div>
     </div>
 
+        <div id="breadcrumbbar">
+        <span class="here">You are here:</span>
+        {% block breadcrumb %}{% endblock %}
+        </div>
     
     <div id="content">
         {% block content %}{% endblock %}

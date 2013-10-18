@@ -1,11 +1,18 @@
 {% extends "base.html" %}
-{% block title %}Map{% endblock %}
+{% block title %}My Maps &gt; {{map.name}}{% endblock %}
+{% block breadcrumb %}My Maps &gt; {{map.name}}{% endblock %}
 {% load i18n %}
 {% block content %} 
+        <div id="container">
 
+	<h2>
+		Map: {{map.name}}
+	</h2>
 
 <div id="game_content">
 {% block game_content %}
+<p class="button-right"><a class="bttn" href="/">  Back to My Maps  </a></p>
+<div class="map-container">
 <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
   codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0"
    width="685px" height="470px" align="middle" >
@@ -35,7 +42,27 @@
             
             />
     </object>
+    </div>
+    <div class="map-details">
+    
+    <h3>Map Details</h3>
+    
+    <p>
+    <b>Title: </b><br />
+    {{map.name}}
+    </p>
+    
+    <p><b>Description: </b><br />
+    {{map.description}}
+    </p>
+    
+    <p><a class="bttn" href="/details/{{map.id}}/">  Edit Map Details  </a></p>
+    
+    </div>
     {% endblock %}
+    <div class="clearfix-div"></div>
 </div>
-<a href="/">  Back to Maps  </a> &nbsp;&nbsp;&nbsp;&nbsp; <a href="/details/{{map.id}}/">  Add Details About Map  </a>
+
+
+</div>
 {% endblock %}

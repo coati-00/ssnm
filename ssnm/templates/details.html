@@ -1,7 +1,19 @@
 {% extends "base.html" %}
 {% block title %}Map Details{% endblock %}
+{% block breadcrumb %}Map Details{% endblock %}
 {% load i18n %}
 {% block content %} 
+
+        <div id="container">
+
+	<h2>
+		{% if form.name.value or form.description.value %}
+		Edit
+		{% else %}
+		Create New
+		{% endif %}
+        Map
+	</h2>
 
 
 
@@ -9,7 +21,6 @@
 
 
     <div class="fieldWrapper">
-    <br><br>
 
     <label for="id_name">Map Name:</label>
     {{ form.name }}
@@ -20,9 +31,9 @@
    <label for="id_description">Map Description:</label>
    {{ form.description }}
    </div>
-   <p><input type="submit" value="Save Description" /></p>
+   <p><input class="bttn" type="submit" value="{% if form.name.value or form.description.value %}Save changes{% else %}Create Map{% endif %}" /></p>
 
 </form>
-
+</div>
 
 {% endblock %}
