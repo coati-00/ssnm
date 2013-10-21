@@ -3,7 +3,61 @@
 {% block breadcrumb %}My Maps{% endblock %}
 {% block content %}
 
-{% block js %}{% endblock %}
+{% block javascript %}
+<script src="/site_media/js/jquery-1.7.2.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function() {
+
+
+    var el = document.getElementById('foo');
+    el.onclick = showFoo;
+
+
+    function showFoo() {
+        alert('I am foo!');
+        return false;
+    }
+
+
+        // $(".dialog").dialog({
+        //     autoOpen: false,
+        //     resizable: false,
+        //     modal: true,
+        //     //title: 'Warning!',
+        //     close: function () {
+        //         $('#del').button('refresh');
+        //         },
+        //     buttons: {
+        //         'Continue': function() {
+        //             $(this).dialog('close');    
+        //         },
+        //         Cancel: function() {
+        //             $(this).dialog('close');
+        //             $('#opener').button('refresh')
+        //         }
+        //     }
+        // });
+
+        function check_delete(){
+        //$("del").click(function() {
+   	        alert("doc ready");
+            //$('.dialog').dialog('open');
+            //$(this).button('refresh')
+            //return false;
+        }
+
+    })
+
+
+
+
+
+
+</script>
+{% endblock %}
 
 <div id="container">
 	<h2>	My Maps	</h2>
@@ -35,7 +89,8 @@
 
 			<tbody>
 			{% for map in maps %}
-				    <tr><td>{{ map.name }}</td><td>{{ map.description }}</td><td class="centered"><a href="/ecomap/{{ map.pk }}">View Map</a> | <a href="/details/{{ map.pk }}">Edit Map Details</a> | <a href="/ecomap/{{ map.pk }}/delete_map">Delete</a></td></tr>
+				    <tr><td>{{ map.name }}</td><td>{{ map.description }}</td><td class="centered"><a href="/ecomap/{{ map.pk }}" onclick="check_delete();">View Map</a> | <a href="/details/{{ map.pk }}">Edit Map Details</a> | 
+				    <a href="/ecomap/{{ map.pk }}/delete_map" onclick="check_delete(this);">Delete</a></td></tr>
 			{% endfor %}
 
 

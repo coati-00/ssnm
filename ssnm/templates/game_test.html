@@ -24,7 +24,7 @@
         <param name="scale" value="noscale" />
         <param name="salign" value="lt" />
         <param name="bgcolor" value="#ffffff" />
-        <param  name="server=http://ssnm.ccnmtl.columbia.edu/ecomap/{{map.id}}/display/&amp;returnPath=back_to_list_button_clicked" />
+        <param  name="server={{ site.domain }}/ecomap/{{map.id}}/display/&amp;returnPath=back_to_list_button_clicked" />
             <embed
             src="/site_media/ecomap.swf"
             loop="false" menu="false"
@@ -38,7 +38,7 @@
             allowscriptaccess="sameDomain"
             type="application/x-shockwave-flash" 
             pluginspage="http://www.macromedia.com/go/getflashplayer"
-            flashVars="server=http://ssnm.ccnmtl.columbia.edu/ecomap/{{map.id}}/display/&amp;returnPath=back_to_list_button_clicked"
+            flashVars="server={{ site.domain }}/ecomap/{{map.id}}/display/&amp;returnPath=back_to_list_button_clicked"
             
             />
     </object>
