@@ -2,6 +2,35 @@
 {% block title %}Map Details{% endblock %}
 {% block breadcrumb %}Map Details{% endblock %}
 {% load i18n %}
+{% block css %}{% endblock %}
+{% block javascript %}
+<script src="/site_media/js/jquery-1.7.2.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        var txt = false;
+
+
+        $("form").submit(
+          function(e)
+          {
+
+            if(!($("#id_name").val()) && txt == false)
+              {
+                  $("#id_name").after('<p id="par" style="color:red" >Please enter a name for your map to contine.</p>');
+                  txt = true;
+                  e.preventDefault();
+              }
+
+
+          });
+       
+    })
+        
+
+    </script>
+{% endblock %}
 {% block content %} 
 
         <div id="container">
