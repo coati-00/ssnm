@@ -176,6 +176,16 @@ class ViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('thanks.html')
 
+    def test_contact_form_not_valid(self):
+        request = self.factory.post(
+            '/contact/',
+            {"subject": "", "message": "",
+             "sender": "", "recipients": "someone"})
+        response = contact(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('contact.html')
+
+
     def test_details_empty_form(self):
         '''Test that user who creates account get appropriate response.'''
         request = self.factory.get('/details/6/')
