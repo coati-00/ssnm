@@ -11,7 +11,7 @@ from django.test import TestCase, RequestFactory
 from django import forms
 
 
-class ViewTest(TestCase):
+class TestView(TestCase):
     def setUp(self):
         '''Set up method for testing views.'''
         self.factory = RequestFactory()
@@ -111,8 +111,7 @@ class ViewTest(TestCase):
     def test_create_account(self):
         '''Test that when get request is issued initial
         create account form is returned.'''
-        request = self.factory.get(
-            '/create_account/',)
+        request = self.factory.get('/create_account/')
         response = create_account(request)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('create_account.html')
@@ -216,7 +215,7 @@ class ViewTest(TestCase):
         request.user = self.user
         response = get_map(request, 6)
         self.assertEqual(response.status_code, 200)
-        
+
 
     def test_delete_map(self):
         request = self.factory.post('/delete_map/6/')

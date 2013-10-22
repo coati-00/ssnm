@@ -48,10 +48,17 @@ def get_map_details(request, map_id=""):
     user = request.user
     if map_id != "" and request.method == 'POST':
         ecomap = Ecomap.objects.get(owner=user, pk=map_id)
+        old_name = ecomap.name
         if request.method == 'POST':
             form = EcomapForm(request.POST)
             if form.is_valid():
                 ecomap.name = form.cleaned_data['name']
+                old_xml = ecomap.ecomap_xml
+                #print old_xml
+                new_xml = old_xml.replace("<name>"+old_name+"</name>", "<name>"+form.cleaned_data['name']+"</name>")
+                #print new_xml
+                ecomap.ecomap_xml = new_xml
+                #print ecomap.ecomap_xml
                 ecomap.description = form.cleaned_data['description']
                 if ecomap.name != '':
                     ecomap.save()
@@ -91,9 +98,9 @@ def get_map_details(request, map_id=""):
         form = EcomapForm(request.POST)
         if form.is_valid():
             ecomap.name = form.cleaned_data['name']
-            print "ecomap.name is: " + ecomap.name
+            #print "ecomap.name is: " + ecomap.name
             ecomap.description = form.cleaned_data['description']
-            print "ecomap.description is: " + ecomap.description
+            #print "ecomap.description is: " + ecomap.description
             eco_xml = new_xml % ecomap.name
             ecomap.ecomap_xml = eco_xml
             if ecomap.name != '':
@@ -104,8 +111,9 @@ def get_map_details(request, map_id=""):
             ecomap.delete()
 
     elif map_id != "":
-            ecomap = Ecomap.objects.get(pk=map_id)
-            form = EcomapForm({"name": ecomap.name,
+        '''This is to fill in the form when it is retrieved for editing.'''
+        ecomap = Ecomap.objects.get(pk=map_id)
+        form = EcomapForm({"name": ecomap.name,
                                "description": ecomap.description})
     else:
         form = EcomapForm()
