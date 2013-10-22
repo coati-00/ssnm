@@ -124,8 +124,7 @@ def show_maps(request):
 
 @login_required
 def go_home(request, map_id):
-    '''Show the user all of their saved maps.
-    Allow user to click on one and have it retrieved.'''
+    '''Enable back to maps functionality in flash.'''
     user_obj = User.objects.get(username=str(request.user))
     maps = Ecomap.objects.filter(owner=user_obj)
     return render_to_response(

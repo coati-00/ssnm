@@ -54,6 +54,7 @@ class ViewTest(TestCase):
             'not_ecouser', 'email@email.com', 'not_ecouser')
         self.bad_user.save()
 
+
     # FIRST CHECK THAT ALL URLS ARE ACCESSIBLE
     # following three pass whether using client or the above user info
     def test_about(self):
@@ -107,6 +108,15 @@ class ViewTest(TestCase):
     # FORMS
     # Now we must deal with the forms - CreateAccountForm, LoginFor,
     # ContactForm, EcomapForm
+    def test_create_account(self):
+        '''Test that when get request is issued initial
+        create account form is returned.'''
+        request = self.factory.get(
+            '/create_account/',)
+        response = create_account(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('create_account.html')
+
     def test_create_account(self):
         '''Test that user who creates account get
         appropriate response.'''
@@ -174,11 +184,19 @@ class ViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_show_maps(self):
-        '''Test that logged in user recieves response of home page..'''
+        '''Test that logged in user recieves response of home page.'''
         request = self.factory.post('/show_maps/')
         request.user = self.user
         response = show_maps(request)
         self.assertEqual(response.status_code, 200)
+
+    def go_home(self):
+        '''Test back to maps button in flash returns to map list.'''
+        request = self.factory.post('ecomap/6/display/back_to_list_button_clicked')
+        request.user = self.user
+        response = go_home(request, 6)
+        self.assertEqual(response.status_code, 200)
+
 
     # #  TEST RETRIEVAL OF SAVE MAP
     def test_saved_ecomap(self):
@@ -224,3 +242,5 @@ class ViewTest(TestCase):
         response = display(request, 6)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('game_test.html')
+
+
