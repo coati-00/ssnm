@@ -206,6 +206,7 @@ class ViewTest(TestCase):
         request.user = self.user
         response = go_home(request, 6)
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed("map_page.html")
 
 
     # #  TEST RETRIEVAL OF SAVE MAP
@@ -215,6 +216,7 @@ class ViewTest(TestCase):
         request.user = self.user
         response = get_map(request, 6)
         self.assertEqual(response.status_code, 200)
+        
 
     def test_delete_map(self):
         request = self.factory.post('/delete_map/6/')
