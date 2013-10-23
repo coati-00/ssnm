@@ -4,7 +4,7 @@ This file is to test all the views of the application.
 from ssnm.main.models import Ecomap
 from ssnm.main.views import about, help_page, contact, create_account
 from ssnm.main.views import get_map_details, show_maps, delete_map
-from ssnm.main.views import get_map
+from ssnm.main.views import get_map, go_home
 from ssnm.main.views import logout, display
 from django.contrib.auth.models import User
 from django.test import TestCase, RequestFactory
@@ -199,7 +199,7 @@ class TestView(TestCase):
         response = show_maps(request)
         self.assertEqual(response.status_code, 200)
 
-    def go_home(self):
+    def test_go_home(self):
         '''Test back to maps button in flash returns to map list.'''
         request = self.factory.post('ecomap/6/display/back_to_list_button_clicked')
         request.user = self.user
