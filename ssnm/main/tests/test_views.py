@@ -192,6 +192,49 @@ class TestView(TestCase):
         response = get_map_details(request, 6)
         self.assertEqual(response.status_code, 200)
 
+    def test_details_with_form_get(self):
+        '''Test that user who creates account get appropriate response.'''
+        request = self.factory.get('/details/')
+        request.user = self.user
+        response = get_map_details(request, map_id="")
+        self.assertEqual(response.status_code, 200)
+
+    def test_details_with_form_post(self):
+        '''Test that user who creates account get appropriate response.'''
+        new_xml = """<data>
+            <response>OK</response>
+            <isreadonly>false</isreadonly>
+            <name>New Map Name</name>
+            <flashData>
+            <circles>
+            <circle><radius>499</radius></circle>
+            <circle><radius>350</radius></circle>
+            <circle><radius>200</radius></circle>
+            </circles>
+            <supportLevels>
+            <supportLevel><text>Very Helpful</text>
+            </supportLevel>
+            <supportLevel><text>Somewhat Helpful</text>
+            </supportLevel>
+            <supportLevel><text>Not So Helpful</text>
+            </supportLevel>
+            </supportLevels>
+            <supportTypes>
+            <supportType><text>Social</text></supportType>
+            <supportType><text>Advice</text></supportType>
+            <supportType><text>Empathy</text></supportType>
+            <supportType><text>Practical</text></supportType>
+            </supportTypes>
+            <persons></persons>
+            </flashData>
+            </data>"""
+        request = self.factory.post('/details/', {"name" : "some_map",
+                                                  "ecomap.description" : "this is the maps description",
+                                                  "ecomap.ecomap_xml": "new_xml"})
+        request.user = self.user
+        response = get_map_details(request, map_id="")
+        self.assertEqual(response.status_code, 302)
+
     def test_show_maps(self):
         '''Test that logged in user recieves response of home page.'''
         request = self.factory.post('/show_maps/')

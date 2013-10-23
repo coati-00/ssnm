@@ -7,4 +7,4 @@ http://{{ site.domain }}{% url 'registration_activate' activation_key %}
 
 Once you've activated your account, you can log in to {{site.domain}} using the log in button on the front page.
  
-{% blocktrans %}Link is valid for {{ expiration_days }} days.{% endblocktrans %}
+{% blocktrans %}Link is valid for {{ expiration_days }} day.{% endblocktrans %}
