@@ -55,7 +55,9 @@ def get_map_details(request, map_id=""):
                 ecomap.name = form.cleaned_data['name']
                 old_xml = ecomap.ecomap_xml
                 #print old_xml
-                new_xml = old_xml.replace("<name>"+old_name+"</name>", "<name>"+form.cleaned_data['name']+"</name>")
+                new_xml = old_xml.replace(
+                    "<name>" + old_name + "</name>",
+                    "<name>" + form.cleaned_data['name'] + "</name>")
                 #print new_xml
                 ecomap.ecomap_xml = new_xml
                 #print ecomap.ecomap_xml
@@ -114,7 +116,7 @@ def get_map_details(request, map_id=""):
         '''This is to fill in the form when it is retrieved for editing.'''
         ecomap = Ecomap.objects.get(pk=map_id)
         form = EcomapForm({"name": ecomap.name,
-                               "description": ecomap.description})
+                           "description": ecomap.description})
     else:
         form = EcomapForm()
     return render(request, 'details.html', {'form': form})
@@ -158,7 +160,8 @@ class EcomapForm(forms.Form):
     '''TO DO:Form to allow user to add additional data about their graph
      - user should be able to add description of map and give it a name.'''
     name = forms.CharField(max_length=50, label="Name", required=True)
-    description = forms.CharField(max_length=500, widget=forms.Textarea, label="Description", required=False)
+    description = forms.CharField(max_length=500, widget=forms.Textarea,
+                                  label="Description", required=False)
 
 
 class LoginForm(forms.Form):

@@ -54,7 +54,6 @@ class TestView(TestCase):
             'not_ecouser', 'email@email.com', 'not_ecouser')
         self.bad_user.save()
 
-
     # FIRST CHECK THAT ALL URLS ARE ACCESSIBLE
     # following three pass whether using client or the above user info
     def test_about(self):
@@ -108,14 +107,6 @@ class TestView(TestCase):
     # FORMS
     # Now we must deal with the forms - CreateAccountForm, LoginFor,
     # ContactForm, EcomapForm
-    def test_create_account(self):
-        '''Test that when get request is issued initial
-        create account form is returned.'''
-        request = self.factory.get('/create_account/')
-        response = create_account(request)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed('create_account.html')
-
     def test_create_account(self):
         '''Test that user who creates account get
         appropriate response.'''
@@ -184,7 +175,6 @@ class TestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('contact.html')
 
-
     def test_details_empty_form(self):
         '''Test that user who creates account get appropriate response.'''
         request = self.factory.get('/details/6/')
@@ -228,9 +218,10 @@ class TestView(TestCase):
             <persons></persons>
             </flashData>
             </data>"""
-        request = self.factory.post('/details/', {"name" : "some_map",
-                                                  "ecomap.description" : "this is the maps description",
-                                                  "ecomap.ecomap_xml": "new_xml"})
+        request = self.factory.post(
+            '/details/', {"name": "some_map",
+                          "ecomap.description": "this is the maps description",
+                          "ecomap.ecomap_xml": new_xml})
         request.user = self.user
         response = get_map_details(request, map_id="")
         self.assertEqual(response.status_code, 302)
@@ -244,12 +235,12 @@ class TestView(TestCase):
 
     def test_go_home(self):
         '''Test back to maps button in flash returns to map list.'''
-        request = self.factory.post('ecomap/6/display/back_to_list_button_clicked')
+        request = self.factory.post(
+            'ecomap/6/display/back_to_list_button_clicked')
         request.user = self.user
         response = go_home(request, 6)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed("map_page.html")
-
 
     # #  TEST RETRIEVAL OF SAVE MAP
     def test_saved_ecomap(self):
@@ -258,7 +249,6 @@ class TestView(TestCase):
         request.user = self.user
         response = get_map(request, 6)
         self.assertEqual(response.status_code, 200)
-
 
     def test_delete_map(self):
         request = self.factory.post('/delete_map/6/')
@@ -296,5 +286,3 @@ class TestView(TestCase):
         response = display(request, 6)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('game_test.html')
-
-
