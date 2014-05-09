@@ -54,23 +54,7 @@ def handle_valid_map_details_form(form, ecomap, old_name):
     return HttpResponseRedirect('/ecomap/' + str(ecomap.pk))
 
 
-@login_required
-def get_map_details(request, map_id=""):
-    '''Make user enter name and description of the map before
-    letting them go to the actual map site'''
-    user = request.user
-    if map_id != "" and request.method == 'POST':
-        ecomap = Ecomap.objects.get(owner=user, pk=map_id)
-        old_name = ecomap.name
-        if request.method == 'POST':
-            form = EcomapForm(request.POST)
-            if form.is_valid():
-                return handle_valid_map_details_form(form, ecomap, old_name)
-
-    elif request.method == 'POST':
-        ecomap = Ecomap.objects.create_ecomap(owner=user)
-        map_id = ecomap.pk
-        new_xml = """<data>
+NEW_ECOMAP_XML = """<data>
             <response>OK</response>
             <isreadonly>false</isreadonly>
             <name>%s</name>
@@ -98,16 +82,33 @@ def get_map_details(request, map_id=""):
             </flashData>
             </data>"""
 
+
+@login_required
+def get_map_details(request, map_id=""):
+    '''Make user enter name and description of the map before
+    letting them go to the actual map site'''
+    user = request.user
+    if map_id != "" and request.method == 'POST':
+        ecomap = Ecomap.objects.get(owner=user, pk=map_id)
+        old_name = ecomap.name
+        if request.method == 'POST':
+            form = EcomapForm(request.POST)
+            if form.is_valid():
+                return handle_valid_map_details_form(form, ecomap, old_name)
+
+    elif request.method == 'POST':
+        ecomap = Ecomap.objects.create_ecomap(owner=user)
+        map_id = ecomap.pk
+        new_xml = NEW_ECOMAP_XML
+
         form = EcomapForm(request.POST)
         if form.is_valid():
             ecomap.name = form.cleaned_data['name']
-            #print "ecomap.name is: " + ecomap.name
             ecomap.description = form.cleaned_data['description']
-            #print "ecomap.description is: " + ecomap.description
             eco_xml = new_xml % ecomap.name
             ecomap.ecomap_xml = eco_xml
             if ecomap.name != '':
-                    ecomap.save()
+                ecomap.save()
             return HttpResponseRedirect('/ecomap/' + str(ecomap.pk))
 
         elif request.POST['name'] == "":
