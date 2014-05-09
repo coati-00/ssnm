@@ -91,10 +91,9 @@ def get_map_details(request, map_id=""):
     if map_id != "" and request.method == 'POST':
         ecomap = Ecomap.objects.get(owner=user, pk=map_id)
         old_name = ecomap.name
-        if request.method == 'POST':
-            form = EcomapForm(request.POST)
-            if form.is_valid():
-                return handle_valid_map_details_form(form, ecomap, old_name)
+        form = EcomapForm(request.POST)
+        if form.is_valid():
+            return handle_valid_map_details_form(form, ecomap, old_name)
 
     elif request.method == 'POST':
         ecomap = Ecomap.objects.create_ecomap(owner=user)
