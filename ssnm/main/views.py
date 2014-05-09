@@ -41,6 +41,19 @@ def get_map(request, map_id):
     return render_to_response('game_test.html', {'map': ecomap})
 
 
+def handle_valid_map_details_form(form, ecomap, old_name):
+    ecomap.name = form.cleaned_data['name']
+    old_xml = ecomap.ecomap_xml
+    new_xml = old_xml.replace(
+        "<name>" + old_name + "</name>",
+        "<name>" + form.cleaned_data['name'] + "</name>")
+    ecomap.ecomap_xml = new_xml
+    ecomap.description = form.cleaned_data['description']
+    if ecomap.name != '':
+        ecomap.save()
+    return HttpResponseRedirect('/ecomap/' + str(ecomap.pk))
+
+
 @login_required
 def get_map_details(request, map_id=""):
     '''Make user enter name and description of the map before
@@ -52,19 +65,7 @@ def get_map_details(request, map_id=""):
         if request.method == 'POST':
             form = EcomapForm(request.POST)
             if form.is_valid():
-                ecomap.name = form.cleaned_data['name']
-                old_xml = ecomap.ecomap_xml
-                #print old_xml
-                new_xml = old_xml.replace(
-                    "<name>" + old_name + "</name>",
-                    "<name>" + form.cleaned_data['name'] + "</name>")
-                #print new_xml
-                ecomap.ecomap_xml = new_xml
-                #print ecomap.ecomap_xml
-                ecomap.description = form.cleaned_data['description']
-                if ecomap.name != '':
-                    ecomap.save()
-                return HttpResponseRedirect('/ecomap/' + str(ecomap.pk))
+                return handle_valid_map_details_form(form, ecomap, old_name)
 
     elif request.method == 'POST':
         ecomap = Ecomap.objects.create_ecomap(owner=user)
