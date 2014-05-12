@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def display(request, map_id):
     '''Method processes infromation comunicated by flash.'''
-    post = request.raw_post_data
+    post = request.body
     if request.POST == {}:
         return HttpResponse("Nothing in request POST.")
 
