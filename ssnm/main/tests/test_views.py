@@ -118,6 +118,12 @@ class TestView(TestCase):
         response = create_account(request)
         self.assertEqual(response.status_code, 302)
 
+    def test_create_account_form(self):
+        request = self.factory.get(
+            '/create_account/', {})
+        response = create_account(request)
+        self.assertEqual(response.status_code, 200)
+
     def test_validation_one_create_account(self):
         with self.assertRaises(forms.ValidationError):
             '''Test that user who creates account with already
