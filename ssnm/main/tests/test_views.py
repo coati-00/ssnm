@@ -2,7 +2,7 @@
 This file is to test all the views of the application.
 '''
 from ssnm.main.models import Ecomap
-from ssnm.main.views import about, help_page, contact, create_account
+from ssnm.main.views import about, help_page, contact
 from ssnm.main.views import get_map_details, show_maps, delete_map
 from ssnm.main.views import get_map, go_home
 from ssnm.main.views import logout, display
@@ -103,64 +103,6 @@ class TestView(TestCase):
         request.user = self.user
         response = contact(request)
         self.assertEqual(response.status_code, 200)
-
-    # FORMS
-    # Now we must deal with the forms - CreateAccountForm, LoginFor,
-    # ContactForm, EcomapForm
-    def test_create_account(self):
-        '''Test that user who creates account get
-        appropriate response.'''
-        request = self.factory.post(
-            '/create_account/',
-            {"first_name": "firstname", "last_name": "lastname",
-             "username": "username", "email": "test_email@email.com",
-             "password1": "password", "password2": "password"})
-        response = create_account(request)
-        self.assertEqual(response.status_code, 302)
-
-    def test_create_account_form(self):
-        request = self.factory.get(
-            '/create_account/', {})
-        response = create_account(request)
-        self.assertEqual(response.status_code, 200)
-
-    def test_validation_one_create_account(self):
-        with self.assertRaises(forms.ValidationError):
-            '''Test that user who creates account with already
-            existing username triggers exception handling.'''
-            request = self.factory.post(
-                '/create_account/',
-                {"first_name": "firstname",
-                 "last_name": "lastname",
-                 "username": "somestudent",
-                 "email": "test_email@email.com",
-                 "password1": "password",
-                 "password2": "password"})
-            create_account(request)
-
-    def test_validation_two_create_account(self):
-        with self.assertRaises(forms.ValidationError):
-            '''Test that user who creates account with different
-            passwords triggers exception handling.'''
-            request = self.factory.post(
-                '/create_account/',
-                {"first_name": "firstname", "last_name": "lastname",
-                 "username": "username", "email": "test_email@email.com",
-                 "password1": "password1", "password2": "password"})
-            create_account(request)
-
-    def test_validation_three_create_account(self):
-        with self.assertRaises(forms.ValidationError):
-            '''Test that user who creates account a missing
-            password triggers exception handling.'''
-            request = self.factory.post(
-                '/create_account/',
-                {"first_name": "some_rand_name",
-                 "last_name": "some_rand_name",
-                 "username": "unknownstudent",
-                 "email": "test_email@email.com",
-                 "password2": "password"})
-            create_account(request)
 
     # Contact Form
     def test_contact_form(self):

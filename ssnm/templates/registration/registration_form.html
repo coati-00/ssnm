@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+ {% extends "base.html" %}
 {% load i18n admin_static %}
 {% block title %}Sign up for an account{% endblock %}
 {% block content %}		
@@ -30,17 +30,17 @@
 
                     <div class="fieldWrapper">
                     {{ form.first_name.errors }}
-					<label for="first_name">	First Name:</label>
-					{{form.first_name}}
-					<br/><br/>
+		    <label for="first_name">	First Name:</label>
+		    {{form.first_name}}
+		    <br/><br/>
                     </div>
 
                     <div class="fieldWrapper">
                     {{ form.last_name.errors }}
-					<label for="last_name">	Last Name:</label>
-					{{form.last_name}}
-					<br/><br/>
-					</div>
+		    <label for="last_name">	Last Name:</label>
+		    {{form.last_name}}
+		    <br/><br/>
+		    </div>
 
                     <div class="fieldWrapper">
                     {{ form.password1.errors }}
@@ -63,7 +63,7 @@
 		</div>
     <div class="p">
     If you already have a username or password, but have forgotten either,
-        <a href="/accounts/password/reset/">reset them here</a>.
+        <a href="{% url "password_reset" %}">reset them here</a>.
     </div>
 	
 {% endblock %}

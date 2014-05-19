@@ -10,26 +10,30 @@ admin.autodiscover()
 
 site_media_root = os.path.join(os.path.dirname(__file__), "../media")
 
-redirect_after_logout = getattr(settings, 'LOGOUT_REDIRECT_URL', None)
 auth_urls = (r'^accounts/', include('django.contrib.auth.urls'))
-logout_page = (
-    r'^accounts/logout/$',
-    'django.contrib.auth.views.logout',
-    {'next_page': redirect_after_logout})
 if hasattr(settings, 'WIND_BASE'):
     auth_urls = (r'^accounts/', include('djangowind.urls'))
-    logout_page = (
-        r'^accounts/logout/$',
-        'djangowind.views.logout',
-        {'next_page': '/'})  # redirect_after_logout})
 
 urlpatterns = patterns(
     '',
     auth_urls,
-    #logout_page,
     url(r'^accounts/register/$', RegistrationView.as_view(
         form_class=CreateAccountForm),
-        name='registration_register'),
+        name='registration_register'),               
+    url(r'^accounts/password_reset/$',
+        'django.contrib.auth.views.password_reset',
+        name='password_reset'),
+    url(r'^accounts/password_reset/done/$',
+        'django.contrib.auth.views.password_reset_done',
+        name='password_reset_done'),
+    url(r'^accounts/reset/(?P<uidb64>[0-9A-Za-z_\-]+)/'
+        '(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+        'django.contrib.auth.views.password_reset_confirm',
+        name='password_reset_confirm'),
+    url(r'^accounts/reset/done/$',
+        'django.contrib.auth.views.password_reset_complete',
+        name='password_reset_complete'),
+
     (r'^$', 'ssnm.main.views.show_maps'),
     (r'^help/$', 'ssnm.main.views.help_page'),
     (r'^about/$', 'ssnm.main.views.about'),
