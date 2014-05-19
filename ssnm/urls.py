@@ -53,7 +53,6 @@ urlpatterns = patterns(
     (r'^details/$', 'ssnm.main.views.get_map_details'),
     (r'^accounts/', include('registration.backends.default.urls')),
     (r'^admin/', include(admin.site.urls)),
-    url(r'^_impersonate/', include('impersonate.urls')),
     (r'^stats/$', TemplateView.as_view(template_name="stats.html")),
     (r'smoketest/', include('smoketest.urls')),
     (r'^site_media/(?P<path>.*)$',
