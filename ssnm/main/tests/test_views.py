@@ -8,7 +8,6 @@ from ssnm.main.views import get_map, go_home
 from ssnm.main.views import logout, display
 from django.contrib.auth.models import User
 from django.test import TestCase, RequestFactory
-from django import forms
 
 
 class TestView(TestCase):

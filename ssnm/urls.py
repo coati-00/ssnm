@@ -19,7 +19,7 @@ urlpatterns = patterns(
     auth_urls,
     url(r'^accounts/register/$', RegistrationView.as_view(
         form_class=CreateAccountForm),
-        name='registration_register'),               
+        name='registration_register'),
     url(r'^accounts/password_reset/$',
         'django.contrib.auth.views.password_reset',
         name='password_reset'),
