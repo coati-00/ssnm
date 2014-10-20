@@ -135,6 +135,7 @@ DEBUG_TOOLBAR_PANELS = (
     'debug_toolbar.panels.sql.SQLDebugPanel',
     'debug_toolbar.panels.signals.SignalDebugPanel',
 )
+DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
 STATSD_CLIENT = 'statsd.client'
 STATSD_PREFIX = 'ssnm'
