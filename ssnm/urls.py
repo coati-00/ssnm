@@ -7,15 +7,32 @@ from registration.backends.default.views import RegistrationView
 import os.path
 admin.autodiscover()
 
-
 site_media_root = os.path.join(os.path.dirname(__file__), "../media")
 
+redirect_after_logout = getattr(settings, 'LOGOUT_REDIRECT_URL', None)
+
 auth_urls = (r'^accounts/', include('django.contrib.auth.urls'))
+logout_page = (r'^accounts/logout/$',
+               'django.contrib.auth.views.logout',
+               {'next_page': redirect_after_logout})
+admin_logout_page = (r'^accounts/logout/$',
+                     'django.contrib.auth.views.logout',
+                     {'next_page': '/admin/'})
+
 if hasattr(settings, 'CAS_BASE'):
     auth_urls = (r'^accounts/', include('djangowind.urls'))
+    logout_page = (r'^accounts/logout/$',
+                   'djangowind.views.logout',
+                   {'next_page': redirect_after_logout})
+    admin_logout_page = (r'^admin/logout/$',
+                         'djangowind.views.logout',
+                         {'next_page': redirect_after_logout})
 
+ 
 urlpatterns = patterns(
     '',
+    logout_page,
+    admin_logout_page,
     auth_urls,
     url(r'^accounts/register/$', RegistrationView.as_view(
         form_class=CreateAccountForm),
