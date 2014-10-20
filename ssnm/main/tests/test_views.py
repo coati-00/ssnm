@@ -109,6 +109,7 @@ class TestView(TestCase):
             '/contact/',
             {"subject": "subject here", "message": "message here",
              "sender": "sender", "recipients": "test_email@email.com"})
+        request.user = self.user
         response = contact(request)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('thanks.html')
@@ -118,6 +119,7 @@ class TestView(TestCase):
             '/contact/',
             {"subject": "", "message": "",
              "sender": "", "recipients": "someone"})
+        request.user = self.user
         response = contact(request)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('contact.html')
