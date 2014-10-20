@@ -28,7 +28,6 @@ if hasattr(settings, 'CAS_BASE'):
                          'djangowind.views.logout',
                          {'next_page': redirect_after_logout})
 
- 
 urlpatterns = patterns(
     '',
     logout_page,
@@ -80,6 +79,7 @@ urlpatterns = patterns(
 
 if settings.DEBUG:
     import debug_toolbar
-    urlpatterns += patterns('',
+    urlpatterns += patterns(
+        '',
         url(r'^__debug__/', include(debug_toolbar.urls)),
     )
