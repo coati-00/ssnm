@@ -22,10 +22,10 @@
     <div class="content">
     
     <div class="login-type">
-        <form method="get" action="{{ wind_base }}login">
-        <input type="hidden" name="service" value="{{ wind_service }}" />
-        <input type="hidden" name="destination" value="http://{{ request.get_host }}/accounts/windlogin/?next={{ next }}" />
-        <h2>For Columbia University users:</h2>
+        <form method="get" action="{{ CAS_BASE }}cas/login">
+        <input type="hidden" name="destination" value="http{% if
+        request.is_secure %}s{% endif %}://{{ request.get_host }}/accounts/caslogin/?next={{ next }}" />
+       <h2>For Columbia University users:</h2>
         <div class="uni-login"><input class="regbutton" type="submit" value="UNI LOG IN" /></div>
         </form>
     

@@ -11,7 +11,7 @@ admin.autodiscover()
 site_media_root = os.path.join(os.path.dirname(__file__), "../media")
 
 auth_urls = (r'^accounts/', include('django.contrib.auth.urls'))
-if hasattr(settings, 'WIND_BASE'):
+if hasattr(settings, 'CAS_BASE'):
     auth_urls = (r'^accounts/', include('djangowind.urls'))
 
 urlpatterns = patterns(
