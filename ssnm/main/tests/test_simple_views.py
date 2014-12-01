@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.test.client import Client
 
 
-class SimpleViewTest(TestCase):
+class TestSimpleView(TestCase):
     def setUp(self):
         self.c = Client()
 
