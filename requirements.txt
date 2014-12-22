@@ -1,4 +1,4 @@
-Django==1.6.5
+Django==1.7.1
 resolver==0.2.1
 selector==0.8.11
 Paste==1.7.2
@@ -47,7 +47,6 @@ typogrify==1.0
 django-indexer==0.2.1
 django-templatetag-sugar==0.1
 django-paging==0.2.2
-South==0.8.4
 django-annoying==0.7.6
 django-nose==1.2
 django-appconf==0.4.1
@@ -61,5 +60,5 @@ django-jenkins==0.15.0
 django-smoketest==0.2.2
 django-extensions==1.1.0
 django-stagingcontext==0.1.0
-django-registration==1.0
+django-registration-redux==1.1
 django-markwhat==1.0
