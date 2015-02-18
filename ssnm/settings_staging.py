@@ -23,6 +23,8 @@ DATABASES = {
 }
 
 COMPRESS_ROOT = "/var/www/ssnm/ssnm/media/"
+COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = True
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 STAGING_ENV = True
