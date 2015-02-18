@@ -115,6 +115,8 @@ INSTALLED_APPS = [
     'ssnm.main',
     'registration',
     'django_markwhat',
+    'gunicorn',
+    'storages',
 ]
 
 ACCOUNT_ACTIVATION_DAYS = 1
