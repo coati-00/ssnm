@@ -7,10 +7,7 @@ TEMPLATE_DIRS = (
 )
 
 MEDIA_ROOT = '/var/www/ssnm/uploads/'
-# put any static media here to override app served static media
-STATICMEDIA_MOUNTS = (
-    ('/sitemedia', '/var/www/ssnm/ssnm/sitemedia'),
-)
+
 
 DATABASES = {
     'default': {
@@ -33,7 +30,7 @@ STAGING_ENV = True
 if 'migrate' not in sys.argv:
     INSTALLED_APPS.append('raven.contrib.django.raven_compat')
 
-
+STATICFILES_DIRS = ("media/",)
 AWS_STORAGE_BUCKET_NAME = "ccnmtl-ssnm-stage"
 AWS_PRELOAD_METADATA = True
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
