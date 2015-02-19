@@ -17,7 +17,7 @@ class TestView(TestCase):
         self.user = User.objects.create_user(
             'somestudent', 'email@email.com', 'somestudent')
         self.user.save()
-        #IF BELOW VIEWS ARE COMMENTED OUT ALMOST EVERYTHING PASSES
+        # IF BELOW VIEWS ARE COMMENTED OUT ALMOST EVERYTHING PASSES
         self.ecomap = Ecomap(
             pk='6', name="Test Map 1",
             ecomap_xml=(
@@ -48,7 +48,7 @@ class TestView(TestCase):
                 "</person></persons></flashData></data>"))
         self.ecomap.owner = self.user
         self.ecomap.save()
-        #unauthenticated user
+        # unauthenticated user
         self.bad_user = User.objects.create_user(
             'not_ecouser', 'email@email.com', 'not_ecouser')
         self.bad_user.save()
