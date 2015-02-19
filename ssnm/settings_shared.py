@@ -149,15 +149,11 @@ EMAIL_HOST = 'localhost'
 SERVER_EMAIL = "ssnm@ccnmtl.columbia.edu"
 DEFAULT_FROM_EMAIL = SERVER_EMAIL
 
-# put any static media here to override app served static media
-STATICMEDIA_MOUNTS = (
-    ('/sitemedia', 'sitemedia'),
-)
-
 STATIC_URL = '/media/'
 COMPRESS_URL = "/site_media/"
 COMPRESS_ROOT = "media/"
-
+STATICFILES_DIRS = ("media/",)
+STATIC_ROOT = "/tmp/ssnm/static"
 
 AUTHENTICATION_BACKENDS = ('djangowind.auth.SAMLAuthBackend',
                            'django.contrib.auth.backends.ModelBackend', )
