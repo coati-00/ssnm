@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <title>ssnm: {% block title %}{% endblock %}</title>
-  <link rel="shortcut icon" href="/site_media/favicon.ico" type="image/x-icon" />
-  <link href="/site_media/ecomap.css" rel="stylesheet">
+  <link rel="shortcut icon" href="{{STATIC_MEDIA}}favicon.ico" type="image/x-icon" />
+  <link href="{{STATIC_MEDIA}}ecomap.css" rel="stylesheet">
   {% block css %}{% endblock %}
-    <script src="/site_media/js/jquery-1.7.2.min.js"></script>
+    <script src="{{STATIC_MEDIA}}js/jquery-1.7.2.min.js"></script>
 </head>
 
 <body>

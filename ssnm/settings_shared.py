@@ -71,6 +71,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'djangowind.context.context_processor',
     'stagingcontext.staging_processor',
+    'django.core.context_processors.static',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -115,6 +116,8 @@ INSTALLED_APPS = [
     'ssnm.main',
     'registration',
     'django_markwhat',
+    'gunicorn',
+    'storages',
 ]
 
 ACCOUNT_ACTIVATION_DAYS = 1
@@ -147,14 +150,16 @@ EMAIL_HOST = 'localhost'
 SERVER_EMAIL = "ssnm@ccnmtl.columbia.edu"
 DEFAULT_FROM_EMAIL = SERVER_EMAIL
 
-# put any static media here to override app served static media
-STATICMEDIA_MOUNTS = (
-    ('/sitemedia', 'sitemedia'),
-)
-
 STATIC_URL = '/media/'
 COMPRESS_URL = "/site_media/"
 COMPRESS_ROOT = "media/"
+STATICFILES_DIRS = ("media/",)
+STATIC_ROOT = "/tmp/ssnm/static"
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)
 
 
 AUTHENTICATION_BACKENDS = ('djangowind.auth.SAMLAuthBackend',

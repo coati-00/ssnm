@@ -1,9 +1,11 @@
 # flake8: noqa
 from settings_shared import *
+import os
 
 TEMPLATE_DIRS = (
-    "/var/www/ssnm/ssnm/ssnm/templates",
+    os.path.join(os.path.dirname(__file__), "templates"),
 )
+
 
 MEDIA_ROOT = '/var/www/ssnm/uploads/'
 # put any static media here to override app served static media
@@ -25,6 +27,7 @@ DATABASES = {
 COMPRESS_ROOT = "/var/www/ssnm/ssnm/media/"
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
+
 
 if 'migrate' not in sys.argv:
     INSTALLED_APPS.append('raven.contrib.django.raven_compat')
