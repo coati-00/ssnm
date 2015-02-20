@@ -1,8 +1,10 @@
+{% load compress %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  {% compress css %}{% endcompress %}
   <title>SSNM: {% block title %}{% endblock %}</title>
-  <link rel="shortcut icon" href="/site_media/img/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="{{STATIC_URL}}img/favicon.ico" type="image/x-icon" />
   <link href="{{STATIC_URL}}css/ecomap.css" rel="stylesheet">
   {% block css %}{% endblock %}
   {% block javascript %}{% endblock %}
