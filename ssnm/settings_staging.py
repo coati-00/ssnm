@@ -32,7 +32,7 @@ TEMPLATE_DEBUG = DEBUG
 STAGING_ENV = True
 
 STATICFILES_DIRS = ("media/",)
-STATIC_ROOT = "/tmp/ssnm/static"
+STATIC_ROOT = "/tmp/ssnmstatic"
 
 
 AWS_STORAGE_BUCKET_NAME = "ccnmtl-ssnm-stage"
