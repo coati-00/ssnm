@@ -157,12 +157,13 @@ STATICMEDIA_MOUNTS = (
     ('/sitemedia', 'sitemedia'),
 )
 
+STATIC_ROOT = "/tmp/ssnm/static"
 COMPRESS_URL = "/media/"
 COMPRESS_ROOT = STATIC_ROOT
 
 
 STATICFILES_DIRS = ("media/",)
-STATIC_ROOT = "/tmp/ssnm/static"
+
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
