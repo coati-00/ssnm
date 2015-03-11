@@ -9,6 +9,8 @@ ADMINS = ()
 
 MANAGERS = ADMINS
 
+ALLOWED_HOSTS = ['localhost', '.ccnmtl.columbia.edu']
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -48,8 +50,6 @@ JENKINS_TASKS = (
 PROJECT_APPS = [
     'ssnm.main'
 ]
-
-ALLOWED_HOSTS = ['localhost', '.ccnmtl.columbia.edu']
 
 USE_TZ = True
 TIME_ZONE = 'America/New_York'
@@ -151,9 +151,16 @@ EMAIL_HOST = 'localhost'
 SERVER_EMAIL = "ssnm@ccnmtl.columbia.edu"
 DEFAULT_FROM_EMAIL = SERVER_EMAIL
 
-STATIC_URL = '/media/'
-COMPRESS_URL = "/site_media/"
-COMPRESS_ROOT = "media/"
+
+# put any static media here to override app served static media
+STATICMEDIA_MOUNTS = (
+    ('/sitemedia', 'sitemedia'),
+)
+
+COMPRESS_URL = "/media/"
+COMPRESS_ROOT = STATIC_ROOT
+
+
 STATICFILES_DIRS = ("media/",)
 STATIC_ROOT = "/tmp/ssnm/static"
 STATICFILES_FINDERS = (
