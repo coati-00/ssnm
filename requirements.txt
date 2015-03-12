@@ -64,6 +64,6 @@ django-smoketest==0.3.0
 django-extensions==1.1.0
 django-stagingcontext==0.1.0
 django-registration-redux==1.1
-django-markwhat==1.0
+django-markwhat==2014.9.20
 django-storages-redux==1.2.2
 django-cacheds3storage==0.1.1
