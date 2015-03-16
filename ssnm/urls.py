@@ -1,13 +1,18 @@
+import os.path
+
+from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from django.conf import settings
 from django.views.generic import TemplateView
-from ssnm.main.models import CreateAccountForm
+
 from registration.backends.default.views import RegistrationView
-import os.path
+
+from ssnm.main.models import CreateAccountForm
+
+
 admin.autodiscover()
 
-site_media_root = os.path.join(os.path.dirname(__file__), "../media")
+# site_media_root = os.path.join(os.path.dirname(__file__), "../media")
 
 redirect_after_logout = getattr(settings, 'LOGOUT_REDIRECT_URL', None)
 
@@ -51,13 +56,19 @@ urlpatterns = patterns(
         name='password_reset_complete'),
 
     (r'^$', 'ssnm.main.views.show_maps'),
-    (r'^help/$', 'ssnm.main.views.help_page'),
-    (r'^about/$', 'ssnm.main.views.about'),
+    #(r'^help/$', 'ssnm.main.views.help_page'),
+    (r'^help/$', TemplateView.as_view(template_name="help.html"), {},
+     "help-page"),
+    (r'^about/$', TemplateView.as_view(template_name="about.html"), {},
+     "about-page"),
+    #(r'^about/$', 'ssnm.main.views.about'),
     (r'^contact/$', 'ssnm.main.views.contact'),
     (r'^logout/$',
      'django.contrib.auth.views.logout',
      {'next_page': '/'}),
-    (r'^thanks/$', 'ssnm.main.views.thanks'),
+    #(r'^thanks/$', 'ssnm.main.views.thanks'),
+    (r'^thanks/$', TemplateView.as_view(template_name="thanks.html"), {},
+     "thanks-page"),
     (r'^ecomap/$', 'ssnm.main.views.get_map'),
     (r'^ecomap/(?P<map_id>\d+)/$', 'ssnm.main.views.get_map'),
     (r'^ecomap/(?P<map_id>\d+)/display/flashConduit$',
@@ -71,10 +82,7 @@ urlpatterns = patterns(
     (r'^admin/', include(admin.site.urls)),
     (r'^stats/$', TemplateView.as_view(template_name="stats.html")),
     (r'smoketest/', include('smoketest.urls')),
-    (r'^site_media/(?P<path>.*)$',
-     'django.views.static.serve', {'document_root': site_media_root}),
-    (r'^uploads/(?P<path>.*)$',
-     'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+
 )
 
 if settings.DEBUG:
@@ -83,3 +91,4 @@ if settings.DEBUG:
         '',
         url(r'^__debug__/', include(debug_toolbar.urls)),
     )
+

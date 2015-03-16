@@ -21,7 +21,7 @@ DATABASES = {
         'PASSWORD': '',
     }
 }
-
+STATIC_URL = '/media/'
 if 'test' in sys.argv or 'jenkins' in sys.argv:
     DATABASES = {
         'default': {
@@ -58,7 +58,6 @@ SITE_ID = 1
 USE_I18N = False
 MEDIA_ROOT = "/var/www/ssnm/uploads/"
 MEDIA_URL = '/uploads/'
-STATIC_URL = '/media/'
 SECRET_KEY = ')ng#)ef_u@_^zvvu@dxm7ql-yb^_!a6%v3v^j3b(mp+)l+5%@h'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -70,6 +69,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.debug',
     'django.core.context_processors.request',
     'django.core.context_processors.static',
+    'django.contrib.messages.context_processors.messages',
     'djangowind.context.context_processor',
     'stagingcontext.staging_processor',
     'django.core.context_processors.static',
@@ -83,6 +83,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
+    'impersonate.middleware.ImpersonateMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'waffle.middleware.WaffleMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -96,29 +97,31 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = [
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.staticfiles',
+    'django.contrib.flatpages',
+    'django.contrib.messages',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'django.contrib.flatpages',
-    'django.contrib.admin',
+    'django.contrib.staticfiles',
+    'django_extensions',
+    'django_jenkins',
+    'django_markwhat',
+    'django_nose',
+    'django_statsd',
+    'debug_toolbar',
+    'bootstrapform',
+    'compressor',
+    'gunicorn',
+    'impersonate',
+    'registration',
+    'smoketest',
+    'storages',
     'tagging',
     'typogrify',
-    'django_nose',
-    'compressor',
-    'django_statsd',
-    'bootstrapform',
-    'debug_toolbar',
     'waffle',
-    'django_jenkins',
-    'smoketest',
-    'django_extensions',
     'ssnm.main',
-    'registration',
-    'django_markwhat',
-    'gunicorn',
-    'storages',
 ]
 
 ACCOUNT_ACTIVATION_DAYS = 1
@@ -158,22 +161,20 @@ STATICMEDIA_MOUNTS = (
 )
 
 STATIC_ROOT = "/tmp/ssnm/static"
-COMPRESS_URL = "/media/"
-COMPRESS_ROOT = STATIC_ROOT
-
-
 STATICFILES_DIRS = ("media/",)
-
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
 )
+COMPRESS_URL = "/media/"
+COMPRESS_ROOT = STATIC_ROOT
 
 
+CAS_BASE = "https://cas.columbia.edu/"
 AUTHENTICATION_BACKENDS = ('djangowind.auth.SAMLAuthBackend',
                            'django.contrib.auth.backends.ModelBackend', )
-CAS_BASE = "https://cas.columbia.edu/"
+
 
 WIND_PROFILE_HANDLERS = ['djangowind.auth.CDAPProfileHandler']
 WIND_AFFIL_HANDLERS = ['djangowind.auth.AffilGroupMapper',

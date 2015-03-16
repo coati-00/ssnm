@@ -43,7 +43,7 @@ a:hover, a:active
     margin: 0;
     padding: 0;
     border: 0;
-    background: url('/site_media/img/logo_ssnm.gif') 0 0 no-repeat;
+    background: url('../img/logo_ssnm.gif') 0 0 no-repeat;
 }
 
 #logo-project a {
@@ -137,7 +137,7 @@ a:hover, a:active
 	right: 10px;
 	width: 105px;
 	height: 23px;
-	background-image: url('/site_media/img/logo_ccnmtl.gif');
+	background-image: url('../img/logo_ccnmtl.gif');
 	background-repeat: no-repeat;
 }
 
@@ -148,8 +148,6 @@ a:hover, a:active
 	width: 105px;
 	height: 23px;
 }
-
-
 
 
 h2

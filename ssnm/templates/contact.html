@@ -1,19 +1,12 @@
 {% extends "base.html" %}
-{% load i18n %}
 
 {% block stylesheet %}{% endblock %}
-
 {% block bodyclass %}login{% endblock %}
-
-{% block content_title %}{% endblock %}
-
-{% block breadcrumbs %}{% endblock %}
+{% block content_title %}Contact{% endblock %}
+{% block breadcrumb %}&gt;    Contact{% endblock %}
 
 {% block content %}
-<div id="breadcrumbbar">
-    <span class="here">You are Here:</span>  
-    &gt;    Contact
-</div>
+
 {% if error_message %}
 <p class="errornote">{{ error_message }}</p>
 {% endif %}
