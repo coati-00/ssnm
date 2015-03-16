@@ -10,7 +10,6 @@ TEMPLATE_DIRS = (
 
 MEDIA_ROOT = '/var/www/ssnm/uploads/'
 
-
 STATICMEDIA_MOUNTS = (
     ('/sitemedia', '/var/www/ssnm/ssnm/sitemedia'),
 )
