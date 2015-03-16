@@ -30,9 +30,6 @@ DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 STAGING_ENV = True
 
-STATICFILES_DIRS = ("media/",)
-STATIC_ROOT = "/tmp/ssnmstatic"
-
 
 AWS_STORAGE_BUCKET_NAME = "ccnmtl-ssnm-stage"
 AWS_PRELOAD_METADATA = True
@@ -48,9 +45,6 @@ DEFAULT_FILE_STORAGE = 'cacheds3storage.MediaRootS3BotoStorage'
 MEDIA_URL = S3_URL + '/media/'
 COMPRESS_STORAGE = 'cacheds3storage.CompressorS3BotoStorage'
 AWS_QUERYSTRING_AUTH = False
-
-
-
 
 
 STATSD_PREFIX = 'ssnm-staging'
