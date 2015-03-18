@@ -2,7 +2,6 @@
 This file is to test all the views of the application.
 '''
 from ssnm.main.models import Ecomap
-from ssnm.main.views import about, help_page, contact
 from ssnm.main.views import get_map_details, show_maps, delete_map
 from ssnm.main.views import get_map, go_home
 from ssnm.main.views import logout, display
@@ -16,6 +15,7 @@ class TestView(TestCase):
         self.factory = RequestFactory()
         self.user = User.objects.create_user(
             'somestudent', 'email@email.com', 'somestudent')
+        self.user.set_password("test")
         self.user.save()
         # IF BELOW VIEWS ARE COMMENTED OUT ALMOST EVERYTHING PASSES
         self.ecomap = Ecomap(
@@ -79,56 +79,32 @@ class TestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('thanks.html')
 
-    #  user must be logged in the see the other views
-    # we also should check that logged in usrs can access the views
-    # not requiring authentication
-    def test_user_about(self):
-        '''Test that user requesting about page returns a response.'''
-        request = self.factory.post('/about/')
-        request.user = self.user
-        response = about(request)
-        self.assertEqual(response.status_code, 200)
-
-    def test_user_help(self):
-        '''Test that user requesting help page returns a response.'''
-        request = self.factory.post('/help/')
-        request.user = self.user
-        response = help_page(request)
-        self.assertEqual(response.status_code, 200)
-
-    def test_user_contact(self):
-        '''Test that user requesting contact page returns a response.'''
-        request = self.factory.post('/contact/')
-        request.user = self.user
-        response = contact(request)
-        self.assertEqual(response.status_code, 200)
-
     # Contact Form
     def test_contact_form(self):
-        request = self.factory.post(
+        response = self.client.post(
             '/contact/',
             {"subject": "subject here", "message": "message here",
              "sender": "sender", "recipients": "test_email@email.com"})
-        request.user = self.user
-        response = contact(request)
+        response.user = self.user
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('thanks.html')
 
     def test_contact_form_not_valid(self):
-        request = self.factory.post(
+        response = self.client.post(
             '/contact/',
             {"subject": "", "message": "",
              "sender": "", "recipients": "someone"})
-        request.user = self.user
-        response = contact(request)
+        response.user = self.user
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('contact.html')
 
     def test_details_empty_form(self):
         '''Test that user who creates account get appropriate response.'''
-        request = self.factory.get('/details/6/')
-        request.user = self.user
-        response = get_map_details(request, 6)
+        self.client.login(
+            username=self.user.username,
+            password="test")
+        response = self.client.get('/details/6/')
+        response.user = self.user
         self.assertEqual(response.status_code, 200)
 
     def test_details_with_form_get(self):
