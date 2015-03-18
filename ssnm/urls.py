@@ -1,5 +1,3 @@
-import os.path
-
 from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
@@ -11,8 +9,6 @@ from ssnm.main.models import CreateAccountForm
 
 
 admin.autodiscover()
-
-# site_media_root = os.path.join(os.path.dirname(__file__), "../media")
 
 redirect_after_logout = getattr(settings, 'LOGOUT_REDIRECT_URL', None)
 
@@ -54,19 +50,15 @@ urlpatterns = patterns(
     url(r'^accounts/reset/done/$',
         'django.contrib.auth.views.password_reset_complete',
         name='password_reset_complete'),
-
     (r'^$', 'ssnm.main.views.show_maps'),
-    #(r'^help/$', 'ssnm.main.views.help_page'),
     (r'^help/$', TemplateView.as_view(template_name="help.html"), {},
      "help-page"),
     (r'^about/$', TemplateView.as_view(template_name="about.html"), {},
      "about-page"),
-    #(r'^about/$', 'ssnm.main.views.about'),
     (r'^contact/$', 'ssnm.main.views.contact'),
     (r'^logout/$',
      'django.contrib.auth.views.logout',
      {'next_page': '/'}),
-    #(r'^thanks/$', 'ssnm.main.views.thanks'),
     (r'^thanks/$', TemplateView.as_view(template_name="thanks.html"), {},
      "thanks-page"),
     (r'^ecomap/$', 'ssnm.main.views.get_map'),
@@ -91,4 +83,3 @@ if settings.DEBUG:
         '',
         url(r'^__debug__/', include(debug_toolbar.urls)),
     )
-
