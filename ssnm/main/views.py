@@ -1,12 +1,14 @@
 '''Each view renders page of site with the excection of
  display - that method deals with the flash in the web page.'''
-from ssnm.main.models import Ecomap
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, render_to_response
-from django.contrib.auth.models import User
-from django import forms
 from xml.dom.minidom import parseString
+
+from django import forms
+from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+
+from ssnm.main.models import Ecomap
 
 
 @login_required
@@ -38,7 +40,7 @@ def display(request, map_id):
 def get_map(request, map_id):
     '''User has requested a saved ecomap - retrieve it.'''
     ecomap = Ecomap.objects.get(pk=map_id)
-    return render_to_response('game_test.html', {'map': ecomap})
+    return render(request, 'game_test.html', {'map': ecomap})
 
 
 def handle_valid_map_details_form(form, ecomap, old_name):
@@ -129,8 +131,8 @@ def show_maps(request):
     Allow user to click on one and have it retrieved.'''
     user_obj = User.objects.get(username=str(request.user))
     maps = Ecomap.objects.filter(owner=user_obj)
-    return render_to_response("map_page.html",
-                              {'maps': maps, 'user': user_obj, })
+    return render(request, "map_page.html",
+                  {'maps': maps, 'user': user_obj, })
 
 
 @login_required
@@ -138,7 +140,8 @@ def go_home(request, map_id):
     '''Enable back to maps functionality in flash.'''
     user_obj = User.objects.get(username=str(request.user))
     maps = Ecomap.objects.filter(owner=user_obj)
-    return render_to_response(
+    return render(
+        request,
         "map_page.html",
         {'maps': maps, 'user': user_obj, })
 
@@ -173,7 +176,7 @@ class LoginForm(forms.Form):
 
 
 def contact(request):
-    '''Contact someone regarding the project - WHO???'''
+    '''Contact someone regarding the project'''
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
@@ -183,28 +186,13 @@ def contact(request):
             recipients = ['cdunlop@columbia.edu']
             from django.core.mail import send_mail
             send_mail(subject, message, sender, recipients)
-            return render_to_response('thanks.html')
+            HttpResponseRedirect('/thanks/')
     else:
         form = ContactForm()
 
     return render(request, 'contact.html', {
         'form': form,
     })
-
-
-def thanks(request):
-    """Returns thanks page."""
-    return render_to_response('thanks.html')
-
-
-def about(request):
-    """Returns about page."""
-    return render_to_response('about.html')
-
-
-def help_page(request):
-    """Returns help page."""
-    return render_to_response('help.html')
 
 
 def delete_map(request, map_id):

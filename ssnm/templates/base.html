@@ -1,18 +1,26 @@
+{% load static from staticfiles %}
 {% load compress %}
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  {% compress css %}{% endcompress %}
-  <title>SSNM: {% block title %}{% endblock %}</title>
-  <link rel="shortcut icon" href="{{STATIC_URL}}img/favicon.ico" type="image/x-icon" />
-  <link href="{{STATIC_URL}}css/ecomap.css" rel="stylesheet">
-  {% block css %}{% endblock %}
-  {% block javascript %}{% endblock %}
+  <head>
+    <meta charset="utf-8" />
+    <meta name="description" content="SSNM">
+    <meta name="author" content="CCNMTL">
+    <title>SSNM: {% block title %}{% endblock %}</title>
+    {% comment %}
+      <link rel="shortcut icon" href="{{STATIC_URL}}img/favicon.ico" type="image/x-icon" />
+      <link href="{{STATIC_URL}}css/ecomap.css" rel="stylesheet">
+      <script src="{{STATIC_URL}}js/jquery-1.7.2.min.js"></script>
+    {% endcomment %}
+    <link rel="shortcut icon" href="{{STATIC_URL}}img/favicon.ico" type="image/x-icon" />
+    <link href="{{STATIC_URL}}css/ecomap.css" rel="stylesheet">
     <script src="{{STATIC_URL}}js/jquery-1.7.2.min.js"></script>
-  
-</head>
+    {% block css %}{% endblock %}
+    {% block javascript %}{% endblock %}
+  </head>
 
-<body>
+  <body>
     <div id="site-header">
         <div id="logo-project"><a href="/"></a></div>
         <ul id="sitewide-pages">
@@ -25,8 +33,8 @@
             {% endif %}
             </li>
         {% endblock %}
-            <li class="flatpages"><a href="{% url "ssnm.main.views.about" %}">ABOUT</a></li>
-            <li class="flatpages"><a href="{% url "ssnm.main.views.help_page" %}">HELP</a></li>
+            <li class="flatpages"><a href="{% url "about-page" %}">ABOUT</a></li>
+            <li class="flatpages"><a href="{% url "help-page" %}">HELP</a></li>
             <li class="flatpages"><a href="{% url "ssnm.main.views.contact" %}">CONTACT</a></li>
         </ul>
         <div id="ccnmtl">

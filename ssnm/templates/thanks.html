@@ -1,15 +1,13 @@
 {% extends "base.html" %}
 
 {% block bodyclass %}login{% endblock %}
-
 {% block content_title %}{% endblock %}
-
-{% block breadcrumbs %}{% endblock %}
+{% block breadcrumb %}{% endblock %}
 {% block content %}
 <p>Thank you for submitting your feedback!</p>
 
 
-<a href="{% url "django.contrib.auth.views.login" %}">  Login  </a><a href="{% url "ssnm.main.views.about" %}">  About  </a> <a href="{% url "ssnm.main.views.show_maps" %}">  Home  </a>
+<a href="{% url "django.contrib.auth.views.login" %}">  Login  </a><a href="{% url "about-page" %}">  About  </a> <a href="{% url "ssnm.main.views.show_maps" %}">  Home  </a>
 
 
 {% endblock %}
