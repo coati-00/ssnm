@@ -4,73 +4,34 @@
 {% load i18n %}
 {% block css %}{% endblock %}
 {% block javascript %}
-<script src="/site_media/js/jquery-1.7.2.min.js"></script>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-
-        var txt = false;
-        var otxt = false;
-
-
-        $("form").submit(
-          function(e)
-          {
-
-            if(!($("#id_name").val()) && txt == false)
-              {
-                  $("#id_name").after('<p id="par" style="color:red">Please enter a name for your map to continue.</p>');
-                  txt = true;
-                  e.preventDefault();
-              }
-
-            if(($("#id_description").val().length > 500) && otxt == false)
-              {
-                  $("#id_description").after('<p id="par" style="color:red">This description is too long, please make it shorter.</p>');
-                  otxt = true;
-                  e.preventDefault();
-              }
-
-
-          });
-       
-    })
-        
-
-    </script>
+  {{block.super}}
+  <script type="text/javascript" src="{{STATIC_URL}}js/details.js"></script>
 {% endblock %}
 {% block content %} 
-
-        <div id="container">
-
-	<h2>
-		{% if form.name.value or form.description.value %}
+  <div id="container">
+    <h2>
+      {% if form.name.value or form.description.value %}
 		Edit
 		{% else %}
 		Create New
 		{% endif %}
         Map
-	</h2>
+    </h2>
 
-
-
-<form action="" method="post">
-
-
-    <div class="fieldWrapper">
-
-    <label for="id_name">Map Name:</label>
-    {{ form.name }}
-    </div>
-    <br><br>
-    <div class="fieldWrapper">
-
-   <label for="id_description">Map Description:</label>
-   {{ form.description }}
-   </div>
-   <p><input class="bttn" type="submit" value="{% if form.name.value or form.description.value %}Save changes{% else %}Create Map{% endif %}" /></p>
-
-</form>
+    <form action="" method="post">
+      <div class="fieldWrapper">
+	    <label for="id_name">Map Name:</label>
+	    {{ form.name }}
+	  </div>
+	    <br><br>
+      <div class="fieldWrapper">
+	   <label for="id_description">Map Description:</label>
+	   {{ form.description }}
+	 </div>
+     <p>
+       <input class="bttn" type="submit" 
+         value="{% if form.name.value or form.description.value %}Save changes{% else %}Create Map{% endif %}" />
+     </p>
+  </form>
 </div>
-
 {% endblock %}
